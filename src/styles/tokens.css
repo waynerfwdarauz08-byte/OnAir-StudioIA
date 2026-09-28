@@ -1,0 +1,38 @@
+:root {
+  color-scheme: dark;
+
+  --color-background: #0b0e14;
+  --color-surface: #151a24;
+  --color-surface-light: #1b2230;
+  --color-border: #273142;
+  --color-border-strong: #40506a;
+
+  --color-primary: #00e5ff;
+  --color-secondary: #0055ff;
+  --color-on-air: #ff4444;
+  --color-standby: #ffbb00;
+  --color-approved: #00e676;
+
+  --color-text: #f4f7fb;
+  --color-text-muted: #a5b1c2;
+  --color-text-dark: #05070a;
+
+  --font-interface:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+
+  --font-telemetry:
+    "Cascadia Code",
+    Consolas,
+    monospace;
+
+  --radius-small: 5px;
+  --radius-medium: 8px;
+  --radius-large: 12px;
+
+  --shadow-panel:
+    0 18px 55px rgba(0, 0, 0, 0.22);
+}

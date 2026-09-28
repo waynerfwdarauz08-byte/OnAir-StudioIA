@@ -1,0 +1,300 @@
+{
+  "users": [
+    {
+      "id": "user-admin-001",
+      "name": "Wayner Arauz",
+      "email": "admin@onair.test",
+      "password": "Admin123*",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2026-09-25T14:00:00.000Z",
+      "updatedAt": "2026-09-25T18:02:15.618Z"
+    },
+    {
+      "id": "user-moderator-001",
+      "name": "Valery Santander",
+      "email": "moderador@onair.test",
+      "password": "Moderador123*",
+      "role": "moderator",
+      "active": true,
+      "createdAt": "2026-09-25T14:05:00.000Z",
+      "updatedAt": "2026-09-25T14:05:00.000Z"
+    },
+    {
+      "id": "user-presenter-001",
+      "name": "Daniel Rojas",
+      "email": "presentador@onair.test",
+      "password": "Presentador123*",
+      "role": "presenter",
+      "active": true,
+      "createdAt": "2026-09-25T14:10:00.000Z",
+      "updatedAt": "2026-09-25T14:10:00.000Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "category-national",
+      "name": "Nacional",
+      "description": "Noticias de interés nacional",
+      "createdAt": "2026-09-25T14:20:00.000Z",
+      "updatedAt": "2026-09-25T14:20:00.000Z"
+    },
+    {
+      "id": "category-international",
+      "name": "Internacional",
+      "description": "Noticias internacionales",
+      "createdAt": "2026-09-25T14:21:00.000Z",
+      "updatedAt": "2026-09-25T14:21:00.000Z"
+    },
+    {
+      "id": "category-environment",
+      "name": "Ambiente",
+      "description": "Información ambiental y climática",
+      "createdAt": "2026-09-25T14:22:00.000Z",
+      "updatedAt": "2026-09-25T14:22:00.000Z"
+    },
+    {
+      "id": "category-culture",
+      "name": "Cultura",
+      "description": "Contenido cultural y comunitario",
+      "createdAt": "2026-09-25T14:23:00.000Z",
+      "updatedAt": "2026-09-25T14:23:00.000Z"
+    },
+    {
+      "id": "dcm63UgKVj4",
+      "name": "Deportes",
+      "description": "Informacion sobre Deportes",
+      "createdAt": "2026-09-25T19:39:34.602Z",
+      "updatedAt": "2026-09-25T19:39:34.602Z"
+    }
+  ],
+  "news": [
+    {
+      "id": "news-001",
+      "sourceText": "Contenido ficticio para demostrar el funcionamiento del sistema. Una biblioteca comunitaria anuncia la ampliación de sus talleres de escritura, lectura y narración.",
+      "sourceName": "Comunicado ficticio",
+      "sourceUrl": "",
+      "title": "Biblioteca comunitaria amplía sus talleres culturales",
+      "summary": "El centro comunitario prepara nuevos talleres de escritura, lectura y narración para distintos grupos de edad.",
+      "script": "La biblioteca comunitaria anunció la ampliación de su programa de talleres culturales. La iniciativa incluirá actividades de escritura, lectura y narración. Los horarios y espacios serán comunicados próximamente por la organización.",
+      "lowerThirdOptions": [
+        "Biblioteca amplía talleres culturales",
+        "Nuevos espacios para la lectura",
+        "Comunidad fortalece actividades culturales"
+      ],
+      "selectedLowerThird": "Biblioteca amplía talleres culturales",
+      "categoryId": "category-culture",
+      "editorialStatus": "approved",
+      "estimatedDurationSeconds": 24,
+      "createdBy": "user-moderator-001",
+      "updatedBy": "user-moderator-001",
+      "createdAt": "2026-09-25T14:30:00.000Z",
+      "updatedAt": "2026-09-25T15:00:00.000Z",
+      "aiAssisted": false,
+      "isDemo": true
+    },
+    {
+      "id": "news-002",
+      "sourceText": "Contenido ficticio. Una organización vecinal prepara una jornada voluntaria de limpieza costera. La actividad todavía no tiene una fecha confirmada.",
+      "sourceName": "Información ficticia",
+      "sourceUrl": "",
+      "title": "Comunidad prepara una jornada de limpieza costera",
+      "summary": "La actividad busca reunir personas voluntarias para cuidar los espacios compartidos de la costa.",
+      "script": "Una organización vecinal prepara una jornada voluntaria de limpieza costera. La iniciativa busca promover el cuidado de los espacios compartidos. La fecha de la actividad todavía no ha sido confirmada.",
+      "lowerThirdOptions": [
+        "Preparan jornada de limpieza costera",
+        "Comunidad se une por el ambiente"
+      ],
+      "selectedLowerThird": "Preparan jornada de limpieza costera",
+      "categoryId": "category-environment",
+      "editorialStatus": "review",
+      "estimatedDurationSeconds": 21,
+      "createdBy": "user-moderator-001",
+      "updatedBy": "user-moderator-001",
+      "createdAt": "2026-09-25T14:35:00.000Z",
+      "updatedAt": "2026-09-25T14:55:00.000Z",
+      "aiAssisted": false,
+      "isDemo": true
+    },
+    {
+      "id": "news-003",
+      "sourceText": "Borrador ficticio. Organizadores estudian realizar una feria local para presentar emprendimientos comunitarios.",
+      "sourceName": "Borrador ficticio",
+      "sourceUrl": "",
+      "title": "Feria local prepara un espacio para emprendimientos",
+      "summary": "La propuesta permanece en preparación y todavía no cuenta con fecha ni lugar confirmados.",
+      "script": "",
+      "lowerThirdOptions": [],
+      "selectedLowerThird": "",
+      "categoryId": "category-national",
+      "editorialStatus": "draft",
+      "estimatedDurationSeconds": 0,
+      "createdBy": "user-moderator-001",
+      "updatedBy": "user-moderator-001",
+      "createdAt": "2026-09-25T14:40:00.000Z",
+      "updatedAt": "2026-09-25T14:40:00.000Z",
+      "aiAssisted": false,
+      "isDemo": true
+    },
+    {
+      "id": "news-004",
+      "sourceText": "Contenido ficticio. Un grupo académico revisa información sobre un proyecto de cooperación internacional.",
+      "sourceName": "Reporte ficticio",
+      "sourceUrl": "",
+      "title": "Proyecto de cooperación entra en etapa de revisión",
+      "summary": "El equipo editorial debe comprobar datos y corregir el contenido antes de aprobarlo.",
+      "script": "Un proyecto ficticio de cooperación internacional permanece bajo revisión. El equipo responsable analiza la información disponible antes de comunicar nuevos detalles.",
+      "lowerThirdOptions": [
+        "Proyecto internacional permanece en revisión"
+      ],
+      "selectedLowerThird": "Proyecto internacional permanece en revisión",
+      "categoryId": "category-international",
+      "editorialStatus": "correction",
+      "estimatedDurationSeconds": 18,
+      "createdBy": "user-moderator-001",
+      "updatedBy": "user-admin-001",
+      "createdAt": "2026-09-25T14:45:00.000Z",
+      "updatedAt": "2026-09-25T19:55:21.099Z",
+      "aiAssisted": false,
+      "isDemo": true
+    },
+    {
+      "id": "XDKDSOksTgc",
+      "sourceText": "HAY UN INCENDIO EN NUEVA YORK Y ESTA LLOVIENDO ACIDO CLORHIDRICO EN ESTE MOMENTO MIENTRAS HAY UN TERREMOTO EN LOS ANGELES",
+      "sourceName": "Comunicado comunitario ficticio",
+      "sourceUrl": "",
+      "title": "Reportan incendio y lluvia de ácido clorhídrico en Nueva York, además de sismo en Los Ángeles",
+      "summary": "Se ha informado sobre un incendio activo en Nueva York, acompañado de precipitaciones de ácido clorhídrico. De manera simultánea, se reporta la ocurrencia de un terremoto en la ciudad de Los Ángeles. Se mantiene el seguimiento a estos acontecimientos en desarrollo.",
+      "script": "Buenas tardes. Les informamos sobre reportes de última hora que indican un incendio activo en Nueva York, donde además se registra lluvia de ácido clorhídrico en este momento. Al mismo tiempo, se ha reportado un terremoto en la ciudad de Los Ángeles. Seguiremos monitoreando esta información para brindarles más detalles.",
+      "lowerThirdOptions": [
+        "Reportan incendio y lluvia de ácido clorhídrico en Nueva York",
+        "Terremoto registrado de manera simultánea en Los Ángeles",
+        "Eventos de emergencia reportados en Nueva York y Los Ángeles"
+      ],
+      "selectedLowerThird": "Reportan incendio y lluvia de ácido clorhídrico en Nueva York",
+      "categoryId": "category-international",
+      "editorialStatus": "draft",
+      "estimatedDurationSeconds": 30,
+      "createdBy": "user-admin-001",
+      "updatedBy": "user-admin-001",
+      "createdAt": "2026-09-28T15:30:22.759Z",
+      "updatedAt": "2026-09-28T15:30:22.759Z",
+      "aiAssisted": true,
+      "isDemo": false
+    },
+    {
+      "id": "MG9I7uWOxiQ",
+      "sourceText": "La Municipalidad de Cartago anunció la creación de una nueva jornada comunitaria de reforestación que se realizará el sábado 10 de octubre, a partir de las ocho de la mañana, en diferentes zonas cercanas al río Reventado. La actividad contará con la participación de organizaciones ambientales, estudiantes y personas voluntarias de la comunidad. Según los organizadores, se espera plantar aproximadamente 500 árboles de especies nativas. Las personas interesadas podrán inscribirse gratuitamente mediante los canales oficiales de la municipalidad. La organización recomienda llevar ropa cómoda, zapatos cerrados, agua y protección solar. La actividad busca recuperar espacios naturales, proteger las fuentes de agua y promover la educación ambiental entre la población.",
+      "sourceName": "Comunicado de la Municipalidad de Cartago",
+      "sourceUrl": "",
+      "title": "Cartago organiza jornada comunitaria de reforestación en el río Reventado",
+      "summary": "La Municipalidad de Cartago anunció una jornada de reforestación cerca del río Reventado para el sábado 10 de octubre a las ocho de la mañana. La actividad busca sembrar aproximadamente 500 árboles nativos con apoyo de organizaciones, estudiantes y voluntarios. Las personas interesadas pueden inscribirse gratuitamente a través de los canales oficiales del municipio.",
+      "script": "Buenas tardes. La Municipalidad de Cartago convoca a una jornada comunitaria de reforestación para este sábado 10 de octubre, a partir de las ocho de la mañana, en las cercanías del río Reventado. Se proyecta la siembra de unos 500 árboles de especies nativas con el apoyo de organizaciones ambientales, estudiantes y voluntarios. La inscripción es gratuita en los canales oficiales de la municipalidad. Se recomienda asistir con ropa cómoda, calzado cerrado, agua y protección solar.",
+      "lowerThirdOptions": [
+        "Cartago realizará jornada de reforestación el 10 de octubre",
+        "Buscan plantar 500 árboles nativos cerca del río Reventado",
+        "Inscripción gratuita para jornada ambiental en Cartago"
+      ],
+      "selectedLowerThird": "Cartago realizará jornada de reforestación el 10 de octubre",
+      "categoryId": "category-environment",
+      "editorialStatus": "draft",
+      "estimatedDurationSeconds": 30,
+      "createdBy": "user-admin-001",
+      "updatedBy": "user-admin-001",
+      "createdAt": "2026-09-28T15:45:20.455Z",
+      "updatedAt": "2026-09-28T15:45:20.455Z",
+      "aiAssisted": true,
+      "isDemo": false
+    },
+    {
+      "id": "Gm9jIfP6onQ",
+      "sourceText": "Bad Bunny se presentara en el estadio nacional de costa rica 3 noches seguidas con invitados como Karol G, Arcangel, Omar Courtz y demás. Ya es sold out 2/3 noches",
+      "sourceName": "BAD BUNNY EN COSTA RICA",
+      "sourceUrl": "",
+      "title": "Bad Bunny ofrecerá tres conciertos en Costa Rica y agota entradas para dos fechas",
+      "summary": "El cantante Bad Bunny se presentará durante tres noches consecutivas en el Estadio Nacional de Costa Rica. El espectáculo contará con la presencia de artistas invitados como Karol G, Arcángel y Omar Courtz, entre otros. Actualmente, dos de las tres funciones ya han vendido la totalidad de sus entradas.",
+      "script": "El artista Bad Bunny se presentará tres noches seguidas en el Estadio Nacional de Costa Rica. El show contará con invitados especiales como Karol G, Arcángel y Omar Courtz. La convocatoria ha sido un éxito, logrando agotar las entradas para dos de las tres fechas programadas.",
+      "lowerThirdOptions": [
+        "Bad Bunny ofrecerá tres fechas en el Estadio Nacional",
+        "Entradas agotadas para dos de los conciertos de Bad Bunny",
+        "Karol G, Arcángel y Omar Courtz entre los invitados"
+      ],
+      "selectedLowerThird": "Entradas agotadas para dos de los conciertos de Bad Bunny",
+      "categoryId": "category-culture",
+      "editorialStatus": "approved",
+      "estimatedDurationSeconds": 30,
+      "createdBy": "user-admin-001",
+      "updatedBy": "user-admin-001",
+      "createdAt": "2026-09-28T15:56:03.790Z",
+      "updatedAt": "2026-09-28T16:14:25.534Z",
+      "aiAssisted": true,
+      "isDemo": false
+    }
+  ],
+  "rundowns": [
+    {
+      "id": "iOyW1dXqbRk",
+      "name": "Noticiero matutino de prueba",
+      "broadcastDate": "2026-09-30",
+      "newsIds": [
+        "news-001",
+        "Gm9jIfP6onQ"
+      ],
+      "createdBy": "user-admin-001",
+      "createdAt": "2026-09-28T16:24:30.735Z",
+      "updatedAt": "2026-09-28T16:54:17.942Z"
+    },
+    {
+      "id": "-g3nRqpR6YQ",
+      "name": "Edición Informativa de Noche",
+      "broadcastDate": "2026-09-28",
+      "newsIds": [
+        "Gm9jIfP6onQ"
+      ],
+      "createdBy": "user-admin-001",
+      "createdAt": "2026-09-28T16:29:58.806Z",
+      "updatedAt": "2026-09-28T16:30:07.973Z"
+    }
+  ],
+  "transmissions": [
+    {
+      "id": "current",
+      "newsId": null,
+      "rundownId": null,
+      "onAir": false,
+      "startedAt": null,
+      "updatedAt": "2026-09-28T19:56:50.420Z",
+      "updatedBy": "user-admin-001",
+      "eventId": null
+    }
+  ],
+  "settings": [
+    {
+      "id": "global",
+      "channelName": "OnAir Studio AI",
+      "wordsPerMinute": 150,
+      "updatedAt": "2026-09-25T15:15:00.000Z"
+    }
+  ],
+  "activityLogs": [
+    {
+      "id": "ueaG3mmctPA",
+      "action": "system_check",
+      "description": "Verificación del sistema realizada desde n8n",
+      "userId": "system",
+      "userName": "Automatización n8n",
+      "module": "system",
+      "createdAt": "2026-09-28T20:36:55.003Z"
+    },
+    {
+      "id": "2zEQbKjslfY",
+      "action": "login_success",
+      "description": "Wayner Arauz inició sesión como Administrador.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "authentication",
+      "createdAt": "2026-09-28T20:44:57.754Z"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
