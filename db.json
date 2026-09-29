@@ -435,9 +435,9 @@
       "senderId": "user-moderator-001",
       "receiverId": "user-presenter-001",
       "content": "listo!!",
-      "read": false,
+      "read": true,
       "createdAt": "2026-09-29T17:08:14.349Z",
-      "readAt": null
+      "readAt": "2026-09-29T17:41:38.560Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

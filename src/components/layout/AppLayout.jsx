@@ -11,12 +11,8 @@ import {
 } from "react-router-dom";
 
 import BrandLogo from "../common/BrandLogo.jsx";
-
 import useAuth from "../../hooks/useAuth.js";
-
-import {
-  messageService,
-} from "../../services/messageService.js";
+import { messageService } from "../../services/messageService.js";
 
 import {
   getRoleLabel,
@@ -28,9 +24,7 @@ const menuItems = [
     path: "/dashboard",
     number: "01",
     label: "Vista general",
-    roles: [
-      ROLES.ADMIN,
-    ],
+    roles: [ROLES.ADMIN],
   },
   {
     path: "/news",
@@ -83,6 +77,7 @@ const menuItems = [
     label: "Teleprompter",
     roles: [
       ROLES.ADMIN,
+      ROLES.MODERATOR,
       ROLES.PRESENTER,
     ],
   },
@@ -100,17 +95,13 @@ const menuItems = [
     path: "/admin/users",
     number: "09",
     label: "Usuarios",
-    roles: [
-      ROLES.ADMIN,
-    ],
+    roles: [ROLES.ADMIN],
   },
   {
     path: "/admin/activity",
     number: "10",
     label: "Historial",
-    roles: [
-      ROLES.ADMIN,
-    ],
+    roles: [ROLES.ADMIN],
   },
   {
     path: "/admin/settings",
@@ -118,6 +109,8 @@ const menuItems = [
     label: "Configuración",
     roles: [
       ROLES.ADMIN,
+      ROLES.MODERATOR,
+      ROLES.PRESENTER,
     ],
   },
 ];

@@ -49,10 +49,17 @@ function AppRoutes() {
 
   const teleprompterRoles = [
     ROLES.ADMIN,
+    ROLES.MODERATOR,
     ROLES.PRESENTER,
   ];
 
   const messagingRoles = [
+    ROLES.ADMIN,
+    ROLES.MODERATOR,
+    ROLES.PRESENTER,
+  ];
+
+  const settingsRoles = [
     ROLES.ADMIN,
     ROLES.MODERATOR,
     ROLES.PRESENTER,
@@ -81,9 +88,7 @@ function AppRoutes() {
           <Route
             path="/dashboard"
             element={
-              <RoleRoute
-                allowedRoles={adminOnly}
-              >
+              <RoleRoute allowedRoles={adminOnly}>
                 <DashboardPage />
               </RoleRoute>
             }
@@ -92,9 +97,7 @@ function AppRoutes() {
           <Route
             path="/admin/users"
             element={
-              <RoleRoute
-                allowedRoles={adminOnly}
-              >
+              <RoleRoute allowedRoles={adminOnly}>
                 <UsersPage />
               </RoleRoute>
             }
@@ -103,9 +106,7 @@ function AppRoutes() {
           <Route
             path="/admin/users/new"
             element={
-              <RoleRoute
-                allowedRoles={adminOnly}
-              >
+              <RoleRoute allowedRoles={adminOnly}>
                 <RegisterPage />
               </RoleRoute>
             }
@@ -114,9 +115,7 @@ function AppRoutes() {
           <Route
             path="/admin/users/:id/edit"
             element={
-              <RoleRoute
-                allowedRoles={adminOnly}
-              >
+              <RoleRoute allowedRoles={adminOnly}>
                 <UserEditPage />
               </RoleRoute>
             }
@@ -125,9 +124,7 @@ function AppRoutes() {
           <Route
             path="/admin/activity"
             element={
-              <RoleRoute
-                allowedRoles={adminOnly}
-              >
+              <RoleRoute allowedRoles={adminOnly}>
                 <ActivityLogsPage />
               </RoleRoute>
             }
@@ -136,9 +133,7 @@ function AppRoutes() {
           <Route
             path="/admin/settings"
             element={
-              <RoleRoute
-                allowedRoles={adminOnly}
-              >
+              <RoleRoute allowedRoles={settingsRoles}>
                 <SettingsPage />
               </RoleRoute>
             }
@@ -147,9 +142,7 @@ function AppRoutes() {
           <Route
             path="/news"
             element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
+              <RoleRoute allowedRoles={editorialRoles}>
                 <NewsPage />
               </RoleRoute>
             }
@@ -158,9 +151,7 @@ function AppRoutes() {
           <Route
             path="/news/new"
             element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
+              <RoleRoute allowedRoles={editorialRoles}>
                 <NewsCreatePage />
               </RoleRoute>
             }
@@ -169,21 +160,8 @@ function AppRoutes() {
           <Route
             path="/news/categories"
             element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
+              <RoleRoute allowedRoles={editorialRoles}>
                 <CategoriesPage />
-              </RoleRoute>
-            }
-          />
-
-          <Route
-            path="/news/:id"
-            element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
-                <NewsDetailPage />
               </RoleRoute>
             }
           />
@@ -191,10 +169,17 @@ function AppRoutes() {
           <Route
             path="/news/:id/edit"
             element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
+              <RoleRoute allowedRoles={editorialRoles}>
                 <NewsEditPage />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/news/:id"
+            element={
+              <RoleRoute allowedRoles={editorialRoles}>
+                <NewsDetailPage />
               </RoleRoute>
             }
           />
@@ -202,9 +187,7 @@ function AppRoutes() {
           <Route
             path="/ai-editor"
             element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
+              <RoleRoute allowedRoles={editorialRoles}>
                 <AiEditorPage />
               </RoleRoute>
             }
@@ -213,9 +196,7 @@ function AppRoutes() {
           <Route
             path="/rundowns"
             element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
+              <RoleRoute allowedRoles={editorialRoles}>
                 <RundownsPage />
               </RoleRoute>
             }
@@ -224,9 +205,7 @@ function AppRoutes() {
           <Route
             path="/on-air"
             element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
+              <RoleRoute allowedRoles={editorialRoles}>
                 <OnAirPage />
               </RoleRoute>
             }
@@ -235,9 +214,7 @@ function AppRoutes() {
           <Route
             path="/studio-control"
             element={
-              <RoleRoute
-                allowedRoles={editorialRoles}
-              >
+              <RoleRoute allowedRoles={editorialRoles}>
                 <BroadcastStudioPage />
               </RoleRoute>
             }
@@ -246,9 +223,7 @@ function AppRoutes() {
           <Route
             path="/teleprompter"
             element={
-              <RoleRoute
-                allowedRoles={teleprompterRoles}
-              >
+              <RoleRoute allowedRoles={teleprompterRoles}>
                 <TeleprompterPage />
               </RoleRoute>
             }
@@ -257,9 +232,7 @@ function AppRoutes() {
           <Route
             path="/messages"
             element={
-              <RoleRoute
-                allowedRoles={messagingRoles}
-              >
+              <RoleRoute allowedRoles={messagingRoles}>
                 <MessagesPage />
               </RoleRoute>
             }
