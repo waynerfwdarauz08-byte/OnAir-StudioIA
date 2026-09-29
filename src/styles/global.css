@@ -9953,3 +9953,94 @@ html[data-theme="contrast"] :where(
   background: #ffff00;
 }
 
+/* ======================================================
+   LOGO OFICIAL
+====================================================== */
+
+.brand-logo {
+  display: flex;
+  width: min(100%, 310px);
+  align-items: center;
+  justify-content: center;
+  padding: 12px 15px;
+  overflow: hidden;
+  background: #050810;
+  border: 1px solid rgba(0, 210, 255, 0.22);
+  border-radius: 12px;
+}
+
+.brand-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.brand-logo-compact {
+  width: 100%;
+  max-width: 175px;
+  padding: 9px 11px;
+  border-radius: 9px;
+}
+
+.sidebar .brand {
+  display: flex;
+  width: calc(100% - 24px);
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+html[data-theme="light"] .brand-logo {
+  background: #050810;
+  border-color: rgba(2, 132, 199, 0.35);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="contrast"] .brand-logo {
+  background: #000000;
+  border: 2px solid #ffffff;
+}
+
+@media (max-width: 900px) {
+  .brand-logo-compact {
+    max-width: 165px;
+  }
+}
+
+/* ======================================================
+   LOGO CENTRADO EN EL LOGIN
+====================================================== */
+
+.login-card .login-brand {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  padding: 0;
+  text-align: center;
+}
+
+.login-card .login-brand-logo {
+  display: flex;
+  width: min(100%, 320px);
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card .login-brand-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+@media (max-width: 480px) {
+  .login-card .login-brand-logo {
+    width: min(100%, 260px);
+  }
+}

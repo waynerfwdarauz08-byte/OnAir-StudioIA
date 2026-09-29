@@ -9,25 +9,21 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import BrandLogo from "../components/common/BrandLogo.jsx";
+
 import useAuth from "../hooks/useAuth.js";
 
 import {
   getDefaultRouteByRole,
-  getRoleLabel,
 } from "../utils/roles.js";
 
-import { activityService } from "../services/activityService.js";
-
 function LoginPage() {
-  const [formData, setFormData] =
-    useState({
-      email: "",
-      password: "",
-    });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const [error, setError] =
-    useState("");
-
+  const [error, setError] = useState("");
   const [submitting, setSubmitting] =
     useState(false);
 
@@ -41,19 +37,9 @@ function LoginPage() {
   const location = useLocation();
 
   useEffect(() => {
-    /*
-     * Redirige sesiones existentes,
-     * pero espera si hay un login en proceso.
-     */
-    if (
-      !authLoading &&
-      user &&
-      !submitting
-    ) {
+    if (!authLoading && user) {
       navigate(
-        getDefaultRouteByRole(
-          user.role
-        ),
+        getDefaultRouteByRole(user.role),
         {
           replace: true,
         }
@@ -62,7 +48,6 @@ function LoginPage() {
   }, [
     user,
     authLoading,
-    submitting,
     navigate,
   ]);
 
@@ -72,12 +57,10 @@ function LoginPage() {
       value,
     } = event.target;
 
-    setFormData(
-      (currentForm) => ({
-        ...currentForm,
-        [name]: value,
-      })
-    );
+    setFormData((currentForm) => ({
+      ...currentForm,
+      [name]: value,
+    }));
 
     setError("");
   }
@@ -100,24 +83,9 @@ function LoginPage() {
     setError("");
 
     try {
-      const loggedUser =
-        await login(
-          formData.email,
-          formData.password
-        );
-
-      /*
-       * Espera a que n8n guarde la actividad
-       * antes de entrar al sistema.
-       *
-       * Si n8n falla, registerLogin devuelve
-       * null y el usuario puede entrar normalmente.
-       */
-      await activityService.registerLogin(
-        loggedUser,
-        getRoleLabel(
-          loggedUser.role
-        )
+      const loggedUser = await login(
+        formData.email,
+        formData.password
       );
 
       const requestedRoute =
@@ -135,11 +103,8 @@ function LoginPage() {
         replace: true,
       });
     } catch (loginError) {
-      setError(
-        loginError.message ||
-          "No fue posible iniciar sesión."
-      );
-
+      setError(loginError.message);
+    } finally {
       setSubmitting(false);
     }
   }
@@ -167,13 +132,7 @@ function LoginPage() {
         aria-labelledby="login-title"
       >
         <div className="login-brand">
-          <span className="brand-main">
-            ONAIR
-          </span>
-
-          <span className="brand-secondary">
-            STUDIO AI
-          </span>
+          <BrandLogo className="login-brand-logo" />
         </div>
 
         <div className="login-heading">
@@ -186,9 +145,9 @@ function LoginPage() {
           </h1>
 
           <p>
-            Inicia sesión para acceder a
-            las herramientas correspondientes
-            a tu función.
+            Inicia sesión para acceder a las
+            herramientas correspondientes a tu
+            función.
           </p>
         </div>
 
@@ -197,10 +156,7 @@ function LoginPage() {
             className="login-error"
             role="alert"
           >
-            <span aria-hidden="true">
-              !
-            </span>
-
+            <span aria-hidden="true">!</span>
             <p>{error}</p>
           </div>
         )}
@@ -249,7 +205,7 @@ function LoginPage() {
             disabled={submitting}
           >
             {submitting
-              ? "Ingresando al sistema..."
+              ? "Verificando..."
               : "Iniciar sesión"}
 
             {!submitting && (
@@ -261,44 +217,36 @@ function LoginPage() {
         </form>
 
         <div className="demo-credentials">
-          <p>
-            CUENTAS DE DEMOSTRACIÓN
-          </p>
+          <p>CUENTAS DE DEMOSTRACIÓN</p>
 
           <dl>
             <div>
               <dt>Administrador</dt>
-              <dd>
-                admin@onair.test
-              </dd>
+              <dd>admin@onair.test</dd>
             </div>
 
             <div>
               <dt>Moderador</dt>
-              <dd>
-                moderador@onair.test
-              </dd>
+              <dd>moderador@onair.test</dd>
             </div>
 
             <div>
               <dt>Presentador</dt>
-              <dd>
-                presentador@onair.test
-              </dd>
+              <dd>presentador@onair.test</dd>
             </div>
           </dl>
         </div>
 
         <p className="login-security-note">
-          Autenticación simulada con JSON
-          Server para fines académicos.
+          Autenticación simulada con JSON Server
+          para fines académicos.
         </p>
 
         <Link
           className="login-help-link"
           to="/login"
         >
-          ONAIR STUDIO AI · CONTROL DE ACCESO
+          ONAIR STUDIO IA · CONTROL DE ACCESO
         </Link>
       </section>
     </main>

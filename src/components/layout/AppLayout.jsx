@@ -68,21 +68,18 @@ const menuItems = [
     label: "Usuarios",
     roles: [ROLES.ADMIN],
   },
-
   {
-  path: "/admin/activity",
-  number: "09",
-  label: "Historial",
-  roles: [ROLES.ADMIN],
-},
-
-{
-  path: "/admin/settings",
-  number: "10",
-  label: "Configuración",
-  roles: [ROLES.ADMIN],
-},
-
+    path: "/admin/activity",
+    number: "09",
+    label: "Historial",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    path: "/admin/settings",
+    number: "10",
+    label: "Configuración",
+    roles: [ROLES.ADMIN],
+  },
 ];
 
 function AppLayout() {
@@ -159,9 +156,12 @@ function AppLayout() {
           <NavLink
             to="/"
             className="brand"
-            aria-label="OnAir Studio AI, página principal"
+            aria-label="OnAir Studio IA, página principal"
           >
-            <BrandLogo className="sidebar-brand-logo" />
+            <BrandLogo
+              compact
+              className="sidebar-brand-logo"
+            />
           </NavLink>
 
           <button
@@ -311,7 +311,7 @@ function AppLayout() {
         </main>
 
         <footer className="main-footer">
-          <span>ONAIR STUDIO AI</span>
+          <span>ONAIR STUDIO IA</span>
 
           <span>
             Proyecto académico · FWD Academy
