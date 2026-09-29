@@ -11,9 +11,7 @@ function TeleprompterDisplay({
 
   const paragraphs = script
     .split(/\n+/)
-    .map((paragraph) =>
-      paragraph.trim()
-    )
+    .map((paragraph) => paragraph.trim())
     .filter(Boolean);
 
   return (
@@ -64,14 +62,11 @@ function TeleprompterDisplay({
               T
             </span>
 
-            <h2>
-              Esperando contenido
-            </h2>
+            <h2>Esperando contenido</h2>
 
             <p>
-              Selecciona una noticia desde
-              Control al aire para mostrar su
-              guion en esta pantalla.
+              Selecciona una noticia desde Control al aire
+              para mostrar su guion en esta pantalla.
             </p>
           </div>
         ) : (
@@ -91,9 +86,7 @@ function TeleprompterDisplay({
                   <span>CINTILLO</span>
 
                   <strong>
-                    {
-                      newsItem.selectedLowerThird
-                    }
+                    {newsItem.selectedLowerThird}
                   </strong>
                 </div>
               )}
@@ -102,27 +95,22 @@ function TeleprompterDisplay({
             <div
               className="teleprompter-script-text"
               style={{
-                "--teleprompter-font-size":
-                  `${fontSize}px`,
+                "--teleprompter-font-size": `${fontSize}px`,
               }}
             >
               {paragraphs.length > 0 ? (
-                paragraphs.map(
-                  (
-                    paragraph,
-                    index
-                  ) => (
-                    <p
-                      key={`${paragraph}-${index}`}
-                    >
-                      {paragraph}
-                    </p>
-                  )
-                )
+                paragraphs.map((paragraph, index) => (
+                  <p
+                    key={`${paragraph}-${index}`}
+                    style={{ fontSize: `${fontSize}px` }}
+                  >
+                    {paragraph}
+                  </p>
+                ))
               ) : (
-                <p>
-                  Esta noticia todavía no
-                  tiene un guion disponible.
+                <p style={{ fontSize: `${fontSize}px` }}>
+                  Esta noticia todavía no tiene un guion
+                  disponible.
                 </p>
               )}
             </div>
@@ -133,9 +121,7 @@ function TeleprompterDisplay({
             >
               <span>FIN DEL GUION</span>
 
-              <strong>
-                {newsItem.title}
-              </strong>
+              <strong>{newsItem.title}</strong>
             </div>
 
             <div

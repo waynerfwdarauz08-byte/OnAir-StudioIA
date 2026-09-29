@@ -11133,3 +11133,11 @@ html[data-theme="contrast"]
     width: 100%;
   }
 }
+
+.teleprompter-scroll-area {
+  scroll-behavior: auto !important;
+}
+
+.teleprompter-script-text p {
+  font-size: var(--teleprompter-font-size, 56px);
+}

@@ -5,16 +5,13 @@ import {
 } from "react";
 
 import PageHeader from "../components/common/PageHeader.jsx";
-
 import {
   ErrorState,
   LoadingState,
 } from "../components/common/FeedbackStates.jsx";
 
 import TeleprompterControls from "../components/teleprompter/TeleprompterControls.jsx";
-
 import TeleprompterDisplay from "../components/teleprompter/TeleprompterDisplay.jsx";
-
 import PresenterRecorder from "../components/teleprompter/PresenterRecorder.jsx";
 
 import { transmissionService } from "../services/transmissionService.js";
@@ -27,35 +24,16 @@ function TeleprompterPage() {
   const currentNewsIdRef = useRef(null);
   const startTimerRef = useRef(null);
 
-  const [transmission, setTransmission] =
-    useState(null);
-
-  const [newsItem, setNewsItem] =
-    useState(null);
-
-  const [playing, setPlaying] =
-    useState(false);
-
-  const [speed, setSpeed] =
-    useState(40);
-
-  const [fontSize, setFontSize] =
-    useState(56);
-
-  const [highContrast, setHighContrast] =
-    useState(false);
-
-  const [fullscreen, setFullscreen] =
-    useState(false);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState("");
-
-  const [reloadKey, setReloadKey] =
-    useState(0);
+  const [transmission, setTransmission] = useState(null);
+  const [newsItem, setNewsItem] = useState(null);
+  const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState(40);
+  const [fontSize, setFontSize] = useState(56);
+  const [highContrast, setHighContrast] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let stopped = false;
@@ -82,11 +60,8 @@ function TeleprompterPage() {
           currentTransmission?.newsId || null;
 
         if (!currentNewsId) {
-          if (
-            currentNewsIdRef.current !== null
-          ) {
+          if (currentNewsIdRef.current !== null) {
             currentNewsIdRef.current = null;
-
             setNewsItem(null);
             setPlaying(false);
           }
@@ -94,26 +69,20 @@ function TeleprompterPage() {
           return;
         }
 
-        if (
-          currentNewsIdRef.current ===
-          currentNewsId
-        ) {
+        if (currentNewsIdRef.current === currentNewsId) {
           return;
         }
 
-        const currentNews =
-          await newsService.getById(
-            currentNewsId,
-            controller.signal
-          );
+        const currentNews = await newsService.getById(
+          currentNewsId,
+          controller.signal
+        );
 
         if (stopped) {
           return;
         }
 
-        currentNewsIdRef.current =
-          currentNewsId;
-
+        currentNewsIdRef.current = currentNewsId;
         setNewsItem(currentNews);
         setPlaying(false);
 
@@ -148,78 +117,85 @@ function TeleprompterPage() {
 
     return () => {
       stopped = true;
-
       window.clearTimeout(timeoutId);
       controller?.abort();
     };
   }, [reloadKey]);
 
   useEffect(() => {
-    const scrollArea =
-      scrollAreaRef.current;
+    const scrollArea = scrollAreaRef.current;
 
-    if (
-      !playing ||
-      !newsItem ||
-      !scrollArea
-    ) {
+    if (!playing || !newsItem || !scrollArea) {
       return undefined;
     }
 
-    let previousTime =
-      performance.now();
+    let animationFrameId;
+    let previousTime = null;
+    let fractionalPixels = 0;
 
-    const movementInterval =
-      window.setInterval(() => {
-        const currentScrollArea =
-          scrollAreaRef.current;
+    // Evita que CSS interpole cada movimiento automático.
+    scrollArea.style.scrollBehavior = "auto";
 
-        if (!currentScrollArea) {
-          return;
-        }
+    function moveText(currentTime) {
+      const currentScrollArea = scrollAreaRef.current;
 
-        const currentTime =
-          performance.now();
+      if (!currentScrollArea) {
+        return;
+      }
 
-        const elapsedTime = Math.min(
-          currentTime - previousTime,
-          100
-        );
-
+      if (previousTime === null) {
         previousTime = currentTime;
+      }
 
-        const maximumScroll =
-          currentScrollArea.scrollHeight -
-          currentScrollArea.clientHeight;
+      const elapsedTime = Math.min(
+        currentTime - previousTime,
+        100
+      );
 
-        if (maximumScroll <= 0) {
-          return;
-        }
+      previousTime = currentTime;
 
-        const movement =
-          (speed * elapsedTime) / 1000;
+      const maximumScroll =
+        currentScrollArea.scrollHeight -
+        currentScrollArea.clientHeight;
 
+      if (maximumScroll <= 0) {
+        setPlaying(false);
+        return;
+      }
+
+      // La velocidad se expresa en píxeles por segundo.
+      fractionalPixels +=
+        (speed * elapsedTime) / 1000;
+
+      const wholePixels = Math.floor(fractionalPixels);
+
+      if (wholePixels > 0) {
         const nextPosition = Math.min(
-          currentScrollArea.scrollTop +
-            movement,
+          currentScrollArea.scrollTop + wholePixels,
           maximumScroll
         );
 
-        currentScrollArea.scrollTop =
-          nextPosition;
+        currentScrollArea.scrollTop = nextPosition;
+        fractionalPixels -= wholePixels;
+      }
 
-        if (
-          nextPosition >=
-          maximumScroll - 1
-        ) {
-          setPlaying(false);
-        }
-      }, 16);
+      if (
+        currentScrollArea.scrollTop >=
+        maximumScroll - 1
+      ) {
+        setPlaying(false);
+        return;
+      }
+
+      animationFrameId =
+        window.requestAnimationFrame(moveText);
+    }
+
+    animationFrameId =
+      window.requestAnimationFrame(moveText);
 
     return () => {
-      window.clearInterval(
-        movementInterval
-      );
+      window.cancelAnimationFrame(animationFrameId);
     };
   }, [playing, speed, newsItem?.id]);
 
@@ -246,77 +222,51 @@ function TeleprompterPage() {
 
   useEffect(() => {
     return () => {
-      window.clearTimeout(
-        startTimerRef.current
-      );
+      window.clearTimeout(startTimerRef.current);
     };
   }, []);
 
   function handlePlayPause() {
-    window.clearTimeout(
-      startTimerRef.current
-    );
+    window.clearTimeout(startTimerRef.current);
 
-    /*
-     * Si el guion se está reproduciendo,
-     * el botón funciona como pausa.
-     */
     if (playing) {
       setPlaying(false);
       return;
     }
 
-    const scrollArea =
-      scrollAreaRef.current;
+    const scrollArea = scrollAreaRef.current;
 
     if (!scrollArea) {
       return;
     }
 
     const maximumScroll =
-      scrollArea.scrollHeight -
-      scrollArea.clientHeight;
+      scrollArea.scrollHeight - scrollArea.clientHeight;
 
     const reachedEnd =
-      scrollArea.scrollTop >=
-      maximumScroll - 2;
+      maximumScroll > 0 &&
+      scrollArea.scrollTop >= maximumScroll - 2;
 
-    /*
-     * Si el guion ya terminó,
-     * vuelve al principio.
-     */
     if (reachedEnd) {
       scrollArea.scrollTop = 0;
     }
 
-    /*
-     * Mueve automáticamente la página
-     * hasta la pantalla del guion.
-     */
     displaySectionRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
 
-    /*
-     * Espera brevemente a que termine
-     * el desplazamiento de la página.
-     */
-    startTimerRef.current =
-      window.setTimeout(() => {
-        setPlaying(true);
+    startTimerRef.current = window.setTimeout(() => {
+      setPlaying(true);
 
-        scrollAreaRef.current?.focus({
-          preventScroll: true,
-        });
-      }, 450);
+      scrollAreaRef.current?.focus({
+        preventScroll: true,
+      });
+    }, 450);
   }
 
   function handleRestart() {
-    window.clearTimeout(
-      startTimerRef.current
-    );
-
+    window.clearTimeout(startTimerRef.current);
     setPlaying(false);
 
     if (scrollAreaRef.current) {
@@ -334,8 +284,7 @@ function TeleprompterPage() {
       if (document.fullscreenElement) {
         await document.exitFullscreen();
       } else {
-        await teleprompterRef.current
-          ?.requestFullscreen();
+        await teleprompterRef.current?.requestFullscreen();
       }
     } catch {
       setError(
@@ -347,18 +296,12 @@ function TeleprompterPage() {
   function handleRetry() {
     setLoading(true);
     setError("");
-
     currentNewsIdRef.current = null;
 
-    setReloadKey(
-      (currentValue) =>
-        currentValue + 1
-    );
+    setReloadKey((currentValue) => currentValue + 1);
   }
 
-  const isOnAir = Boolean(
-    transmission?.onAir
-  );
+  const isOnAir = Boolean(transmission?.onAir);
 
   return (
     <>
@@ -372,27 +315,19 @@ function TeleprompterPage() {
         <LoadingState message="Consultando el contenido de la transmisión..." />
       )}
 
-      {!loading &&
-        error &&
-        !newsItem && (
-          <ErrorState
-            message={error}
-            onRetry={handleRetry}
-          />
-        )}
+      {!loading && error && !newsItem && (
+        <ErrorState
+          message={error}
+          onRetry={handleRetry}
+        />
+      )}
 
       {!loading && (
         <div
           ref={teleprompterRef}
           className={`teleprompter-workspace ${
-            highContrast
-              ? "high-contrast"
-              : ""
-          } ${
-            fullscreen
-              ? "is-fullscreen"
-              : ""
-          }`}
+            highContrast ? "high-contrast" : ""
+          } ${fullscreen ? "is-fullscreen" : ""}`}
         >
           <div className="teleprompter-workspace-bar">
             <div>
@@ -414,18 +349,12 @@ function TeleprompterPage() {
               role="status"
             >
               <span aria-hidden="true" />
-
-              {isOnAir
-                ? "AL AIRE"
-                : "EN ESPERA"}
+              {isOnAir ? "AL AIRE" : "EN ESPERA"}
             </div>
           </div>
 
           {error && newsItem && (
-            <div
-              className="form-alert"
-              role="alert"
-            >
+            <div className="form-alert" role="alert">
               {error}
             </div>
           )}
@@ -437,23 +366,14 @@ function TeleprompterPage() {
             highContrast={highContrast}
             fullscreen={fullscreen}
             disabled={!newsItem}
-            onPlayPause={
-              handlePlayPause
-            }
+            onPlayPause={handlePlayPause}
             onRestart={handleRestart}
             onSpeedChange={setSpeed}
-            onFontSizeChange={
-              setFontSize
-            }
+            onFontSizeChange={setFontSize}
             onContrastToggle={() =>
-              setHighContrast(
-                (currentValue) =>
-                  !currentValue
-              )
+              setHighContrast((currentValue) => !currentValue)
             }
-            onFullscreenToggle={
-              handleFullscreenToggle
-            }
+            onFullscreenToggle={handleFullscreenToggle}
           />
 
           <PresenterRecorder />
@@ -466,9 +386,7 @@ function TeleprompterPage() {
               newsItem={newsItem}
               onAir={isOnAir}
               fontSize={fontSize}
-              containerRef={
-                scrollAreaRef
-              }
+              containerRef={scrollAreaRef}
             />
           </div>
         </div>

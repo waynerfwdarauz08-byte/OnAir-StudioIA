@@ -263,6 +263,30 @@
       "updatedAt": "2026-09-28T21:22:30.093Z",
       "aiAssisted": true,
       "isDemo": false
+    },
+    {
+      "id": "Ne9QBeaeAsY",
+      "sourceText": "300,000 cupos de inscripciones de Cursos de Ingles por el INA, generando un aumento de estudio a la poblacion costarricense, con beca socioeconomicas y mas.",
+      "sourceName": "300,000 cupos de inscripciones de Cursos de Ingles",
+      "sourceUrl": "",
+      "title": "El INA abre 300 mil cupos para cursos de inglés con becas socioeconómicas",
+      "summary": "El INA habilitó un total de 300 mil cupos para la inscripción en cursos de inglés. Esta iniciativa busca promover el estudio en la población costarricense con el respaldo de becas socioeconómicas. Se espera impactar positivamente la formación y las oportunidades de los habitantes.",
+      "script": "Buenas noches. Les presentamos una importante novedad educativa para la población costarricense. El Instituto Nacional de Aprendizaje, INA, ha habilitado trescientos mil cupos para la inscripción en sus cursos de inglés. Esta iniciativa tiene como objetivo principal generar un aumento en las oportunidades de estudio para las personas del país. Además del programa académico, la oferta contempla el acceso a becas socioeconómicas y otros beneficios destinados a apoyar el aprendizaje y el desarrollo de los estudiantes. Con este esfuerzo se busca ampliar los conocimientos en el idioma inglés y brindar más herramientas a la ciudadanía costarricense.",
+      "lowerThirdOptions": [
+        "INA abre 300 mil cupos para cursos de inglés",
+        "Cursos de inglés del INA incluyen becas socioeconómicas",
+        "300 mil oportunidades de estudio de inglés en Costa Rica"
+      ],
+      "selectedLowerThird": "Cursos de inglés del INA incluyen becas socioeconómicas",
+      "categoryId": "category-national",
+      "editorialStatus": "approved",
+      "estimatedDurationSeconds": 130,
+      "createdBy": "user-admin-001",
+      "updatedBy": "user-admin-001",
+      "createdAt": "2026-09-29T21:04:47.136Z",
+      "updatedAt": "2026-09-29T21:05:05.770Z",
+      "aiAssisted": true,
+      "isDemo": false
     }
   ],
   "rundowns": [
@@ -271,12 +295,13 @@
       "name": "Noticiero matutino de prueba",
       "broadcastDate": "2026-09-30",
       "newsIds": [
-        "Gm9jIfP6onQ",
-        "news-001"
+        "Ne9QBeaeAsY",
+        "news-001",
+        "Gm9jIfP6onQ"
       ],
       "createdBy": "user-admin-001",
       "createdAt": "2026-09-28T16:24:30.735Z",
-      "updatedAt": "2026-09-29T20:51:43.000Z"
+      "updatedAt": "2026-09-29T21:05:40.768Z"
     },
     {
       "id": "-g3nRqpR6YQ",
@@ -293,13 +318,13 @@
   "transmissions": [
     {
       "id": "current",
-      "newsId": null,
-      "rundownId": null,
-      "onAir": false,
-      "startedAt": null,
-      "updatedAt": "2026-09-29T20:28:05.528Z",
-      "updatedBy": "user-moderator-001",
-      "eventId": null
+      "newsId": "news-001",
+      "rundownId": "iOyW1dXqbRk",
+      "onAir": true,
+      "startedAt": "2026-09-29T21:05:56.176Z",
+      "updatedAt": "2026-09-29T21:10:44.952Z",
+      "updatedBy": "user-admin-001",
+      "eventId": "event-e542209a-ddb9-48e3-87ea-b0831dcb4154"
     }
   ],
   "settings": [
@@ -307,8 +332,8 @@
       "id": "global",
       "channelName": "OnAir Studio AI",
       "wordsPerMinute": 150,
-      "updatedAt": "2026-09-29T20:20:46.121Z",
-      "theme": "light"
+      "updatedAt": "2026-09-29T21:11:11.840Z",
+      "theme": "dark"
     }
   ],
   "activityLogs": [
@@ -419,6 +444,24 @@
       "module": "settings",
       "createdAt": "2026-09-29T20:20:46.147Z",
       "id": "v4KpvWtdvyE"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T21:08:22.329Z",
+      "id": "mmpHrpHcxIo"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T21:11:11.856Z",
+      "id": "wqxDhuAMIEQ"
     }
   ],
   "messages": [
@@ -466,6 +509,15 @@
       "read": true,
       "createdAt": "2026-09-29T17:08:14.349Z",
       "readAt": "2026-09-29T17:41:38.560Z"
+    },
+    {
+      "id": "HGESyL5AucI",
+      "senderId": "user-admin-001",
+      "receiverId": "user-presenter-001",
+      "content": "Ok!",
+      "read": false,
+      "createdAt": "2026-09-29T21:11:01.619Z",
+      "readAt": null
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
