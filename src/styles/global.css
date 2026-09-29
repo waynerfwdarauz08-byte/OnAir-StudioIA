@@ -8738,3 +8738,89 @@ h3 {
   }
 }
 
+/* ======================================================
+   CORRECCIÓN DEL MENÚ LATERAL Y CIERRE DE SESIÓN
+====================================================== */
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.sidebar-heading,
+.navigation-label {
+  flex-shrink: 0;
+}
+
+.main-navigation {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 213, 255, 0.35) transparent;
+}
+
+.main-navigation::-webkit-scrollbar {
+  width: 5px;
+}
+
+.main-navigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main-navigation::-webkit-scrollbar-thumb {
+  background: rgba(0, 213, 255, 0.35);
+  border-radius: 999px;
+}
+
+.sidebar-footer {
+  position: relative;
+  inset: auto;
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background: inherit;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+  z-index: 2;
+}
+
+.sidebar-footer p {
+  margin: 0.65rem 0 1rem;
+}
+
+.logout-button {
+  display: flex;
+  width: 100%;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Corrección para celulares y pantallas pequeñas */
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .main-navigation {
+    overscroll-behavior: contain;
+  }
+}

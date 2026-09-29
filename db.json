@@ -229,6 +229,30 @@
       "updatedAt": "2026-09-28T16:14:25.534Z",
       "aiAssisted": true,
       "isDemo": false
+    },
+    {
+      "id": "dxa5SgQETJc",
+      "sourceText": "bad bunny estara e costa rica durante 3 noches seguidas en el estadio nacional.",
+      "sourceName": "BAD BUNNY EN COSTA RICA",
+      "sourceUrl": "",
+      "title": "Bad Bunny se presentará tres noches seguidas en el Estadio Nacional",
+      "summary": "El artista Bad Bunny se presentará en Costa Rica durante tres noches consecutivas. Las presentaciones del intérprete tendrán como sede el Estadio Nacional.",
+      "script": "Buenas noches. Les informamos que el artista Bad Bunny estará de visita en Costa Rica para ofrecer una serie de presentaciones en vivo. De acuerdo con la información disponible, el cantante se presentará durante tres noches seguidas en las instalaciones del Estadio Nacional. Por el momento, las fechas exactas y los detalles sobre la boletería no han sido confirmados oficialmente. Permanezca en nuestra sintonía para futuras actualizaciones sobre este evento.",
+      "lowerThirdOptions": [
+        "Bad Bunny dará tres conciertos seguidos en Costa Rica",
+        "Tres noches de Bad Bunny en el Estadio Nacional",
+        "Bad Bunny se presentará tres noches en el Estadio Nacional"
+      ],
+      "selectedLowerThird": "Bad Bunny se presentará tres noches en el Estadio Nacional",
+      "categoryId": "category-culture",
+      "editorialStatus": "draft",
+      "estimatedDurationSeconds": 65,
+      "createdBy": "user-admin-001",
+      "updatedBy": "user-admin-001",
+      "createdAt": "2026-09-28T21:22:30.093Z",
+      "updatedAt": "2026-09-28T21:22:30.093Z",
+      "aiAssisted": true,
+      "isDemo": false
     }
   ],
   "rundowns": [
@@ -242,7 +266,7 @@
       ],
       "createdBy": "user-admin-001",
       "createdAt": "2026-09-28T16:24:30.735Z",
-      "updatedAt": "2026-09-28T16:54:17.942Z"
+      "updatedAt": "2026-09-28T21:24:48.932Z"
     },
     {
       "id": "-g3nRqpR6YQ",
@@ -259,13 +283,13 @@
   "transmissions": [
     {
       "id": "current",
-      "newsId": null,
-      "rundownId": null,
-      "onAir": false,
-      "startedAt": null,
-      "updatedAt": "2026-09-28T19:56:50.420Z",
+      "newsId": "Gm9jIfP6onQ",
+      "rundownId": "-g3nRqpR6YQ",
+      "onAir": true,
+      "startedAt": "2026-09-28T21:25:47.821Z",
+      "updatedAt": "2026-09-28T21:25:47.821Z",
       "updatedBy": "user-admin-001",
-      "eventId": null
+      "eventId": "event-cf5da8be-7817-4642-a1e1-32b6b0be5e13"
     }
   ],
   "settings": [
