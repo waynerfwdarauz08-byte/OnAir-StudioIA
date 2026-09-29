@@ -393,5 +393,52 @@
       "id": "OAFBmmDK-vE"
     }
   ],
+  "messages": [
+    {
+      "id": "BBuaTlKigh4",
+      "senderId": "user-admin-001",
+      "receiverId": "user-presenter-001",
+      "content": "Hola",
+      "read": true,
+      "createdAt": "2026-09-29T16:56:39.956Z",
+      "readAt": "2026-09-29T16:59:50.472Z"
+    },
+    {
+      "id": "0vdaj-8KmK4",
+      "senderId": "user-admin-001",
+      "receiverId": "user-presenter-001",
+      "content": "Necesito que me brindes información sobre como esta el transito en donde te encuentras actualmente",
+      "read": true,
+      "createdAt": "2026-09-29T16:59:27.499Z",
+      "readAt": "2026-09-29T16:59:50.473Z"
+    },
+    {
+      "id": "L9lozkwjeL0",
+      "senderId": "user-presenter-001",
+      "receiverId": "user-admin-001",
+      "content": "Listo, ya te la envio",
+      "read": true,
+      "createdAt": "2026-09-29T17:00:18.933Z",
+      "readAt": "2026-09-29T17:05:21.713Z"
+    },
+    {
+      "id": "ypYcYQAIRdU",
+      "senderId": "user-presenter-001",
+      "receiverId": "user-moderator-001",
+      "content": "Hola necesito la noticia ya mismo!!",
+      "read": true,
+      "createdAt": "2026-09-29T17:04:56.180Z",
+      "readAt": "2026-09-29T17:08:09.118Z"
+    },
+    {
+      "id": "HMrsxp9z1rg",
+      "senderId": "user-moderator-001",
+      "receiverId": "user-presenter-001",
+      "content": "listo!!",
+      "read": false,
+      "createdAt": "2026-09-29T17:08:14.349Z",
+      "readAt": null
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

@@ -15,6 +15,10 @@ import BrandLogo from "../common/BrandLogo.jsx";
 import useAuth from "../../hooks/useAuth.js";
 
 import {
+  messageService,
+} from "../../services/messageService.js";
+
+import {
   getRoleLabel,
   ROLES,
 } from "../../utils/roles.js";
@@ -24,67 +28,110 @@ const menuItems = [
     path: "/dashboard",
     number: "01",
     label: "Vista general",
-    roles: [ROLES.ADMIN],
+    roles: [
+      ROLES.ADMIN,
+    ],
   },
   {
     path: "/news",
     number: "02",
     label: "Noticias",
-    roles: [ROLES.ADMIN, ROLES.MODERATOR],
+    roles: [
+      ROLES.ADMIN,
+      ROLES.MODERATOR,
+    ],
   },
   {
     path: "/ai-editor",
     number: "03",
     label: "Redacción IA",
-    roles: [ROLES.ADMIN, ROLES.MODERATOR],
+    roles: [
+      ROLES.ADMIN,
+      ROLES.MODERATOR,
+    ],
   },
   {
     path: "/rundowns",
     number: "04",
     label: "Escaletas",
-    roles: [ROLES.ADMIN, ROLES.MODERATOR],
+    roles: [
+      ROLES.ADMIN,
+      ROLES.MODERATOR,
+    ],
   },
   {
     path: "/on-air",
     number: "05",
     label: "Control al aire",
-    roles: [ROLES.ADMIN, ROLES.MODERATOR],
+    roles: [
+      ROLES.ADMIN,
+      ROLES.MODERATOR,
+    ],
   },
   {
     path: "/studio-control",
     number: "06",
     label: "Control de estudio",
-    roles: [ROLES.ADMIN, ROLES.MODERATOR],
+    roles: [
+      ROLES.ADMIN,
+      ROLES.MODERATOR,
+    ],
   },
   {
     path: "/teleprompter",
     number: "07",
     label: "Teleprompter",
-    roles: [ROLES.ADMIN, ROLES.PRESENTER],
+    roles: [
+      ROLES.ADMIN,
+      ROLES.PRESENTER,
+    ],
+  },
+  {
+    path: "/messages",
+    number: "08",
+    label: "Mensajería",
+    roles: [
+      ROLES.ADMIN,
+      ROLES.MODERATOR,
+      ROLES.PRESENTER,
+    ],
   },
   {
     path: "/admin/users",
-    number: "08",
+    number: "09",
     label: "Usuarios",
-    roles: [ROLES.ADMIN],
+    roles: [
+      ROLES.ADMIN,
+    ],
   },
   {
     path: "/admin/activity",
-    number: "09",
+    number: "10",
     label: "Historial",
-    roles: [ROLES.ADMIN],
+    roles: [
+      ROLES.ADMIN,
+    ],
   },
   {
     path: "/admin/settings",
-    number: "10",
+    number: "11",
     label: "Configuración",
-    roles: [ROLES.ADMIN],
+    roles: [
+      ROLES.ADMIN,
+    ],
   },
 ];
 
 function AppLayout() {
-  const [isMenuOpen, setIsMenuOpen] =
-    useState(false);
+  const [
+    isMenuOpen,
+    setIsMenuOpen,
+  ] = useState(false);
+
+  const [
+    unreadMessageCount,
+    setUnreadMessageCount,
+  ] = useState(0);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -118,9 +165,73 @@ function AppLayout() {
     };
   }, []);
 
-  const visibleMenuItems = menuItems.filter(
-    (item) => item.roles.includes(user.role)
-  );
+  useEffect(() => {
+    let stopped = false;
+    let controller;
+
+    async function loadUnreadMessages() {
+      controller?.abort();
+      controller = new AbortController();
+
+      try {
+        const messages =
+          await messageService.getAll(
+            controller.signal
+          );
+
+        if (stopped) {
+          return;
+        }
+
+        const unreadMessages =
+          Array.isArray(messages)
+            ? messages.filter(
+                (message) =>
+                  message.receiverId ===
+                    user.id &&
+                  !message.read
+              )
+            : [];
+
+        setUnreadMessageCount(
+          unreadMessages.length
+        );
+      } catch (error) {
+        if (
+          !stopped &&
+          error.name !== "AbortError"
+        ) {
+          console.error(
+            "No fue posible consultar los mensajes pendientes.",
+            error
+          );
+        }
+      }
+    }
+
+    loadUnreadMessages();
+
+    const intervalId =
+      window.setInterval(
+        loadUnreadMessages,
+        3000
+      );
+
+    return () => {
+      stopped = true;
+      controller?.abort();
+
+      window.clearInterval(
+        intervalId
+      );
+    };
+  }, [user.id]);
+
+  const visibleMenuItems =
+    menuItems.filter(
+      (item) =>
+        item.roles.includes(user.role)
+    );
 
   const userInitial =
     user.name
@@ -148,7 +259,9 @@ function AppLayout() {
       <aside
         id="main-sidebar"
         className={`sidebar ${
-          isMenuOpen ? "sidebar-open" : ""
+          isMenuOpen
+            ? "sidebar-open"
+            : ""
         }`}
         aria-label="Menú principal"
       >
@@ -184,26 +297,53 @@ function AppLayout() {
           className="main-navigation"
           aria-label="Navegación principal"
         >
-          {visibleMenuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `navigation-link ${
-                  isActive ? "active" : ""
-                }`
-              }
-            >
-              <span
-                className="navigation-number"
-                aria-hidden="true"
-              >
-                {item.number}
-              </span>
+          {visibleMenuItems.map(
+            (item) => {
+              const isMessagesItem =
+                item.path === "/messages";
 
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  className={({
+                    isActive,
+                  }) =>
+                    `navigation-link ${
+                      isActive
+                        ? "active"
+                        : ""
+                    }`
+                  }
+                >
+                  <span
+                    className="navigation-number"
+                    aria-hidden="true"
+                  >
+                    {item.number}
+                  </span>
+
+                  <span className="navigation-link-label">
+                    {item.label}
+                  </span>
+
+                  {isMessagesItem &&
+                    unreadMessageCount >
+                      0 && (
+                      <span
+                        className="navigation-unread-badge"
+                        aria-label={`${unreadMessageCount} mensajes sin leer`}
+                      >
+                        {unreadMessageCount >
+                        99
+                          ? "99+"
+                          : unreadMessageCount}
+                      </span>
+                    )}
+                </NavLink>
+              );
+            }
+          )}
         </nav>
 
         <div className="sidebar-footer">
@@ -292,10 +432,14 @@ function AppLayout() {
               </span>
 
               <div>
-                <strong>{user.name}</strong>
+                <strong>
+                  {user.name}
+                </strong>
 
                 <span>
-                  {getRoleLabel(user.role)}
+                  {getRoleLabel(
+                    user.role
+                  )}
                 </span>
               </div>
             </div>

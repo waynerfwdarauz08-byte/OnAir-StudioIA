@@ -20,12 +20,12 @@ import RundownsPage from "../pages/RundownsPage.jsx";
 import OnAirPage from "../pages/OnAirPage.jsx";
 import BroadcastStudioPage from "../pages/BroadcastStudioPage.jsx";
 import TeleprompterPage from "../pages/TeleprompterPage.jsx";
+import MessagesPage from "../pages/MessagesPage.jsx";
 
 import UsersPage from "../pages/UsersPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import UserEditPage from "../pages/UserEditPage.jsx";
 import ActivityLogsPage from "../pages/ActivityLogsPage.jsx";
-
 import SettingsPage from "../pages/SettingsPage.jsx";
 
 import ForbiddenPage from "../pages/ForbiddenPage.jsx";
@@ -38,7 +38,9 @@ import RoleHomeRedirect from "./RoleHomeRedirect.jsx";
 import { ROLES } from "../utils/roles.js";
 
 function AppRoutes() {
-  const adminOnly = [ROLES.ADMIN];
+  const adminOnly = [
+    ROLES.ADMIN,
+  ];
 
   const editorialRoles = [
     ROLES.ADMIN,
@@ -47,6 +49,12 @@ function AppRoutes() {
 
   const teleprompterRoles = [
     ROLES.ADMIN,
+    ROLES.PRESENTER,
+  ];
+
+  const messagingRoles = [
+    ROLES.ADMIN,
+    ROLES.MODERATOR,
     ROLES.PRESENTER,
   ];
 
@@ -73,7 +81,9 @@ function AppRoutes() {
           <Route
             path="/dashboard"
             element={
-              <RoleRoute allowedRoles={adminOnly}>
+              <RoleRoute
+                allowedRoles={adminOnly}
+              >
                 <DashboardPage />
               </RoleRoute>
             }
@@ -82,7 +92,9 @@ function AppRoutes() {
           <Route
             path="/admin/users"
             element={
-              <RoleRoute allowedRoles={adminOnly}>
+              <RoleRoute
+                allowedRoles={adminOnly}
+              >
                 <UsersPage />
               </RoleRoute>
             }
@@ -91,7 +103,9 @@ function AppRoutes() {
           <Route
             path="/admin/users/new"
             element={
-              <RoleRoute allowedRoles={adminOnly}>
+              <RoleRoute
+                allowedRoles={adminOnly}
+              >
                 <RegisterPage />
               </RoleRoute>
             }
@@ -100,7 +114,9 @@ function AppRoutes() {
           <Route
             path="/admin/users/:id/edit"
             element={
-              <RoleRoute allowedRoles={adminOnly}>
+              <RoleRoute
+                allowedRoles={adminOnly}
+              >
                 <UserEditPage />
               </RoleRoute>
             }
@@ -109,19 +125,25 @@ function AppRoutes() {
           <Route
             path="/admin/activity"
             element={
-              <RoleRoute allowedRoles={adminOnly}>
+              <RoleRoute
+                allowedRoles={adminOnly}
+              >
                 <ActivityLogsPage />
               </RoleRoute>
             }
           />
+
           <Route
             path="/admin/settings"
             element={
-              <RoleRoute allowedRoles={adminOnly}>
+              <RoleRoute
+                allowedRoles={adminOnly}
+              >
                 <SettingsPage />
               </RoleRoute>
             }
           />
+
           <Route
             path="/news"
             element={
@@ -228,6 +250,17 @@ function AppRoutes() {
                 allowedRoles={teleprompterRoles}
               >
                 <TeleprompterPage />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/messages"
+            element={
+              <RoleRoute
+                allowedRoles={messagingRoles}
+              >
+                <MessagesPage />
               </RoleRoute>
             }
           />
