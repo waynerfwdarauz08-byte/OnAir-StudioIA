@@ -75,6 +75,14 @@ const menuItems = [
   label: "Historial",
   roles: [ROLES.ADMIN],
 },
+
+{
+  path: "/admin/settings",
+  number: "10",
+  label: "Configuración",
+  roles: [ROLES.ADMIN],
+},
+
 ];
 
 function AppLayout() {

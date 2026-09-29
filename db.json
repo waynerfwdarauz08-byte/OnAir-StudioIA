@@ -297,7 +297,8 @@
       "id": "global",
       "channelName": "OnAir Studio AI",
       "wordsPerMinute": 150,
-      "updatedAt": "2026-09-25T15:15:00.000Z"
+      "updatedAt": "2026-09-29T16:17:19.198Z",
+      "theme": "dark"
     }
   ],
   "activityLogs": [
@@ -318,6 +319,78 @@
       "userName": "Wayner Arauz",
       "module": "authentication",
       "createdAt": "2026-09-28T20:44:57.754Z"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T15:30:50.144Z",
+      "id": "B8UkwniU7lY"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T15:30:55.042Z",
+      "id": "uFB5jP10iWo"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T15:30:57.029Z",
+      "id": "ZZKBiKCNmf0"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T15:31:00.521Z",
+      "id": "TTYl3Joc59w"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T15:56:58.334Z",
+      "id": "Byh1YZ2GLRo"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T16:01:37.622Z",
+      "id": "8ZrrgzUE7dE"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T16:16:48.931Z",
+      "id": "OvB6Wxx3Xjs"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T16:17:19.218Z",
+      "id": "OAFBmmDK-vE"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

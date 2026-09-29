@@ -26,6 +26,8 @@ import RegisterPage from "../pages/RegisterPage.jsx";
 import UserEditPage from "../pages/UserEditPage.jsx";
 import ActivityLogsPage from "../pages/ActivityLogsPage.jsx";
 
+import SettingsPage from "../pages/SettingsPage.jsx";
+
 import ForbiddenPage from "../pages/ForbiddenPage.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
 
@@ -112,7 +114,14 @@ function AppRoutes() {
               </RoleRoute>
             }
           />
-
+          <Route
+            path="/admin/settings"
+            element={
+              <RoleRoute allowedRoles={adminOnly}>
+                <SettingsPage />
+              </RoleRoute>
+            }
+          />
           <Route
             path="/news"
             element={
