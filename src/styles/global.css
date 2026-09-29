@@ -11093,3 +11093,43 @@ html[data-theme="contrast"]
   background: #ffff00;
   border: 1px solid #ffffff;
 }
+
+.rundown-change-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 22px;
+  padding: 16px 18px;
+  background: var(--surface-secondary, #101a29);
+  border: 1px solid var(--border-color, #253247);
+  border-radius: 12px;
+}
+
+.rundown-change-actions p {
+  margin: 0;
+  color: var(--text-secondary, #8f9db1);
+  font-size: 0.88rem;
+}
+
+.rundown-change-actions > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 620px) {
+  .rundown-change-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rundown-change-actions > div {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .rundown-change-actions button {
+    width: 100%;
+  }
+}

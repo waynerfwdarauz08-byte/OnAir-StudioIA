@@ -11,10 +11,9 @@ function formatDuration(totalSeconds) {
   const minutes = Math.floor(safeSeconds / 60);
   const seconds = safeSeconds % 60;
 
-  return `${String(minutes).padStart(
-    2,
-    "0"
-  )}:${String(seconds).padStart(2, "0")}`;
+  return `${String(minutes).padStart(2, "0")}:${String(
+    seconds
+  ).padStart(2, "0")}`;
 }
 
 function formatBroadcastDate(dateValue) {
@@ -27,9 +26,7 @@ function formatBroadcastDate(dateValue) {
     day: "2-digit",
     month: "long",
     year: "numeric",
-  }).format(
-    new Date(`${dateValue}T12:00:00`)
-  );
+  }).format(new Date(`${dateValue}T12:00:00`));
 }
 
 function RundownConsole({
@@ -39,32 +36,52 @@ function RundownConsole({
   updating = false,
   onUpdateNewsIds,
 }) {
+  const [draftNewsIds, setDraftNewsIds] = useState(
+    () =>
+      Array.isArray(rundown?.newsIds)
+        ? [...rundown.newsIds]
+        : []
+  );
+
+  const [savedNewsIds, setSavedNewsIds] = useState(
+    () =>
+      Array.isArray(rundown?.newsIds)
+        ? [...rundown.newsIds]
+        : []
+  );
+
   const [selectedNewsId, setSelectedNewsId] =
     useState("");
 
   const [newsToAdd, setNewsToAdd] = useState("");
+  const [newsToRemove, setNewsToRemove] = useState(null);
 
-  const [newsToRemove, setNewsToRemove] =
-    useState(null);
+  const savedIdsFromRundown = Array.isArray(rundown?.newsIds)
+    ? rundown.newsIds
+    : [];
 
-  const newsIds = useMemo(
-    () =>
-      Array.isArray(rundown?.newsIds)
-        ? rundown.newsIds
-        : [],
-    [rundown]
-  );
+  // Sincroniza el borrador cuando se selecciona otra escaleta
+  // o cuando el servidor confirma una actualización guardada.
+  useEffect(() => {
+    const currentNewsIds = Array.isArray(rundown?.newsIds)
+      ? [...rundown.newsIds]
+      : [];
+
+    setDraftNewsIds(currentNewsIds);
+    setSavedNewsIds(currentNewsIds);
+    setSelectedNewsId("");
+    setNewsToAdd("");
+    setNewsToRemove(null);
+  }, [rundown?.id, rundown?.updatedAt]);
 
   const assignedNews = useMemo(
     () =>
-      newsIds
+      draftNewsIds
         .map((newsId) =>
-          news.find(
-            (newsItem) => newsItem.id === newsId
-          )
+          news.find((newsItem) => newsItem.id === newsId)
         )
         .filter(Boolean),
-    [newsIds, news]
+    [draftNewsIds, news]
   );
 
   const availableNews = useMemo(
@@ -73,24 +90,19 @@ function RundownConsole({
         .filter(
           (newsItem) =>
             newsItem.editorialStatus === "approved" &&
-            !newsIds.includes(newsItem.id)
+            !draftNewsIds.includes(newsItem.id)
         )
         .sort(
           (firstNews, secondNews) =>
-            new Date(
-              secondNews.updatedAt
-            ).getTime() -
-            new Date(
-              firstNews.updatedAt
-            ).getTime()
+            new Date(secondNews.updatedAt).getTime() -
+            new Date(firstNews.updatedAt).getTime()
         ),
-    [news, newsIds]
+    [news, draftNewsIds]
   );
 
   const selectedNews =
     assignedNews.find(
-      (newsItem) =>
-        newsItem.id === selectedNewsId
+      (newsItem) => newsItem.id === selectedNewsId
     ) ||
     assignedNews[0] ||
     null;
@@ -98,18 +110,22 @@ function RundownConsole({
   const totalDuration = assignedNews.reduce(
     (total, newsItem) =>
       total +
-      (Number(
-        newsItem.estimatedDurationSeconds
-      ) || 0),
+      (Number(newsItem.estimatedDurationSeconds) || 0),
     0
   );
+
+  const hasUnsavedChanges =
+    draftNewsIds.length !== savedIdsFromRundown.length ||
+    draftNewsIds.some(
+      (newsId, index) =>
+        newsId !== savedIdsFromRundown[index]
+    );
 
   useEffect(() => {
     if (
       assignedNews.length > 0 &&
       !assignedNews.some(
-        (newsItem) =>
-          newsItem.id === selectedNewsId
+        (newsItem) => newsItem.id === selectedNewsId
       )
     ) {
       setSelectedNewsId(assignedNews[0].id);
@@ -122,31 +138,24 @@ function RundownConsole({
 
   function getCategoryName(categoryId) {
     const category = categories.find(
-      (categoryItem) =>
-        categoryItem.id === categoryId
+      (categoryItem) => categoryItem.id === categoryId
     );
 
     return category?.name || "Sin categoría";
   }
 
-  async function handleAddNews() {
+  function handleAddNews() {
     if (!newsToAdd || updating) {
       return;
     }
 
-    const updatedNewsIds = [
-      ...newsIds,
+    setDraftNewsIds((currentIds) => [
+      ...currentIds,
       newsToAdd,
-    ];
+    ]);
 
-    const updated = await onUpdateNewsIds(
-      updatedNewsIds
-    );
-
-    if (updated) {
-      setSelectedNewsId(newsToAdd);
-      setNewsToAdd("");
-    }
+    setSelectedNewsId(newsToAdd);
+    setNewsToAdd("");
   }
 
   function requestRemoveNews(newsItem) {
@@ -157,54 +166,72 @@ function RundownConsole({
     setNewsToRemove(newsItem);
   }
 
-  async function confirmRemoveNews() {
+  function confirmRemoveNews() {
     if (!newsToRemove || updating) {
       return;
     }
 
-    const updatedNewsIds = newsIds.filter(
-      (currentNewsId) =>
-        currentNewsId !== newsToRemove.id
+    setDraftNewsIds((currentIds) =>
+      currentIds.filter(
+        (newsId) => newsId !== newsToRemove.id
+      )
     );
 
-    const updated = await onUpdateNewsIds(
-      updatedNewsIds
-    );
-
-    if (updated) {
-      setNewsToRemove(null);
-    }
+    setNewsToRemove(null);
   }
 
-  async function handleMoveNews(index, direction) {
+  function handleMoveNews(index, direction) {
     const destinationIndex = index + direction;
 
     if (
       updating ||
       destinationIndex < 0 ||
-      destinationIndex >= newsIds.length
+      destinationIndex >= draftNewsIds.length
     ) {
       return;
     }
 
-    const updatedNewsIds = [...newsIds];
+    setDraftNewsIds((currentIds) => {
+      const updatedIds = [...currentIds];
 
-    [
-      updatedNewsIds[index],
-      updatedNewsIds[destinationIndex],
-    ] = [
-      updatedNewsIds[destinationIndex],
-      updatedNewsIds[index],
-    ];
+      [
+        updatedIds[index],
+        updatedIds[destinationIndex],
+      ] = [
+        updatedIds[destinationIndex],
+        updatedIds[index],
+      ];
 
-    await onUpdateNewsIds(updatedNewsIds);
+      return updatedIds;
+    });
+  }
+
+  async function handleSaveChanges() {
+    if (!hasUnsavedChanges || updating) {
+      return;
+    }
+
+    const idsToSave = [...draftNewsIds];
+    const saved = await onUpdateNewsIds(idsToSave);
+
+    if (saved) {
+      setSavedNewsIds(idsToSave);
+      setDraftNewsIds(idsToSave);
+    }
+  }
+
+  function handleDiscardChanges() {
+    if (updating) {
+      return;
+    }
+
+    setDraftNewsIds([...savedNewsIds]);
+    setNewsToAdd("");
+    setNewsToRemove(null);
   }
 
   function handleRowKeyDown(event, newsId) {
-    if (
-      event.key === "Enter" ||
-      event.key === " "
-    ) {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       setSelectedNewsId(newsId);
     }
@@ -226,9 +253,7 @@ function RundownConsole({
           </h2>
 
           <p>
-            {formatBroadcastDate(
-              rundown.broadcastDate
-            )}
+            {formatBroadcastDate(rundown.broadcastDate)}
           </p>
         </div>
 
@@ -240,14 +265,11 @@ function RundownConsole({
 
           <div>
             <span>DURACIÓN TOTAL</span>
-            <strong>
-              {formatDuration(totalDuration)}
-            </strong>
+            <strong>{formatDuration(totalDuration)}</strong>
           </div>
 
           <div>
             <span>ESTADO</span>
-
             <strong
               className={
                 assignedNews.length > 0
@@ -266,7 +288,6 @@ function RundownConsole({
       <div className="rundown-add-news">
         <div>
           <span>CONTENIDO DISPONIBLE</span>
-
           <h3>Agregar noticia aprobada</h3>
         </div>
 
@@ -274,8 +295,7 @@ function RundownConsole({
           <select
             value={newsToAdd}
             disabled={
-              updating ||
-              availableNews.length === 0
+              updating || availableNews.length === 0
             }
             aria-label="Noticia aprobada para agregar"
             onChange={(event) =>
@@ -304,9 +324,7 @@ function RundownConsole({
             disabled={updating || !newsToAdd}
             onClick={handleAddNews}
           >
-            {updating
-              ? "Actualizando..."
-              : "Agregar al lineup"}
+            Agregar al lineup
           </button>
         </div>
       </div>
@@ -315,10 +333,7 @@ function RundownConsole({
         <div className="rundown-lineup-panel">
           <div className="rundown-panel-heading">
             <strong>LINEUP GRID</strong>
-
-            <span>
-              Selecciona una fila para revisar el guion
-            </span>
+            <span>Selecciona una fila para revisar el guion</span>
           </div>
 
           {assignedNews.length > 0 ? (
@@ -336,151 +351,127 @@ function RundownConsole({
                 </thead>
 
                 <tbody>
-                  {assignedNews.map(
-                    (newsItem, index) => {
-                      const isSelected =
-                        selectedNews?.id ===
-                        newsItem.id;
+                  {assignedNews.map((newsItem, index) => {
+                    const isSelected =
+                      selectedNews?.id === newsItem.id;
 
-                      return (
-                        <tr
-                          key={newsItem.id}
-                          className={
-                            isSelected
-                              ? "is-selected"
-                              : ""
-                          }
-                          role="button"
-                          tabIndex="0"
-                          onClick={() =>
-                            setSelectedNewsId(
-                              newsItem.id
-                            )
-                          }
-                          onKeyDown={(event) =>
-                            handleRowKeyDown(
-                              event,
-                              newsItem.id
-                            )
-                          }
-                        >
-                          <td>
-                            <strong>
-                              {String(
-                                index + 1
-                              ).padStart(2, "0")}
-                            </strong>
-                          </td>
+                    return (
+                      <tr
+                        key={newsItem.id}
+                        className={
+                          isSelected ? "is-selected" : ""
+                        }
+                        role="button"
+                        tabIndex="0"
+                        onClick={() =>
+                          setSelectedNewsId(newsItem.id)
+                        }
+                        onKeyDown={(event) =>
+                          handleRowKeyDown(
+                            event,
+                            newsItem.id
+                          )
+                        }
+                      >
+                        <td>
+                          <strong>
+                            {String(index + 1).padStart(2, "0")}
+                          </strong>
+                        </td>
 
-                          <td>
-                            <span className="rundown-story-title">
-                              {newsItem.title}
-                            </span>
+                        <td>
+                          <span className="rundown-story-title">
+                            {newsItem.title}
+                          </span>
 
-                            <small>
-                              {newsItem.sourceName ||
-                                "Fuente no indicada"}
-                            </small>
-                          </td>
+                          <small>
+                            {newsItem.sourceName ||
+                              "Fuente no indicada"}
+                          </small>
+                        </td>
 
-                          <td>
-                            <span className="rundown-category">
-                              {getCategoryName(
-                                newsItem.categoryId
-                              )}
-                            </span>
-                          </td>
+                        <td>
+                          <span className="rundown-category">
+                            {getCategoryName(
+                              newsItem.categoryId
+                            )}
+                          </span>
+                        </td>
 
-                          <td>
-                            <span className="rundown-timecode">
-                              {formatDuration(
-                                newsItem.estimatedDurationSeconds
-                              )}
-                            </span>
-                          </td>
+                        <td>
+                          <span className="rundown-timecode">
+                            {formatDuration(
+                              newsItem.estimatedDurationSeconds
+                            )}
+                          </span>
+                        </td>
 
-                          <td>
-                            <span className="rundown-ready-badge">
-                              LISTA
-                            </span>
-                          </td>
+                        <td>
+                          <span className="rundown-ready-badge">
+                            LISTA
+                          </span>
+                        </td>
 
-                          <td>
-                            <div
-                              className="rundown-row-actions"
-                              onClick={(event) =>
-                                event.stopPropagation()
+                        <td>
+                          <div
+                            className="rundown-row-actions"
+                            onClick={(event) =>
+                              event.stopPropagation()
+                            }
+                          >
+                            <button
+                              type="button"
+                              disabled={
+                                updating || index === 0
+                              }
+                              title="Subir noticia"
+                              aria-label={`Subir ${newsItem.title}`}
+                              onClick={() =>
+                                handleMoveNews(index, -1)
                               }
                             >
-                              <button
-                                type="button"
-                                disabled={
-                                  updating ||
-                                  index === 0
-                                }
-                                title="Subir noticia"
-                                aria-label={`Subir ${newsItem.title}`}
-                                onClick={() =>
-                                  handleMoveNews(
-                                    index,
-                                    -1
-                                  )
-                                }
-                              >
-                                ↑
-                              </button>
+                              ↑
+                            </button>
 
-                              <button
-                                type="button"
-                                disabled={
-                                  updating ||
-                                  index ===
-                                    assignedNews.length -
-                                      1
-                                }
-                                title="Bajar noticia"
-                                aria-label={`Bajar ${newsItem.title}`}
-                                onClick={() =>
-                                  handleMoveNews(
-                                    index,
-                                    1
-                                  )
-                                }
-                              >
-                                ↓
-                              </button>
+                            <button
+                              type="button"
+                              disabled={
+                                updating ||
+                                index === assignedNews.length - 1
+                              }
+                              title="Bajar noticia"
+                              aria-label={`Bajar ${newsItem.title}`}
+                              onClick={() =>
+                                handleMoveNews(index, 1)
+                              }
+                            >
+                              ↓
+                            </button>
 
-                              <button
-                                className="remove-action"
-                                type="button"
-                                disabled={updating}
-                                title="Quitar de la escaleta"
-                                aria-label={`Quitar ${newsItem.title}`}
-                                onClick={() =>
-                                  requestRemoveNews(
-                                    newsItem
-                                  )
-                                }
-                              >
-                                ×
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
+                            <button
+                              className="remove-action"
+                              type="button"
+                              disabled={updating}
+                              title="Quitar de la escaleta"
+                              aria-label={`Quitar ${newsItem.title}`}
+                              onClick={() =>
+                                requestRemoveNews(newsItem)
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           ) : (
             <div className="rundown-empty-lineup">
               <span>00</span>
-
-              <h3>
-                La escaleta todavía está vacía
-              </h3>
-
+              <h3>La escaleta todavía está vacía</h3>
               <p>
                 Selecciona una noticia aprobada para comenzar
                 a organizar la edición.
@@ -492,7 +483,6 @@ function RundownConsole({
         <aside className="rundown-script-panel">
           <div className="rundown-panel-heading">
             <strong>VISTA DE GUION</strong>
-
             <span>Previsualización editorial</span>
           </div>
 
@@ -504,8 +494,7 @@ function RundownConsole({
                   {String(
                     assignedNews.findIndex(
                       (newsItem) =>
-                        newsItem.id ===
-                        selectedNews.id
+                        newsItem.id === selectedNews.id
                     ) + 1
                   ).padStart(2, "0")}
                 </span>
@@ -527,18 +516,14 @@ function RundownConsole({
               {selectedNews.selectedLowerThird && (
                 <div className="rundown-lower-third">
                   <span>CINTILLO</span>
-
                   <strong>
-                    {
-                      selectedNews.selectedLowerThird
-                    }
+                    {selectedNews.selectedLowerThird}
                   </strong>
                 </div>
               )}
 
               <div className="rundown-script-reader">
                 <span>GUION DE PRESENTACIÓN</span>
-
                 <p>
                   {selectedNews.script ||
                     "Esta noticia todavía no tiene un guion disponible."}
@@ -556,15 +541,49 @@ function RundownConsole({
         </aside>
       </div>
 
+      <div className="rundown-change-actions">
+        {hasUnsavedChanges ? (
+          <p role="status">
+            Tienes cambios sin guardar en esta escaleta.
+          </p>
+        ) : (
+          <p role="status">
+            Todos los cambios están guardados.
+          </p>
+        )}
+
+        <div>
+          <button
+            className="button button-secondary"
+            type="button"
+            disabled={updating || !hasUnsavedChanges}
+            onClick={handleDiscardChanges}
+          >
+            Descartar cambios
+          </button>
+
+          <button
+            className="button button-primary"
+            type="button"
+            disabled={updating || !hasUnsavedChanges}
+            onClick={handleSaveChanges}
+          >
+            {updating
+              ? "Guardando cambios..."
+              : "Guardar cambios"}
+          </button>
+        </div>
+      </div>
+
       <ConfirmDialog
         open={Boolean(newsToRemove)}
         title="Quitar noticia"
         message={
           newsToRemove
-            ? `¿Deseas quitar “${newsToRemove.title}” de esta escaleta? La noticia seguirá disponible en la bandeja editorial.`
+            ? `¿Deseas quitar “${newsToRemove.title}” del borrador de esta escaleta? El cambio se aplicará cuando guardes la escaleta.`
             : ""
         }
-        confirmText="Quitar noticia"
+        confirmText="Quitar del borrador"
         danger
         loading={updating}
         onConfirm={confirmRemoveNews}

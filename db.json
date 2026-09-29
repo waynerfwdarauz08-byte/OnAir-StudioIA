@@ -29,6 +29,16 @@
       "active": true,
       "createdAt": "2026-09-25T14:10:00.000Z",
       "updatedAt": "2026-09-25T14:10:00.000Z"
+    },
+    {
+      "name": "Eduardo Zamora Valverde",
+      "email": "eduardo@onair.test",
+      "password": "Eduardo123*",
+      "role": "presenter",
+      "active": true,
+      "createdAt": "2026-09-29T20:54:17.004Z",
+      "updatedAt": "2026-09-29T20:54:17.004Z",
+      "id": "lxbPRO13z-I"
     }
   ],
   "categories": [
@@ -261,12 +271,12 @@
       "name": "Noticiero matutino de prueba",
       "broadcastDate": "2026-09-30",
       "newsIds": [
-        "news-001",
-        "Gm9jIfP6onQ"
+        "Gm9jIfP6onQ",
+        "news-001"
       ],
       "createdBy": "user-admin-001",
       "createdAt": "2026-09-28T16:24:30.735Z",
-      "updatedAt": "2026-09-28T21:24:48.932Z"
+      "updatedAt": "2026-09-29T20:51:43.000Z"
     },
     {
       "id": "-g3nRqpR6YQ",
@@ -283,13 +293,13 @@
   "transmissions": [
     {
       "id": "current",
-      "newsId": "Gm9jIfP6onQ",
-      "rundownId": "-g3nRqpR6YQ",
-      "onAir": true,
-      "startedAt": "2026-09-28T21:25:47.821Z",
-      "updatedAt": "2026-09-28T21:25:47.821Z",
-      "updatedBy": "user-admin-001",
-      "eventId": "event-cf5da8be-7817-4642-a1e1-32b6b0be5e13"
+      "newsId": null,
+      "rundownId": null,
+      "onAir": false,
+      "startedAt": null,
+      "updatedAt": "2026-09-29T20:28:05.528Z",
+      "updatedBy": "user-moderator-001",
+      "eventId": null
     }
   ],
   "settings": [
@@ -297,8 +307,8 @@
       "id": "global",
       "channelName": "OnAir Studio AI",
       "wordsPerMinute": 150,
-      "updatedAt": "2026-09-29T16:17:19.198Z",
-      "theme": "dark"
+      "updatedAt": "2026-09-29T20:20:46.121Z",
+      "theme": "light"
     }
   ],
   "activityLogs": [
@@ -391,6 +401,24 @@
       "module": "settings",
       "createdAt": "2026-09-29T16:17:19.218Z",
       "id": "OAFBmmDK-vE"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-09-29T19:46:57.312Z",
+      "id": "mmrVUL7OTiA"
+    },
+    {
+      "action": "update",
+      "description": "Valery Santander actualizó la configuración general del sistema.",
+      "userId": "user-moderator-001",
+      "userName": "Valery Santander",
+      "module": "settings",
+      "createdAt": "2026-09-29T20:20:46.147Z",
+      "id": "v4KpvWtdvyE"
     }
   ],
   "messages": [
