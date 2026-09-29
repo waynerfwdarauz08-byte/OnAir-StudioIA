@@ -24,6 +24,7 @@ import TeleprompterPage from "../pages/TeleprompterPage.jsx";
 import UsersPage from "../pages/UsersPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import UserEditPage from "../pages/UserEditPage.jsx";
+import ActivityLogsPage from "../pages/ActivityLogsPage.jsx";
 
 import ForbiddenPage from "../pages/ForbiddenPage.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
@@ -99,6 +100,15 @@ function AppRoutes() {
             element={
               <RoleRoute allowedRoles={adminOnly}>
                 <UserEditPage />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/admin/activity"
+            element={
+              <RoleRoute allowedRoles={adminOnly}>
+                <ActivityLogsPage />
               </RoleRoute>
             }
           />

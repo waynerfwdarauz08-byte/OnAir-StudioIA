@@ -68,6 +68,13 @@ const menuItems = [
     label: "Usuarios",
     roles: [ROLES.ADMIN],
   },
+
+  {
+  path: "/admin/activity",
+  number: "09",
+  label: "Historial",
+  roles: [ROLES.ADMIN],
+},
 ];
 
 function AppLayout() {
