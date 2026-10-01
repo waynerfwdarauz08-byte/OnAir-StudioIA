@@ -26,6 +26,8 @@ import UsersPage from "../pages/UsersPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import UserEditPage from "../pages/UserEditPage.jsx";
 import ActivityLogsPage from "../pages/ActivityLogsPage.jsx";
+import ProjectionsPage from "../pages/ProjectionsPage.jsx";
+import PresenterLocationsPage from "../pages/PresenterLocationsPage.jsx";
 import SettingsPage from "../pages/SettingsPage.jsx";
 
 import ForbiddenPage from "../pages/ForbiddenPage.jsx";
@@ -126,6 +128,24 @@ function AppRoutes() {
             element={
               <RoleRoute allowedRoles={adminOnly}>
                 <ActivityLogsPage />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/admin/projections"
+            element={
+              <RoleRoute allowedRoles={adminOnly}>
+                <ProjectionsPage />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/admin/presenter-locations"
+            element={
+              <RoleRoute allowedRoles={adminOnly}>
+                <PresenterLocationsPage />
               </RoleRoute>
             }
           />

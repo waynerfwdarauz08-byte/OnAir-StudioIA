@@ -93,8 +93,20 @@ const menuItems = [
     roles: [ROLES.ADMIN],
   },
   {
-    path: "/admin/settings",
+    path: "/admin/projections",
     number: "11",
+    key: "projections",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    path: "/admin/presenter-locations",
+    number: "12",
+    key: "presenterLocations",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    path: "/admin/settings",
+    number: "13",
     key: "settings",
     roles: [
       ROLES.ADMIN,
@@ -116,6 +128,8 @@ const MENU_LABELS = {
     messages: "Mensajería",
     users: "Usuarios",
     activity: "Historial",
+    projections: "Proyecciones IA",
+    presenterLocations: "UbicaciÃ³n de presentadores",
     settings: "Configuración",
   },
   en: {
@@ -129,6 +143,8 @@ const MENU_LABELS = {
     messages: "Messages",
     users: "Users",
     activity: "Activity history",
+    projections: "AI projections",
+    presenterLocations: "Presenter locations",
     settings: "Settings",
   },
 };

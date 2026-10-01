@@ -13,11 +13,15 @@ import {
 
 import EditorialStatusChart from "../components/dashboard/EditorialStatusChart.jsx";
 import WeatherCard from "../components/dashboard/WeatherCard.jsx";
+import CategoryDistributionChart from "../components/dashboard/CategoryDistributionChart.jsx";
+import ContentVolumeChart from "../components/dashboard/ContentVolumeChart.jsx";
+import RundownCoverageChart from "../components/dashboard/RundownCoverageChart.jsx";
 
 import { newsService } from "../services/newsService.js";
 import { userService } from "../services/userService.js";
 import { rundownService } from "../services/rundownService.js";
 import { weatherService } from "../services/weatherService.js";
+import { categoryService } from "../services/categoryService.js";
 
 import useAccessibility from "../hooks/useAccessibility.js";
 
@@ -28,6 +32,7 @@ function DashboardPage() {
   const [news, setNews] = useState([]);
   const [users, setUsers] = useState([]);
   const [rundowns, setRundowns] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [weatherLoading, setWeatherLoading] = useState(true);
@@ -44,11 +49,12 @@ function DashboardPage() {
       setError("");
 
       try {
-        const [newsData, usersData, rundownsData] =
+        const [newsData, usersData, rundownsData, categoriesData] =
           await Promise.all([
             newsService.getAll(controller.signal),
             userService.getAll(controller.signal),
             rundownService.getAll(controller.signal),
+            categoryService.getAll(controller.signal),
           ]);
 
         if (controller.signal.aborted) {
@@ -59,6 +65,9 @@ function DashboardPage() {
         setUsers(Array.isArray(usersData) ? usersData : []);
         setRundowns(
           Array.isArray(rundownsData) ? rundownsData : []
+        );
+        setCategories(
+          Array.isArray(categoriesData) ? categoriesData : []
         );
       } catch (loadError) {
         if (!controller.signal.aborted) {
@@ -260,6 +269,20 @@ function DashboardPage() {
             news={news}
             language={language}
           />
+
+          <section
+            className="dashboard-chart-grid"
+            aria-label={isEnglish ? "Editorial analysis" : "AnÃ¡lisis editorial"}
+          >
+            <CategoryDistributionChart
+              news={news}
+              categories={categories}
+            />
+
+            <ContentVolumeChart news={news} />
+          </section>
+
+          <RundownCoverageChart rundowns={rundowns} />
 
           <section className="workflow-section">
             <div className="section-heading">
