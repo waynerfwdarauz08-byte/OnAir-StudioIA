@@ -4,12 +4,10 @@ import {
 } from "react";
 
 import PageHeader from "../components/common/PageHeader.jsx";
-
 import {
   ErrorState,
   LoadingState,
 } from "../components/common/FeedbackStates.jsx";
-
 import GeneralSettingsForm from "../components/settings/GeneralSettingsForm.jsx";
 
 import { settingsService } from "../services/settingsService.js";
@@ -17,10 +15,20 @@ import { activityService } from "../services/activityService.js";
 
 import useAuth from "../hooks/useAuth.js";
 import useTheme from "../hooks/useTheme.js";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 function SettingsPage() {
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
+
+  const {
+    language,
+    fontScale,
+    colorVision,
+    reduceMotion,
+    speechRate,
+    updatePreference,
+  } = useAccessibility();
 
   const [settings, setSettings] = useState({
     channelName: "",
@@ -29,12 +37,11 @@ function SettingsPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] =
-    useState("");
-
+  const [successMessage, setSuccessMessage] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
+
+  const isEnglish = language === "en";
 
   useEffect(() => {
     const controller = new AbortController();
@@ -61,9 +68,7 @@ function SettingsPage() {
         });
 
         if (
-          ["dark", "light", "contrast"].includes(
-            data.theme
-          )
+          ["dark", "light", "contrast"].includes(data.theme)
         ) {
           setTheme(data.theme);
         }
@@ -71,7 +76,9 @@ function SettingsPage() {
         if (!controller.signal.aborted) {
           setError(
             loadError.message ||
-              "No fue posible cargar la configuración."
+              (isEnglish
+                ? "Could not load the settings."
+                : "No fue posible cargar la configuración.")
           );
         }
       } finally {
@@ -83,34 +90,33 @@ function SettingsPage() {
 
     loadSettings();
 
-    return () => {
-      controller.abort();
-    };
-  }, [reloadKey, setTheme]);
+    return () => controller.abort();
+  }, [reloadKey, setTheme, isEnglish]);
 
   function validateSettings() {
     if (settings.channelName.trim().length < 3) {
-      return "El nombre del canal debe tener al menos 3 caracteres.";
+      return isEnglish
+        ? "The channel name must have at least 3 characters."
+        : "El nombre del canal debe tener al menos 3 caracteres.";
     }
 
-    const wordsPerMinute = Number(
-      settings.wordsPerMinute
-    );
+    const wordsPerMinute = Number(settings.wordsPerMinute);
 
     if (
       !Number.isFinite(wordsPerMinute) ||
       wordsPerMinute < 80 ||
       wordsPerMinute > 250
     ) {
-      return "Las palabras por minuto deben estar entre 80 y 250.";
+      return isEnglish
+        ? "Words per minute must be between 80 and 250."
+        : "Las palabras por minuto deben estar entre 80 y 250.";
     }
 
     return "";
   }
 
   async function handleSave() {
-    const validationMessage =
-      validateSettings();
+    const validationMessage = validateSettings();
 
     if (validationMessage) {
       setError(validationMessage);
@@ -123,31 +129,29 @@ function SettingsPage() {
     setSuccessMessage("");
 
     try {
-      const savedSettings =
-        await settingsService.update({
-          channelName:
-            settings.channelName.trim(),
-          wordsPerMinute: Number(
-            settings.wordsPerMinute
-          ),
-          theme,
-        });
+      const savedSettings = await settingsService.update({
+        channelName: settings.channelName.trim(),
+        wordsPerMinute: Number(settings.wordsPerMinute),
+        theme,
+      });
 
       setSettings({
         channelName: savedSettings.channelName,
-        wordsPerMinute: Number(
-          savedSettings.wordsPerMinute
-        ),
+        wordsPerMinute: Number(savedSettings.wordsPerMinute),
       });
 
       setSuccessMessage(
-        "La configuración se guardó correctamente."
+        isEnglish
+          ? "Settings saved successfully."
+          : "La configuración se guardó correctamente."
       );
 
       try {
         await activityService.create({
           action: "update",
-          description: `${user.name} actualizó la configuración general del sistema.`,
+          description: isEnglish
+            ? `${user.name} updated the general system settings.`
+            : `${user.name} actualizó la configuración general del sistema.`,
           userId: user.id,
           userName: user.name,
           module: "settings",
@@ -160,7 +164,9 @@ function SettingsPage() {
     } catch (saveError) {
       setError(
         saveError.message ||
-          "No fue posible guardar la configuración."
+          (isEnglish
+            ? "Could not save the settings."
+            : "No fue posible guardar la configuración.")
       );
     } finally {
       setSaving(false);
@@ -182,22 +188,34 @@ function SettingsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="ADMINISTRACIÓN"
-        title="Configuración del sistema"
-        description="Personaliza la identidad, el funcionamiento y la apariencia de OnAir Studio AI."
+        eyebrow={isEnglish ? "ADMINISTRATION" : "ADMINISTRACIÓN"}
+        title={
+          isEnglish
+            ? "System settings"
+            : "Configuración del sistema"
+        }
+        description={
+          isEnglish
+            ? "Customize the identity, behavior, appearance, and accessibility of OnAir Studio AI."
+            : "Personaliza la identidad, el funcionamiento, la apariencia y la accesibilidad de OnAir Studio AI."
+        }
       />
 
       {loading && (
-        <LoadingState message="Cargando la configuración general..." />
+        <LoadingState
+          message={
+            isEnglish
+              ? "Loading general settings..."
+              : "Cargando la configuración general..."
+          }
+        />
       )}
 
       {!loading && error && !settings.channelName && (
         <ErrorState
           message={error}
           onRetry={() =>
-            setReloadKey(
-              (currentValue) => currentValue + 1
-            )
+            setReloadKey((currentValue) => currentValue + 1)
           }
         />
       )}
@@ -210,7 +228,6 @@ function SettingsPage() {
               role="status"
             >
               <span aria-hidden="true">✓</span>
-
               <p>{successMessage}</p>
             </div>
           )}
@@ -221,7 +238,6 @@ function SettingsPage() {
               role="alert"
             >
               <span aria-hidden="true">!</span>
-
               <p>{error}</p>
             </div>
           )}
@@ -229,11 +245,18 @@ function SettingsPage() {
           <GeneralSettingsForm
             settings={settings}
             theme={theme}
+            language={language}
+            accessibility={{
+              language,
+              fontScale,
+              colorVision,
+              reduceMotion,
+              speechRate,
+            }}
             saving={saving}
-            onSettingsChange={
-              handleSettingsChange
-            }
+            onSettingsChange={handleSettingsChange}
             onThemeChange={handleThemeChange}
+            onAccessibilityChange={updatePreference}
             onSubmit={handleSave}
           />
         </>

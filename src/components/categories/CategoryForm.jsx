@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 const EMPTY_VALUES = {
   name: "",
   description: "",
 };
 
-function validateCategory(values) {
+function validateCategory(values, isEnglish) {
   const errors = {};
 
   if (values.name.trim().length < 3) {
     errors.name =
-      "El nombre debe tener al menos 3 caracteres.";
+      isEnglish ? "The name must have at least 3 characters." : "El nombre debe tener al menos 3 caracteres.";
   }
 
   if (values.description.trim().length < 10) {
     errors.description =
-      "La descripción debe tener al menos 10 caracteres.";
+      isEnglish ? "The description must have at least 10 characters." : "La descripción debe tener al menos 10 caracteres.";
   }
 
   return errors;
@@ -29,6 +30,8 @@ function CategoryForm({
   onSubmit,
   onCancel,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const [values, setValues] = useState({
     ...EMPTY_VALUES,
     ...initialValues,
@@ -68,7 +71,7 @@ function CategoryForm({
     };
 
     const validationErrors =
-      validateCategory(preparedValues);
+      validateCategory(preparedValues, isEnglish);
 
     setErrors(validationErrors);
 
@@ -97,19 +100,18 @@ function CategoryForm({
       <div className="category-form-heading">
         <span>
           {editing
-            ? "EDITAR CATEGORÍA"
-            : "NUEVA CATEGORÍA"}
+            ? isEnglish ? "EDIT CATEGORY" : "EDITAR CATEGORÍA"
+            : isEnglish ? "NEW CATEGORY" : "NUEVA CATEGORÍA"}
         </span>
 
         <h2>
           {editing
-            ? "Actualizar categoría"
-            : "Registrar categoría"}
+            ? isEnglish ? "Update category" : "Actualizar categoría"
+            : isEnglish ? "Register category" : "Registrar categoría"}
         </h2>
 
         <p>
-          Las categorías permiten organizar y filtrar las
-          noticias del sistema.
+          {isEnglish ? "Categories allow you to organize and filter the system news." : "Las categorías permiten organizar y filtrar las noticias del sistema."}
         </p>
       </div>
 
@@ -121,7 +123,7 @@ function CategoryForm({
 
       <div className="form-field">
         <label htmlFor="category-name">
-          Nombre de la categoría
+          {isEnglish ? "Category name" : "Nombre de la categoría"}
         </label>
 
         <input
@@ -129,7 +131,7 @@ function CategoryForm({
           name="name"
           type="text"
           value={values.name}
-          placeholder="Ejemplo: Deportes"
+          placeholder={isEnglish ? "Example: Sports" : "Ejemplo: Deportes"}
           disabled={submitting}
           aria-invalid={Boolean(errors.name)}
           aria-describedby={
@@ -152,7 +154,7 @@ function CategoryForm({
 
       <div className="form-field">
         <label htmlFor="category-description">
-          Descripción
+          {isEnglish ? "Description" : "Descripción"}
         </label>
 
         <textarea
@@ -160,7 +162,7 @@ function CategoryForm({
           name="description"
           rows="4"
           value={values.description}
-          placeholder="Describe el contenido de esta categoría..."
+          placeholder={isEnglish ? "Describe this category's content..." : "Describe el contenido de esta categoría..."}
           disabled={submitting}
           aria-invalid={Boolean(errors.description)}
           aria-describedby={
@@ -189,7 +191,7 @@ function CategoryForm({
             disabled={submitting}
             onClick={onCancel}
           >
-            Cancelar edición
+            {isEnglish ? "Cancel editing" : "Cancelar edición"}
           </button>
         )}
 
@@ -199,10 +201,10 @@ function CategoryForm({
           disabled={submitting}
         >
           {submitting
-            ? "Guardando..."
+            ? isEnglish ? "Saving..." : "Guardando..."
             : editing
-              ? "Guardar cambios"
-              : "Crear categoría"}
+              ? isEnglish ? "Save changes" : "Guardar cambios"
+              : isEnglish ? "Create category" : "Crear categoría"}
         </button>
       </div>
     </form>

@@ -1,3 +1,5 @@
+import useAccessibility from "../../hooks/useAccessibility.js";
+
 function ActivityFilters({
   search,
   action,
@@ -7,6 +9,8 @@ function ActivityFilters({
   onModuleChange,
   onClear,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const hasActiveFilters =
     search.trim() !== "" ||
     action !== "all" ||
@@ -15,18 +19,18 @@ function ActivityFilters({
   return (
     <section
       className="activity-filters"
-      aria-label="Filtros del historial"
+      aria-label={isEnglish ? "Activity log filters" : "Filtros del historial"}
     >
       <div className="activity-filter-field activity-filter-search">
         <label htmlFor="activity-search">
-          Buscar actividad
+          {isEnglish ? "Search activity" : "Buscar actividad"}
         </label>
 
         <input
           id="activity-search"
           type="search"
           value={search}
-          placeholder="Usuario, descripción o identificación..."
+          placeholder={isEnglish ? "User, description, or ID..." : "Usuario, descripción o identificación..."}
           onChange={(event) =>
             onSearchChange(event.target.value)
           }
@@ -35,7 +39,7 @@ function ActivityFilters({
 
       <div className="activity-filter-field">
         <label htmlFor="activity-action">
-          Tipo de actividad
+          {isEnglish ? "Activity type" : "Tipo de actividad"}
         </label>
 
         <select
@@ -46,38 +50,38 @@ function ActivityFilters({
           }
         >
           <option value="all">
-            Todas las actividades
+            {isEnglish ? "All activities" : "Todas las actividades"}
           </option>
 
           <option value="login_success">
-            Inicio de sesión
+            {isEnglish ? "Sign-in" : "Inicio de sesión"}
           </option>
 
           <option value="logout">
-            Cierre de sesión
+            {isEnglish ? "Sign-out" : "Cierre de sesión"}
           </option>
 
           <option value="system_check">
-            Verificación del sistema
+            {isEnglish ? "System check" : "Verificación del sistema"}
           </option>
 
           <option value="create">
-            Creación
+            {isEnglish ? "Creation" : "Creación"}
           </option>
 
           <option value="update">
-            Actualización
+            {isEnglish ? "Update" : "Actualización"}
           </option>
 
           <option value="delete">
-            Eliminación
+            {isEnglish ? "Deletion" : "Eliminación"}
           </option>
         </select>
       </div>
 
       <div className="activity-filter-field">
         <label htmlFor="activity-module">
-          Módulo
+          {isEnglish ? "Module" : "Módulo"}
         </label>
 
         <select
@@ -87,30 +91,30 @@ function ActivityFilters({
             onModuleChange(event.target.value)
           }
         >
-          <option value="all">Todos los módulos</option>
+          <option value="all">{isEnglish ? "All modules" : "Todos los módulos"}</option>
           <option value="authentication">
-            Autenticación
+            {isEnglish ? "Authentication" : "Autenticación"}
           </option>
-          <option value="system">Sistema</option>
-          <option value="users">Usuarios</option>
-          <option value="news">Noticias</option>
+          <option value="system">{isEnglish ? "System" : "Sistema"}</option>
+          <option value="users">{isEnglish ? "Users" : "Usuarios"}</option>
+          <option value="news">{isEnglish ? "News" : "Noticias"}</option>
           <option value="categories">
-            Categorías
+            {isEnglish ? "Categories" : "Categorías"}
           </option>
           <option value="rundowns">
-            Escaletas
+            {isEnglish ? "Rundowns" : "Escaletas"}
           </option>
           <option value="transmissions">
-            Transmisión
+            {isEnglish ? "Transmission" : "Transmisión"}
           </option>
           <option value="ai">
-            Inteligencia artificial
+            {isEnglish ? "Artificial intelligence" : "Inteligencia artificial"}
           </option>
           <option value="messages">
-            Mensajería
+            {isEnglish ? "Messaging" : "Mensajería"}
           </option>
           <option value="settings">
-            Configuración
+            {isEnglish ? "Settings" : "Configuración"}
           </option>
         </select>
       </div>
@@ -122,7 +126,7 @@ function ActivityFilters({
           disabled={!hasActiveFilters}
           onClick={onClear}
         >
-          Limpiar filtros
+          {isEnglish ? "Clear filters" : "Limpiar filtros"}
         </button>
       </div>
     </section>

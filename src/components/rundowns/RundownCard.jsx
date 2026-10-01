@@ -1,9 +1,11 @@
-function formatBroadcastDate(dateValue) {
+import useAccessibility from "../../hooks/useAccessibility.js";
+
+function formatBroadcastDate(dateValue, language) {
   if (!dateValue) {
-    return "Fecha no definida";
+    return language === "en" ? "Date not set" : "Fecha no definida";
   }
 
-  return new Intl.DateTimeFormat("es-CR", {
+  return new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-CR", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -32,6 +34,8 @@ function RundownCard({
   onEdit,
   onDelete,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const newsIds = Array.isArray(rundown.newsIds)
     ? rundown.newsIds
     : [];
@@ -75,7 +79,7 @@ function RundownCard({
 
             <time dateTime={rundown.broadcastDate}>
               {formatBroadcastDate(
-                rundown.broadcastDate
+                rundown.broadcastDate, language
               )}
             </time>
           </div>
@@ -84,14 +88,14 @@ function RundownCard({
         <div className="rundown-card-metrics">
           <span>
             <strong>{assignedNews.length}</strong>
-            noticias
+            {isEnglish ? "news items" : "noticias"}
           </span>
 
           <span>
             <strong>
               {formatTotalDuration(totalDuration)}
             </strong>
-            duración
+            {isEnglish ? "duration" : "duración"}
           </span>
         </div>
 
@@ -103,8 +107,8 @@ function RundownCard({
           }`}
         >
           {assignedNews.length > 0
-            ? "EN PREPARACIÓN"
-            : "SIN CONTENIDO"}
+            ? isEnglish ? "IN PREPARATION" : "EN PREPARACIÓN"
+            : isEnglish ? "NO CONTENT" : "SIN CONTENIDO"}
         </span>
       </button>
 
@@ -114,7 +118,7 @@ function RundownCard({
           type="button"
           onClick={() => onSelect(rundown.id)}
         >
-          Abrir edición
+          {isEnglish ? "Open edition" : "Abrir edición"}
         </button>
 
         <button
@@ -123,7 +127,7 @@ function RundownCard({
           disabled={deleting}
           onClick={() => onEdit(rundown)}
         >
-          Editar
+          {isEnglish ? "Edit" : "Editar"}
         </button>
 
         <button
@@ -132,7 +136,7 @@ function RundownCard({
           disabled={deleting}
           onClick={() => onDelete(rundown)}
         >
-          {deleting ? "Eliminando..." : "Eliminar"}
+          {deleting ? isEnglish ? "Deleting..." : "Eliminando..." : isEnglish ? "Delete" : "Eliminar"}
         </button>
       </div>
     </article>

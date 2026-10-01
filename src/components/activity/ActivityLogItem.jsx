@@ -1,3 +1,5 @@
+import useAccessibility from "../../hooks/useAccessibility.js";
+
 const ACTION_INFORMATION = {
   login_success: {
     label: "Inicio de sesión",
@@ -49,33 +51,42 @@ const MODULE_LABELS = {
   settings: "Configuración",
 };
 
-function formatActivityDate(dateValue) {
+function formatActivityDate(dateValue, language) {
   if (!dateValue) {
-    return "Fecha no disponible";
+    return language === "en" ? "Date unavailable" : "Fecha no disponible";
   }
 
   const date = new Date(dateValue);
 
   if (Number.isNaN(date.getTime())) {
-    return "Fecha no disponible";
+    return language === "en" ? "Date unavailable" : "Fecha no disponible";
   }
 
-  return new Intl.DateTimeFormat("es-CR", {
+  return new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-CR", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(date);
 }
 
 function ActivityLogItem({ activity }) {
-  const actionInformation =
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
+  const spanishActionInformation =
     ACTION_INFORMATION[activity.action] || {
-      label: "Actividad",
+      label: isEnglish ? "Activity" : "Actividad",
       icon: "•",
       color: "neutral",
     };
+  const actionInformation = isEnglish
+    ? {
+        ...spanishActionInformation,
+        label: ({ login_success: "Sign-in", logout: "Sign-out", system_check: "Check", create: "Creation", update: "Update", delete: "Deletion" }[activity.action] || "Activity"),
+      }
+    : spanishActionInformation;
 
-  const moduleLabel =
-    MODULE_LABELS[activity.module] ||
+  const moduleLabel = isEnglish
+    ? ({ authentication: "Authentication", system: "System", users: "Users", news: "News", categories: "Categories", rundowns: "Rundowns", transmissions: "Transmission", ai: "Artificial intelligence", messages: "Messaging", settings: "Settings" }[activity.module] || activity.module || "System")
+    : MODULE_LABELS[activity.module] ||
     activity.module ||
     "Sistema";
 
@@ -109,13 +120,13 @@ function ActivityLogItem({ activity }) {
           </div>
 
           <time dateTime={activity.createdAt}>
-            {formatActivityDate(activity.createdAt)}
+            {formatActivityDate(activity.createdAt, language)}
           </time>
         </div>
 
         <p className="activity-description">
           {activity.description ||
-            "Actividad registrada en el sistema."}
+            (isEnglish ? "Activity recorded in the system." : "Actividad registrada en el sistema.")}
         </p>
 
         <div className="activity-user">
@@ -128,12 +139,12 @@ function ActivityLogItem({ activity }) {
 
           <div>
             <strong>
-              {activity.userName || "Sistema"}
+              {activity.userName || (isEnglish ? "System" : "Sistema")}
             </strong>
 
             <span>
               {activity.userId === "system"
-                ? "Proceso automatizado"
+                ? isEnglish ? "Automated process" : "Proceso automatizado"
                 : activity.userId}
             </span>
           </div>

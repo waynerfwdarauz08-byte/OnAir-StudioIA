@@ -1,7 +1,9 @@
 import { Navigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth.js";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 function ProtectedRoute({ children }) {
+  const { language } = useAccessibility();
   const {
     isAuthenticated,
     authLoading,
@@ -13,7 +15,7 @@ function ProtectedRoute({ children }) {
     return (
       <main className="route-loading" role="status">
         <span className="loading-indicator" aria-hidden="true" />
-        <p>Restaurando sesión...</p>
+        <p>{language === "en" ? "Restoring session..." : "Restaurando sesión..."}</p>
       </main>
     );
   }

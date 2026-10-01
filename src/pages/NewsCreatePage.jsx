@@ -11,6 +11,7 @@ import NewsForm from "../components/news/NewsForm.jsx";
 import { categoryService } from "../services/categoryService.js";
 import { newsService } from "../services/newsService.js";
 import useAuth from "../hooks/useAuth.js";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 function createNewsId() {
   if (
@@ -26,6 +27,8 @@ function createNewsId() {
 function NewsCreatePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
 
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,19 +99,29 @@ function NewsCreatePage() {
   return (
     <>
       <PageHeader
-        eyebrow="MESA EDITORIAL"
-        title="Crear noticia"
-        description="Registra una nueva noticia y prepara su contenido para el flujo editorial."
+        eyebrow={isEnglish ? "NEWSROOM" : "MESA EDITORIAL"}
+        title={isEnglish ? "Create news item" : "Crear noticia"}
+        description={
+          isEnglish
+            ? "Add a news story and prepare its content for the editorial workflow."
+            : "Registra una nueva noticia y prepara su contenido para el flujo editorial."
+        }
       />
 
       <div className="page-actions">
         <Link className="button button-secondary" to="/news">
-          Volver a noticias
+          {isEnglish ? "Back to news" : "Volver a noticias"}
         </Link>
       </div>
 
       {loading && (
-        <LoadingState message="Cargando las categorías..." />
+        <LoadingState
+          message={
+            isEnglish
+              ? "Loading categories..."
+              : "Cargando las categorías..."
+          }
+        />
       )}
 
       {!loading && error && categories.length === 0 && (
@@ -122,8 +135,9 @@ function NewsCreatePage() {
 
       {!loading && !error && categories.length === 0 && (
         <div className="form-alert" role="alert">
-          Debes crear al menos una categoría antes de registrar
-          una noticia.
+          {isEnglish
+            ? "Create at least one category before adding a news item."
+            : "Debes crear al menos una categoría antes de registrar una noticia."}
         </div>
       )}
 
@@ -131,7 +145,9 @@ function NewsCreatePage() {
         <NewsForm
           categories={categories}
           onSubmit={handleCreate}
-          submitLabel="Crear noticia"
+          submitLabel={
+            isEnglish ? "Create news item" : "Crear noticia"
+          }
           submitting={submitting}
           serverError={error}
         />

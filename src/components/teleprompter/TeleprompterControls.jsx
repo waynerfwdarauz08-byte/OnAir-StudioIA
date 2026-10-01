@@ -1,3 +1,5 @@
+import useAccessibility from "../../hooks/useAccessibility.js";
+
 const SPEED_OPTIONS = [
   {
     value: 15,
@@ -35,6 +37,11 @@ function TeleprompterControls({
   onContrastToggle,
   onFullscreenToggle,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
+  const speedLabels = isEnglish
+    ? ["Very slow", "Slow", "Normal", "Fast", "Very fast"]
+    : SPEED_OPTIONS.map((option) => option.label);
   function decreaseFontSize() {
     onFontSizeChange(
       Math.max(32, fontSize - 4)
@@ -50,11 +57,11 @@ function TeleprompterControls({
   return (
     <section
       className="teleprompter-controls"
-      aria-label="Controles del teleprompter"
+      aria-label={isEnglish ? "Teleprompter controls" : "Controles del teleprompter"}
     >
       <div className="teleprompter-control-group">
         <span className="teleprompter-control-label">
-          Reproducción
+          {isEnglish ? "Playback" : "Reproducción"}
         </span>
 
         <div className="teleprompter-button-group">
@@ -69,7 +76,7 @@ function TeleprompterControls({
               {playing ? "Ⅱ" : "▶"}
             </span>
 
-            {playing ? "Pausar" : "Iniciar"}
+            {playing ? isEnglish ? "Pause" : "Pausar" : isEnglish ? "Start" : "Iniciar"}
           </button>
 
           <button
@@ -82,7 +89,7 @@ function TeleprompterControls({
               ↺
             </span>
 
-            Reiniciar
+            {isEnglish ? "Restart" : "Reiniciar"}
           </button>
         </div>
       </div>
@@ -92,7 +99,7 @@ function TeleprompterControls({
           className="teleprompter-control-label"
           htmlFor="teleprompter-speed"
         >
-          Velocidad
+          {isEnglish ? "Speed" : "Velocidad"}
         </label>
 
         <select
@@ -112,7 +119,7 @@ function TeleprompterControls({
                 key={option.value}
                 value={option.value}
               >
-                {option.label}
+                {speedLabels[SPEED_OPTIONS.indexOf(option)]}
               </option>
             )
           )}
@@ -121,7 +128,7 @@ function TeleprompterControls({
 
       <div className="teleprompter-control-group">
         <span className="teleprompter-control-label">
-          Tamaño del texto
+          {isEnglish ? "Text size" : "Tamaño del texto"}
         </span>
 
         <div className="teleprompter-font-controls">
@@ -132,7 +139,7 @@ function TeleprompterControls({
               disabled ||
               fontSize <= 32
             }
-            aria-label="Disminuir tamaño del texto"
+            aria-label={isEnglish ? "Decrease text size" : "Disminuir tamaño del texto"}
             onClick={decreaseFontSize}
           >
             A−
@@ -152,7 +159,7 @@ function TeleprompterControls({
               disabled ||
               fontSize >= 100
             }
-            aria-label="Aumentar tamaño del texto"
+            aria-label={isEnglish ? "Increase text size" : "Aumentar tamaño del texto"}
             onClick={increaseFontSize}
           >
             A+
@@ -162,7 +169,7 @@ function TeleprompterControls({
 
       <div className="teleprompter-control-group">
         <span className="teleprompter-control-label">
-          Visualización
+          {isEnglish ? "Display" : "Visualización"}
         </span>
 
         <div className="teleprompter-button-group">
@@ -180,7 +187,7 @@ function TeleprompterControls({
               ◐
             </span>
 
-            Alto contraste
+            {isEnglish ? "High contrast" : "Alto contraste"}
           </button>
 
           <button
@@ -195,8 +202,8 @@ function TeleprompterControls({
             </span>
 
             {fullscreen
-              ? "Salir de pantalla completa"
-              : "Pantalla completa"}
+              ? isEnglish ? "Exit full screen" : "Salir de pantalla completa"
+              : isEnglish ? "Full screen" : "Pantalla completa"}
           </button>
         </div>
       </div>

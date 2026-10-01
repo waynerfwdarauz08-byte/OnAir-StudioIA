@@ -1,28 +1,32 @@
-export function LoadingState({
-  message = "Cargando información...",
-}) {
+import useAccessibility from "../../hooks/useAccessibility.js";
+
+export function LoadingState({ message }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
+
+  const displayMessage = message || (isEnglish ? "Loading information..." : "Cargando información...");
   return (
     <div className="feedback-state" role="status">
       <span className="loading-indicator" aria-hidden="true" />
 
       <div>
-        <h2>Un momento</h2>
-        <p>{message}</p>
+        <h2>{isEnglish ? "One moment" : "Un momento"}</h2>
+        <p>{displayMessage}</p>
       </div>
     </div>
   );
 }
 
-export function ErrorState({
-  message = "No fue posible cargar la información.",
-  onRetry,
-}) {
+export function ErrorState({ message, onRetry }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
+  const displayMessage = message || (isEnglish ? "Unable to load the information." : "No fue posible cargar la información.");
   return (
     <div className="feedback-state feedback-error" role="alert">
       <div>
-        <span className="feedback-code">ERROR DE CONEXIÓN</span>
-        <h2>No pudimos completar la solicitud</h2>
-        <p>{message}</p>
+        <span className="feedback-code">{isEnglish ? "CONNECTION ERROR" : "ERROR DE CONEXIÓN"}</span>
+        <h2>{isEnglish ? "We couldn't complete the request" : "No pudimos completar la solicitud"}</h2>
+        <p>{displayMessage}</p>
 
         {onRetry && (
           <button
@@ -30,7 +34,7 @@ export function ErrorState({
             className="button button-secondary"
             onClick={onRetry}
           >
-            Intentar nuevamente
+            {isEnglish ? "Try again" : "Intentar nuevamente"}
           </button>
         )}
       </div>
@@ -38,16 +42,15 @@ export function ErrorState({
   );
 }
 
-export function EmptyState({
-  title = "No hay contenido",
-  description = "La información aparecerá aquí cuando esté disponible.",
-}) {
+export function EmptyState({ title, description }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   return (
     <div className="feedback-state">
       <div>
-        <span className="feedback-code">SIN RESULTADOS</span>
-        <h2>{title}</h2>
-        <p>{description}</p>
+        <span className="feedback-code">{isEnglish ? "NO RESULTS" : "SIN RESULTADOS"}</span>
+        <h2>{title || (isEnglish ? "No content" : "No hay contenido")}</h2>
+        <p>{description || (isEnglish ? "The information will appear here when it is available." : "La información aparecerá aquí cuando esté disponible.")}</p>
       </div>
     </div>
   );

@@ -1,16 +1,65 @@
-# React + Vite
+# OnAir Studio AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación académica para la gestión editorial, escaletas, control al aire, teleprompter y mensajería interna. La interfaz está construida con React y Vite. Los datos se simulan localmente con JSON Server y `db.json`.
 
-Currently, two official plugins are available:
+## Instalación
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Instala las dependencias del proyecto:
 
-## React Compiler
+```bash
+npm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Configuración local
 
-## Expanding the ESLint configuration
+El archivo `.env.example` incluye las variables que usa la aplicación:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```env
+VITE_API_BASE_URL=http://localhost:3001
+VITE_N8N_AI_WEBHOOK_URL=/n8n/webhook/onair-ai-editor
+VITE_N8N_ACTIVITY_WEBHOOK_URL=/n8n/webhook/onair-activity-log
+```
+
+Crea un archivo `.env` local a partir de esos valores cuando necesites personalizarlos. El archivo `.env` está excluido del control de versiones.
+
+## Iniciar la aplicación
+
+Abre dos terminales en la raíz del proyecto.
+
+En la primera, inicia el backend simulado de JSON Server:
+
+```bash
+npm run server
+```
+
+Este comando sirve `db.json` en `http://localhost:3001`.
+
+En la segunda, inicia Vite:
+
+```bash
+npm run dev
+```
+
+Vite mostrará en la terminal la URL local de la aplicación.
+
+## Integración con n8n
+
+La redacción asistida por IA y el registro de actividad usan webhooks de n8n mediante el proxy `/n8n` configurado por Vite hacia `http://localhost:5678`.
+
+Si vas a utilizar esas integraciones, inicia n8n por separado con el comando que usa la aplicación en sus mensajes de conexión:
+
+```bash
+n8n start
+```
+
+El resto de la aplicación continúa usando JSON Server y `db.json` como simulación local de datos.
+
+## Comandos disponibles
+
+```bash
+npm run dev      # Inicia Vite en desarrollo
+npm run server   # Inicia JSON Server con db.json en el puerto 3001
+npm run build    # Genera la compilación de producción
+npm run preview  # Previsualiza la compilación de producción
+npm run lint     # Ejecuta ESLint
+```

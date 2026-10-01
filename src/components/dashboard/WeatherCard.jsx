@@ -1,90 +1,95 @@
-function getWeatherInformation(code) {
+const WEATHER_CONDITIONS = {
+  clear: {
+    icon: "SUN",
+    es: "Cielo despejado",
+    en: "Clear sky",
+  },
+  partlyCloudy: {
+    icon: "SUN/CLD",
+    es: "Parcialmente nublado",
+    en: "Partly cloudy",
+  },
+  cloudy: {
+    icon: "CLD",
+    es: "Cielo nublado",
+    en: "Cloudy sky",
+  },
+  fog: {
+    icon: "FOG",
+    es: "Neblina",
+    en: "Fog",
+  },
+  drizzle: {
+    icon: "DRZ",
+    es: "Llovizna",
+    en: "Drizzle",
+  },
+  rain: {
+    icon: "RAIN",
+    es: "Lluvia",
+    en: "Rain",
+  },
+  showers: {
+    icon: "RAIN",
+    es: "Aguaceros",
+    en: "Rain showers",
+  },
+  thunderstorm: {
+    icon: "STORM",
+    es: "Tormenta eléctrica",
+    en: "Thunderstorm",
+  },
+  variable: {
+    icon: "VAR",
+    es: "Condición variable",
+    en: "Variable conditions",
+  },
+};
+
+function getWeatherInformation(code, language) {
+  let condition;
+
   if (code === 0) {
-    return {
-      icon: "☀",
-      description: "Cielo despejado",
-    };
-  }
-
-  if ([1, 2].includes(code)) {
-    return {
-      icon: "◐",
-      description: "Parcialmente nublado",
-    };
-  }
-
-  if (code === 3) {
-    return {
-      icon: "☁",
-      description: "Cielo nublado",
-    };
-  }
-
-  if ([45, 48].includes(code)) {
-    return {
-      icon: "≋",
-      description: "Neblina",
-    };
-  }
-
-  if (
-    [51, 53, 55, 56, 57].includes(code)
-  ) {
-    return {
-      icon: "☂",
-      description: "Llovizna",
-    };
-  }
-
-  if (
-    [61, 63, 65, 66, 67].includes(code)
-  ) {
-    return {
-      icon: "☂",
-      description: "Lluvia",
-    };
-  }
-
-  if ([80, 81, 82].includes(code)) {
-    return {
-      icon: "☔",
-      description: "Aguaceros",
-    };
-  }
-
-  if (
-    [95, 96, 99].includes(code)
-  ) {
-    return {
-      icon: "ϟ",
-      description: "Tormenta eléctrica",
-    };
+    condition = WEATHER_CONDITIONS.clear;
+  } else if ([1, 2].includes(code)) {
+    condition = WEATHER_CONDITIONS.partlyCloudy;
+  } else if (code === 3) {
+    condition = WEATHER_CONDITIONS.cloudy;
+  } else if ([45, 48].includes(code)) {
+    condition = WEATHER_CONDITIONS.fog;
+  } else if ([51, 53, 55, 56, 57].includes(code)) {
+    condition = WEATHER_CONDITIONS.drizzle;
+  } else if ([61, 63, 65, 66, 67].includes(code)) {
+    condition = WEATHER_CONDITIONS.rain;
+  } else if ([80, 81, 82].includes(code)) {
+    condition = WEATHER_CONDITIONS.showers;
+  } else if ([95, 96, 99].includes(code)) {
+    condition = WEATHER_CONDITIONS.thunderstorm;
+  } else {
+    condition = WEATHER_CONDITIONS.variable;
   }
 
   return {
-    icon: "◉",
-    description: "Condición variable",
+    icon: condition.icon,
+    description: condition[language === "en" ? "en" : "es"],
   };
 }
 
-function formatObservationTime(value) {
+function formatObservationTime(value, language) {
   if (!value) {
-    return "Hora no disponible";
+    return language === "en"
+      ? "Time unavailable"
+      : "Hora no disponible";
   }
 
-  const observationDate =
-    new Date(value);
+  const observationDate = new Date(value);
 
-  if (
-    Number.isNaN(
-      observationDate.getTime()
-    )
-  ) {
+  if (Number.isNaN(observationDate.getTime())) {
     return value;
   }
 
   return new Intl.DateTimeFormat(
-    "es-CR",
+    language === "en" ? "en-US" : "es-CR",
     {
       hour: "numeric",
       minute: "2-digit",
@@ -97,22 +102,39 @@ function WeatherCard({
   weather,
   loading = false,
   error = "",
+  language = "es",
   onRetry,
 }) {
+  const isEnglish = language === "en";
+
   if (loading) {
     return (
       <section
         className="weather-card weather-card-loading"
-        aria-label="Cargando información del clima"
+        aria-label={
+          isEnglish
+            ? "Loading weather information"
+            : "Cargando información del clima"
+        }
+        role="status"
       >
         <div className="weather-loading-icon" />
 
         <div>
-          <span>INFORMACIÓN EXTERNA</span>
-          <h2>Consultando el clima...</h2>
+          <span>
+            {isEnglish ? "EXTERNAL INFORMATION" : "INFORMACIÓN EXTERNA"}
+          </span>
+
+          <h2>
+            {isEnglish
+              ? "Checking the weather..."
+              : "Consultando el clima..."}
+          </h2>
+
           <p>
-            Conectando con el servicio
-            meteorológico.
+            {isEnglish
+              ? "Connecting to the weather service."
+              : "Conectando con el servicio meteorológico."}
           </p>
         </div>
       </section>
@@ -123,7 +145,12 @@ function WeatherCard({
     return (
       <section
         className="weather-card weather-card-error"
-        aria-label="Error al consultar el clima"
+        aria-label={
+          isEnglish
+            ? "Weather unavailable"
+            : "Clima no disponible"
+        }
+        role="status"
       >
         <span
           className="weather-error-icon"
@@ -133,15 +160,21 @@ function WeatherCard({
         </span>
 
         <div>
-          <span>INFORMACIÓN EXTERNA</span>
+          <span>
+            {isEnglish ? "EXTERNAL INFORMATION" : "INFORMACIÓN EXTERNA"}
+          </span>
 
           <h2>
-            Clima no disponible
+            {isEnglish
+              ? "Weather unavailable"
+              : "Clima no disponible"}
           </h2>
 
           <p>
             {error ||
-              "No fue posible obtener la información meteorológica."}
+              (isEnglish
+                ? "Weather information could not be retrieved."
+                : "No fue posible obtener la información meteorológica.")}
           </p>
 
           {onRetry && (
@@ -150,7 +183,7 @@ function WeatherCard({
               className="button button-secondary"
               onClick={onRetry}
             >
-              Intentar nuevamente
+              {isEnglish ? "Try again" : "Intentar nuevamente"}
             </button>
           )}
         </div>
@@ -158,10 +191,10 @@ function WeatherCard({
     );
   }
 
-  const weatherInformation =
-    getWeatherInformation(
-      weather.weatherCode
-    );
+  const weatherInformation = getWeatherInformation(
+    weather.weatherCode,
+    language
+  );
 
   return (
     <section
@@ -178,7 +211,9 @@ function WeatherCard({
 
         <div>
           <span className="weather-eyebrow">
-            INFORMACIÓN EXTERNA EN VIVO
+            {isEnglish
+              ? "LIVE EXTERNAL INFORMATION"
+              : "INFORMACIÓN EXTERNA EN VIVO"}
           </span>
 
           <h2 id="weather-card-title">
@@ -190,40 +225,39 @@ function WeatherCard({
           </p>
 
           <span className="weather-observation-time">
-            Actualizado a las{" "}
+            {isEnglish ? "Updated at " : "Actualizado a las "}
             {formatObservationTime(
-              weather.observedAt
+              weather.observedAt,
+              language
             )}
           </span>
         </div>
       </div>
 
-      <div className="weather-temperature">
-        <strong>
-          {Math.round(
-            weather.temperature
-          )}
-        </strong>
-
-        <span>
-          {weather.units.temperature}
-        </span>
+      <div
+        className="weather-temperature"
+        aria-label={
+          isEnglish
+            ? `Temperature: ${Math.round(weather.temperature)} ${weather.units.temperature}`
+            : `Temperatura: ${Math.round(weather.temperature)} ${weather.units.temperature}`
+        }
+      >
+        <strong>{Math.round(weather.temperature)}</strong>
+        <span>{weather.units.temperature}</span>
       </div>
 
       <div className="weather-details">
         <article>
-          <span>SENSACIÓN</span>
+          <span>{isEnglish ? "FEELS LIKE" : "SENSACIÓN"}</span>
 
           <strong>
-            {Math.round(
-              weather.apparentTemperature
-            )}
+            {Math.round(weather.apparentTemperature)}
             {weather.units.temperature}
           </strong>
         </article>
 
         <article>
-          <span>HUMEDAD</span>
+          <span>{isEnglish ? "HUMIDITY" : "HUMEDAD"}</span>
 
           <strong>
             {weather.humidity}
@@ -232,29 +266,24 @@ function WeatherCard({
         </article>
 
         <article>
-          <span>VIENTO</span>
+          <span>{isEnglish ? "WIND" : "VIENTO"}</span>
 
           <strong>
-            {weather.windSpeed}{" "}
-            {weather.units.windSpeed}
+            {weather.windSpeed} {weather.units.windSpeed}
           </strong>
         </article>
 
         <article>
-          <span>PRECIPITACIÓN</span>
+          <span>{isEnglish ? "PRECIPITATION" : "PRECIPITACIÓN"}</span>
 
           <strong>
-            {weather.precipitation}{" "}
-            {weather.units.precipitation}
+            {weather.precipitation} {weather.units.precipitation}
           </strong>
         </article>
       </div>
 
       <footer className="weather-source">
-        <span>
-          Fuente externa
-        </span>
-
+        <span>{isEnglish ? "External source" : "Fuente externa"}</span>
         <strong>Open-Meteo API</strong>
       </footer>
     </section>

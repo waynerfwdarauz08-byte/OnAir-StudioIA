@@ -11,7 +11,11 @@ import {
 } from "react-router-dom";
 
 import BrandLogo from "../common/BrandLogo.jsx";
+import SelectionSpeechControl from "../common/SelectionSpeechControl.jsx";
+
 import useAuth from "../../hooks/useAuth.js";
+import useAccessibility from "../../hooks/useAccessibility.js";
+
 import { messageService } from "../../services/messageService.js";
 
 import {
@@ -23,58 +27,43 @@ const menuItems = [
   {
     path: "/dashboard",
     number: "01",
-    label: "Vista general",
+    key: "dashboard",
     roles: [ROLES.ADMIN],
   },
   {
     path: "/news",
     number: "02",
-    label: "Noticias",
-    roles: [
-      ROLES.ADMIN,
-      ROLES.MODERATOR,
-    ],
+    key: "news",
+    roles: [ROLES.ADMIN, ROLES.MODERATOR],
   },
   {
     path: "/ai-editor",
     number: "03",
-    label: "Redacción IA",
-    roles: [
-      ROLES.ADMIN,
-      ROLES.MODERATOR,
-    ],
+    key: "aiEditor",
+    roles: [ROLES.ADMIN, ROLES.MODERATOR],
   },
   {
     path: "/rundowns",
     number: "04",
-    label: "Escaletas",
-    roles: [
-      ROLES.ADMIN,
-      ROLES.MODERATOR,
-    ],
+    key: "rundowns",
+    roles: [ROLES.ADMIN, ROLES.MODERATOR],
   },
   {
     path: "/on-air",
     number: "05",
-    label: "Control al aire",
-    roles: [
-      ROLES.ADMIN,
-      ROLES.MODERATOR,
-    ],
+    key: "onAir",
+    roles: [ROLES.ADMIN, ROLES.MODERATOR],
   },
   {
     path: "/studio-control",
     number: "06",
-    label: "Control de estudio",
-    roles: [
-      ROLES.ADMIN,
-      ROLES.MODERATOR,
-    ],
+    key: "studioControl",
+    roles: [ROLES.ADMIN, ROLES.MODERATOR],
   },
   {
     path: "/teleprompter",
     number: "07",
-    label: "Teleprompter",
+    key: "teleprompter",
     roles: [
       ROLES.ADMIN,
       ROLES.MODERATOR,
@@ -84,7 +73,7 @@ const menuItems = [
   {
     path: "/messages",
     number: "08",
-    label: "Mensajería",
+    key: "messages",
     roles: [
       ROLES.ADMIN,
       ROLES.MODERATOR,
@@ -94,19 +83,19 @@ const menuItems = [
   {
     path: "/admin/users",
     number: "09",
-    label: "Usuarios",
+    key: "users",
     roles: [ROLES.ADMIN],
   },
   {
     path: "/admin/activity",
     number: "10",
-    label: "Historial",
+    key: "activity",
     roles: [ROLES.ADMIN],
   },
   {
     path: "/admin/settings",
     number: "11",
-    label: "Configuración",
+    key: "settings",
     roles: [
       ROLES.ADMIN,
       ROLES.MODERATOR,
@@ -115,24 +104,46 @@ const menuItems = [
   },
 ];
 
-function AppLayout() {
-  const [
-    isMenuOpen,
-    setIsMenuOpen,
-  ] = useState(false);
+const MENU_LABELS = {
+  es: {
+    dashboard: "Vista general",
+    news: "Noticias",
+    aiEditor: "Redacción IA",
+    rundowns: "Escaletas",
+    onAir: "Control al aire",
+    studioControl: "Control de estudio",
+    teleprompter: "Teleprompter",
+    messages: "Mensajería",
+    users: "Usuarios",
+    activity: "Historial",
+    settings: "Configuración",
+  },
+  en: {
+    dashboard: "Overview",
+    news: "News",
+    aiEditor: "AI writing",
+    rundowns: "Rundowns",
+    onAir: "On-air control",
+    studioControl: "Studio control",
+    teleprompter: "Teleprompter",
+    messages: "Messages",
+    users: "Users",
+    activity: "Activity history",
+    settings: "Settings",
+  },
+};
 
-  const [
-    unreadMessageCount,
-    setUnreadMessageCount,
-  ] = useState(0);
+function AppLayout() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const {
-    user,
-    logout,
-  } = useAuth();
+  const { user, logout } = useAuth();
+  const { language } = useAccessibility();
+
+  const isEnglish = language === "en";
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -145,20 +156,46 @@ function AppLayout() {
       }
     }
 
-    document.addEventListener(
-      "keydown",
-      closeWithEscape
-    );
+    document.addEventListener("keydown", closeWithEscape);
 
     return () => {
-      document.removeEventListener(
-        "keydown",
-        closeWithEscape
-      );
+      document.removeEventListener("keydown", closeWithEscape);
     };
   }, []);
 
   useEffect(() => {
+    function updateUnreadMessageCount(event) {
+      const messages = Array.isArray(event.detail)
+        ? event.detail
+        : [];
+
+      const unreadMessages = messages.filter(
+        (message) =>
+          message.receiverId === user.id &&
+          !message.read
+      );
+
+      setUnreadMessageCount(unreadMessages.length);
+    }
+
+    window.addEventListener(
+      "onair:messages-updated",
+      updateUnreadMessageCount
+    );
+
+    return () => {
+      window.removeEventListener(
+        "onair:messages-updated",
+        updateUnreadMessageCount
+      );
+    };
+  }, [user.id]);
+
+  useEffect(() => {
+    if (location.pathname === "/messages") {
+      return undefined;
+    }
+
     let stopped = false;
     let controller;
 
@@ -167,33 +204,25 @@ function AppLayout() {
       controller = new AbortController();
 
       try {
-        const messages =
-          await messageService.getAll(
-            controller.signal
-          );
+        const messages = await messageService.getAll(
+          controller.signal
+        );
 
         if (stopped) {
           return;
         }
 
-        const unreadMessages =
-          Array.isArray(messages)
-            ? messages.filter(
-                (message) =>
-                  message.receiverId ===
-                    user.id &&
-                  !message.read
-              )
-            : [];
+        const unreadMessages = Array.isArray(messages)
+          ? messages.filter(
+              (message) =>
+                message.receiverId === user.id &&
+                !message.read
+            )
+          : [];
 
-        setUnreadMessageCount(
-          unreadMessages.length
-        );
+        setUnreadMessageCount(unreadMessages.length);
       } catch (error) {
-        if (
-          !stopped &&
-          error.name !== "AbortError"
-        ) {
+        if (!stopped && error.name !== "AbortError") {
           console.error(
             "No fue posible consultar los mensajes pendientes.",
             error
@@ -204,33 +233,24 @@ function AppLayout() {
 
     loadUnreadMessages();
 
-    const intervalId =
-      window.setInterval(
-        loadUnreadMessages,
-        3000
-      );
+    const intervalId = window.setInterval(
+      loadUnreadMessages,
+      3000
+    );
 
     return () => {
       stopped = true;
       controller?.abort();
-
-      window.clearInterval(
-        intervalId
-      );
+      window.clearInterval(intervalId);
     };
-  }, [user.id]);
+  }, [location.pathname, user.id]);
 
-  const visibleMenuItems =
-    menuItems.filter(
-      (item) =>
-        item.roles.includes(user.role)
-    );
+  const visibleMenuItems = menuItems.filter((item) =>
+    item.roles.includes(user.role)
+  );
 
   const userInitial =
-    user.name
-      ?.trim()
-      .charAt(0)
-      .toUpperCase() || "U";
+    user.name?.trim().charAt(0).toUpperCase() || "U";
 
   function handleLogout() {
     logout();
@@ -240,29 +260,32 @@ function AppLayout() {
     });
   }
 
+  function closeMenu() {
+    setIsMenuOpen(false);
+  }
+
   return (
     <div className="app-shell">
-      <a
-        className="skip-link"
-        href="#main-content"
-      >
-        Saltar al contenido
+      <a className="skip-link" href="#main-content">
+        {isEnglish ? "Skip to content" : "Saltar al contenido"}
       </a>
 
       <aside
         id="main-sidebar"
         className={`sidebar ${
-          isMenuOpen
-            ? "sidebar-open"
-            : ""
+          isMenuOpen ? "sidebar-open" : ""
         }`}
-        aria-label="Menú principal"
+        aria-label={isEnglish ? "Main menu" : "Menú principal"}
       >
         <div className="sidebar-heading">
           <NavLink
             to="/"
             className="brand"
-            aria-label="OnAir Studio IA, página principal"
+            aria-label={
+              isEnglish
+                ? "OnAir Studio AI, home page"
+                : "OnAir Studio IA, página principal"
+            }
           >
             <BrandLogo
               compact
@@ -273,70 +296,68 @@ function AppLayout() {
           <button
             type="button"
             className="mobile-close-button"
-            onClick={() =>
-              setIsMenuOpen(false)
-            }
-            aria-label="Cerrar menú"
+            onClick={closeMenu}
+            aria-label={isEnglish ? "Close menu" : "Cerrar menú"}
           >
             ×
           </button>
         </div>
 
         <p className="navigation-label">
-          ESPACIO DE TRABAJO
+          {isEnglish ? "WORKSPACE" : "ESPACIO DE TRABAJO"}
         </p>
 
         <nav
           className="main-navigation"
-          aria-label="Navegación principal"
+          aria-label={
+            isEnglish
+              ? "Main navigation"
+              : "Navegación principal"
+          }
         >
-          {visibleMenuItems.map(
-            (item) => {
-              const isMessagesItem =
-                item.path === "/messages";
+          {visibleMenuItems.map((item) => {
+            const isMessagesItem = item.path === "/messages";
+            const label =
+              MENU_LABELS[isEnglish ? "en" : "es"][item.key];
 
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={({
-                    isActive,
-                  }) =>
-                    `navigation-link ${
-                      isActive
-                        ? "active"
-                        : ""
-                    }`
-                  }
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `navigation-link ${
+                    isActive ? "active" : ""
+                  }`
+                }
+              >
+                <span
+                  className="navigation-number"
+                  aria-hidden="true"
                 >
+                  {item.number}
+                </span>
+
+                <span className="navigation-link-label">
+                  {label}
+                </span>
+
+                {isMessagesItem && unreadMessageCount > 0 && (
                   <span
-                    className="navigation-number"
-                    aria-hidden="true"
+                    className="navigation-unread-badge"
+                    aria-label={
+                      isEnglish
+                        ? `${unreadMessageCount} unread messages`
+                        : `${unreadMessageCount} mensajes sin leer`
+                    }
                   >
-                    {item.number}
+                    {unreadMessageCount > 99
+                      ? "99+"
+                      : unreadMessageCount}
                   </span>
-
-                  <span className="navigation-link-label">
-                    {item.label}
-                  </span>
-
-                  {isMessagesItem &&
-                    unreadMessageCount >
-                      0 && (
-                      <span
-                        className="navigation-unread-badge"
-                        aria-label={`${unreadMessageCount} mensajes sin leer`}
-                      >
-                        {unreadMessageCount >
-                        99
-                          ? "99+"
-                          : unreadMessageCount}
-                      </span>
-                    )}
-                </NavLink>
-              );
-            }
-          )}
+                )}
+              </NavLink>
+            );
+          })}
         </nav>
 
         <div className="sidebar-footer">
@@ -345,13 +366,12 @@ function AppLayout() {
               className="status-indicator"
               aria-hidden="true"
             />
-
-            SESIÓN ACTIVA
+            {isEnglish ? "ACTIVE SESSION" : "SESIÓN ACTIVA"}
           </span>
 
           <p>
-            Acceso como{" "}
-            {getRoleLabel(user.role)}.
+            {isEnglish ? "Signed in as" : "Acceso como"}{" "}
+            {getRoleLabel(user.role, language)}.
           </p>
 
           <button
@@ -359,7 +379,7 @@ function AppLayout() {
             className="logout-button"
             onClick={handleLogout}
           >
-            Cerrar sesión
+            {isEnglish ? "Log out" : "Cerrar sesión"}
           </button>
         </div>
       </aside>
@@ -368,10 +388,10 @@ function AppLayout() {
         <button
           type="button"
           className="sidebar-overlay"
-          onClick={() =>
-            setIsMenuOpen(false)
+          onClick={closeMenu}
+          aria-label={
+            isEnglish ? "Close sidebar" : "Cerrar menú lateral"
           }
-          aria-label="Cerrar menú lateral"
         />
       )}
 
@@ -381,21 +401,21 @@ function AppLayout() {
             <button
               type="button"
               className="mobile-menu-button"
-              onClick={() =>
-                setIsMenuOpen(true)
+              onClick={() => setIsMenuOpen(true)}
+              aria-label={
+                isEnglish
+                  ? "Open main menu"
+                  : "Abrir menú principal"
               }
-              aria-label="Abrir menú principal"
               aria-expanded={isMenuOpen}
               aria-controls="main-sidebar"
             >
-              <span aria-hidden="true">
-                ☰
-              </span>
+              <span aria-hidden="true">☰</span>
             </button>
 
             <div>
               <span className="topbar-label">
-                MESA EDITORIAL
+                {isEnglish ? "EDITORIAL DESK" : "MESA EDITORIAL"}
               </span>
 
               <span
@@ -413,7 +433,9 @@ function AppLayout() {
 
           <div className="topbar-actions">
             <span className="demo-badge">
-              ENTORNO ACADÉMICO
+              {isEnglish
+                ? "ACADEMIC ENVIRONMENT"
+                : "ENTORNO ACADÉMICO"}
             </span>
 
             <div className="user-preview">
@@ -425,14 +447,9 @@ function AppLayout() {
               </span>
 
               <div>
-                <strong>
-                  {user.name}
-                </strong>
-
+                <strong>{user.name}</strong>
                 <span>
-                  {getRoleLabel(
-                    user.role
-                  )}
+                  {getRoleLabel(user.role, language)}
                 </span>
               </div>
             </div>
@@ -445,13 +462,16 @@ function AppLayout() {
           tabIndex="-1"
         >
           <Outlet />
+          <SelectionSpeechControl />
         </main>
 
         <footer className="main-footer">
           <span>ONAIR STUDIO IA</span>
 
           <span>
-            Proyecto académico · FWD Academy
+            {isEnglish
+              ? "Academic project · FWD Academy"
+              : "Proyecto académico · FWD Academy"}
           </span>
         </footer>
       </div>

@@ -18,6 +18,7 @@ import { categoryService } from "../services/categoryService.js";
 import { newsService } from "../services/newsService.js";
 
 import useAuth from "../hooks/useAuth.js";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 function createNewsId() {
   if (
@@ -39,6 +40,8 @@ function normalizeText(value) {
 function AiEditorPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
 
   const requestControllerRef = useRef(null);
 
@@ -192,22 +195,22 @@ function AiEditorPage() {
 
   function validateResult() {
     if (!result.title?.trim()) {
-      return "La propuesta debe tener un título.";
+      return isEnglish ? "The proposal must have a title." : "La propuesta debe tener un título.";
     }
 
     if (result.summary?.trim().length < 20) {
-      return "El resumen debe tener al menos 20 caracteres.";
+      return isEnglish ? "The summary must have at least 20 characters." : "El resumen debe tener al menos 20 caracteres.";
     }
 
     if (!result.categoryId) {
-      return "Selecciona una categoría antes de guardar.";
+      return isEnglish ? "Select a category before saving." : "Selecciona una categoría antes de guardar.";
     }
 
     if (
       result.editorialStatus === "approved" &&
       result.script?.trim().length < 20
     ) {
-      return "Una noticia aprobada debe tener un guion de al menos 20 caracteres.";
+      return isEnglish ? "An approved news item must have a script with at least 20 characters." : "Una noticia aprobada debe tener un guion de al menos 20 caracteres.";
     }
 
     return "";
@@ -263,7 +266,7 @@ function AiEditorPage() {
     } catch (error) {
       setSaveError(
         error.message ||
-          "No fue posible guardar la noticia."
+          isEnglish ? "Unable to save the news item." : "No fue posible guardar la noticia."
       );
     } finally {
       setSaving(false);
@@ -282,13 +285,13 @@ function AiEditorPage() {
   return (
     <>
       <PageHeader
-        eyebrow="INTELIGENCIA ARTIFICIAL"
-        title="Redacción asistida"
-        description="Transforma información original en títulos, resúmenes, guiones y cintillos para televisión."
+        eyebrow={isEnglish ? "ARTIFICIAL INTELLIGENCE" : "INTELIGENCIA ARTIFICIAL"}
+        title={isEnglish ? "Assisted writing" : "Redacción asistida"}
+        description={isEnglish ? "Transform original information into television titles, summaries, scripts, and lower thirds." : "Transforma información original en títulos, resúmenes, guiones y cintillos para televisión."}
       />
 
       {loadingCategories && (
-        <LoadingState message="Preparando el editor con inteligencia artificial..." />
+        <LoadingState message={isEnglish ? "Preparing the artificial intelligence editor..." : "Preparando el editor con inteligencia artificial..."} />
       )}
 
       {!loadingCategories && loadError && (
@@ -306,8 +309,7 @@ function AiEditorPage() {
         !loadError &&
         categories.length === 0 && (
           <div className="form-alert" role="alert">
-            Debes crear al menos una categoría antes de
-            utilizar el editor con IA.
+            {isEnglish ? "Create at least one category before using the AI editor." : "Debes crear al menos una categoría antes de utilizar el editor con IA."}
           </div>
         )}
 
@@ -332,12 +334,10 @@ function AiEditorPage() {
                 </span>
 
                 <div>
-                  <h2>Preparando propuesta editorial</h2>
+                  <h2>{isEnglish ? "Preparing editorial proposal" : "Preparando propuesta editorial"}</h2>
 
                   <p>
-                    n8n está procesando la información con
-                    inteligencia artificial. Esto puede tardar
-                    algunos segundos.
+                    {isEnglish ? "n8n is processing the information with artificial intelligence. This may take a few seconds." : "n8n está procesando la información con inteligencia artificial. Esto puede tardar algunos segundos."}
                   </p>
                 </div>
               </div>

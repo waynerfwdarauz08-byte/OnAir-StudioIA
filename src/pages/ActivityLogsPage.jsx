@@ -5,6 +5,7 @@ import {
 } from "react";
 
 import PageHeader from "../components/common/PageHeader.jsx";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 import {
   EmptyState,
@@ -24,6 +25,8 @@ function normalizeText(value) {
 }
 
 function ActivityLogsPage() {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const [activities, setActivities] = useState([]);
 
   const [search, setSearch] = useState("");
@@ -57,7 +60,7 @@ function ActivityLogsPage() {
         if (!controller.signal.aborted) {
           setError(
             loadError.message ||
-              "No fue posible cargar el historial."
+              isEnglish ? "Unable to load the activity log." : "No fue posible cargar el historial."
           );
         }
       } finally {
@@ -72,7 +75,7 @@ function ActivityLogsPage() {
     return () => {
       controller.abort();
     };
-  }, [reloadKey]);
+  }, [reloadKey, isEnglish]);
 
   const filteredActivities = useMemo(() => {
     const normalizedSearch = normalizeText(search);
@@ -175,9 +178,9 @@ function ActivityLogsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="CONTROL DEL SISTEMA"
-        title="Historial de actividad"
-        description="Consulta los accesos y las acciones realizadas dentro de OnAir Studio AI."
+        eyebrow={isEnglish ? "SYSTEM CONTROL" : "CONTROL DEL SISTEMA"}
+        title={isEnglish ? "Activity log" : "Historial de actividad"}
+        description={isEnglish ? "Review access and actions performed within OnAir Studio AI." : "Consulta los accesos y las acciones realizadas dentro de OnAir Studio AI."}
       >
         <button
           type="button"
@@ -186,13 +189,13 @@ function ActivityLogsPage() {
           onClick={handleReload}
         >
           {loading
-            ? "Actualizando..."
-            : "Actualizar historial"}
+            ? isEnglish ? "Updating..." : "Actualizando..."
+            : isEnglish ? "Refresh log" : "Actualizar historial"}
         </button>
       </PageHeader>
 
       {loading && (
-        <LoadingState message="Consultando la actividad del sistema..." />
+        <LoadingState message={isEnglish ? "Checking system activity..." : "Consultando la actividad del sistema..."} />
       )}
 
       {!loading && error && (
@@ -206,30 +209,30 @@ function ActivityLogsPage() {
         <>
           <section
             className="activity-statistics"
-            aria-label="Resumen del historial"
+            aria-label={isEnglish ? "Activity log summary" : "Resumen del historial"}
           >
             <article className="activity-stat-card">
-              <span>Total de actividades</span>
+              <span>{isEnglish ? "Total activities" : "Total de actividades"}</span>
               <strong>{statistics.total}</strong>
-              <small>Registros almacenados</small>
+              <small>{isEnglish ? "Stored records" : "Registros almacenados"}</small>
             </article>
 
             <article className="activity-stat-card activity-stat-cyan">
-              <span>Actividad de hoy</span>
+              <span>{isEnglish ? "Today's activity" : "Actividad de hoy"}</span>
               <strong>{statistics.today}</strong>
-              <small>Eventos recientes</small>
+              <small>{isEnglish ? "Recent events" : "Eventos recientes"}</small>
             </article>
 
             <article className="activity-stat-card activity-stat-green">
-              <span>Inicios de sesión</span>
+              <span>{isEnglish ? "Sign-ins" : "Inicios de sesión"}</span>
               <strong>{statistics.logins}</strong>
-              <small>Accesos correctos</small>
+              <small>{isEnglish ? "Successful access" : "Accesos correctos"}</small>
             </article>
 
             <article className="activity-stat-card activity-stat-purple">
-              <span>Usuarios identificados</span>
+              <span>{isEnglish ? "Identified users" : "Usuarios identificados"}</span>
               <strong>{statistics.users}</strong>
-              <small>Usuarios con actividad</small>
+              <small>{isEnglish ? "Users with activity" : "Usuarios con actividad"}</small>
             </article>
           </section>
 
@@ -249,19 +252,19 @@ function ActivityLogsPage() {
                 {filteredActivities.length}
               </strong>{" "}
               {filteredActivities.length === 1
-                ? "actividad encontrada"
-                : "actividades encontradas"}
+                ? isEnglish ? "activity found" : "actividad encontrada"
+                : isEnglish ? "activities found" : "actividades encontradas"}
             </p>
 
             <span>
-              Ordenadas desde la más reciente
+              {isEnglish ? "Sorted from most recent" : "Ordenadas desde la más reciente"}
             </span>
           </div>
 
           {filteredActivities.length > 0 ? (
             <section
               className="activity-log-list"
-              aria-label="Actividades registradas"
+              aria-label={isEnglish ? "Recorded activities" : "Actividades registradas"}
             >
               {filteredActivities.map(
                 (activity) => (
@@ -274,11 +277,11 @@ function ActivityLogsPage() {
             </section>
           ) : (
             <EmptyState
-              title="No encontramos actividades"
+              title={isEnglish ? "No activities found" : "No encontramos actividades"}
               description={
                 activities.length === 0
-                  ? "Todavía no existen movimientos registrados en el sistema."
-                  : "Prueba utilizando otra búsqueda o cambia los filtros seleccionados."
+                  ? isEnglish ? "There are no recorded events in the system yet." : "Todavía no existen movimientos registrados en el sistema."
+                  : isEnglish ? "Try a different search or change the selected filters." : "Prueba utilizando otra búsqueda o cambia los filtros seleccionados."
               }
             />
           )}

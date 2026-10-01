@@ -1,4 +1,5 @@
 import { EDITORIAL_STATUS_LABELS } from "../../utils/news.js";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 function AiResultPreview({
   result,
@@ -8,6 +9,11 @@ function AiResultPreview({
   onSave,
   onClear,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
+  const statusLabels = isEnglish
+    ? { draft: "Draft", review: "Under review", correction: "Needs correction", approved: "Approved" }
+    : EDITORIAL_STATUS_LABELS;
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -46,27 +52,26 @@ function AiResultPreview({
     >
       <header className="ai-result-heading">
         <div>
-          <span>PROPUESTA GENERADA</span>
+          <span>{isEnglish ? "GENERATED PROPOSAL" : "PROPUESTA GENERADA"}</span>
 
           <h2 id="ai-result-title">
-            Resultado de inteligencia artificial
+            {isEnglish ? "Artificial intelligence result" : "Resultado de inteligencia artificial"}
           </h2>
 
           <p>
-            Revisa y corrige la información antes de
-            guardarla como noticia.
+            {isEnglish ? "Review and correct the information before saving it as a news item." : "Revisa y corrige la información antes de guardarla como noticia."}
           </p>
         </div>
 
         <span className="ai-result-badge">
-          Generado con IA
+          {isEnglish ? "Generated with AI" : "Generado con IA"}
         </span>
       </header>
 
       <div className="ai-result-grid">
         <div className="form-field form-field-wide">
           <label htmlFor="ai-result-title-input">
-            Título
+            {isEnglish ? "Title" : "Título"}
           </label>
 
           <input
@@ -81,7 +86,7 @@ function AiResultPreview({
 
         <div className="form-field">
           <label htmlFor="ai-result-category">
-            Categoría sugerida
+            {isEnglish ? "Suggested category" : "Categoría sugerida"}
           </label>
 
           <select
@@ -92,7 +97,7 @@ function AiResultPreview({
             onChange={handleChange}
           >
             <option value="">
-              Selecciona una categoría
+              {isEnglish ? "Select a category" : "Selecciona una categoría"}
             </option>
 
             {categories.map((categoryItem) => (
@@ -108,7 +113,7 @@ function AiResultPreview({
 
         <div className="form-field">
           <label htmlFor="ai-result-status">
-            Estado editorial
+            {isEnglish ? "Editorial status" : "Estado editorial"}
           </label>
 
           <select
@@ -121,7 +126,7 @@ function AiResultPreview({
             onChange={handleChange}
           >
             {Object.entries(
-              EDITORIAL_STATUS_LABELS
+              statusLabels
             ).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
@@ -132,7 +137,7 @@ function AiResultPreview({
 
         <div className="form-field form-field-wide">
           <label htmlFor="ai-result-summary">
-            Resumen
+            {isEnglish ? "Summary" : "Resumen"}
           </label>
 
           <textarea
@@ -147,7 +152,7 @@ function AiResultPreview({
 
         <div className="form-field form-field-wide">
           <label htmlFor="ai-result-script">
-            Guion para presentación
+            {isEnglish ? "Presentation script" : "Guion para presentación"}
           </label>
 
           <textarea
@@ -162,7 +167,7 @@ function AiResultPreview({
 
         <div className="form-field form-field-wide">
           <label htmlFor="ai-result-options">
-            Opciones de cintillo
+            {isEnglish ? "Lower-third options" : "Opciones de cintillo"}
           </label>
 
           <textarea
@@ -178,13 +183,13 @@ function AiResultPreview({
           />
 
           <small className="field-help">
-            Coloca una opción por cada línea.
+            {isEnglish ? "Enter one option per line." : "Coloca una opción por cada línea."}
           </small>
         </div>
 
         <div className="form-field">
           <label htmlFor="ai-result-selected">
-            Cintillo seleccionado
+            {isEnglish ? "Selected lower third" : "Cintillo seleccionado"}
           </label>
 
           <select
@@ -197,7 +202,7 @@ function AiResultPreview({
             }
             onChange={handleChange}
           >
-            <option value="">Sin cintillo</option>
+            <option value="">{isEnglish ? "No lower third" : "Sin cintillo"}</option>
 
             {result.lowerThirdOptions?.map(
               (option) => (
@@ -211,7 +216,7 @@ function AiResultPreview({
 
         <div className="form-field">
           <label htmlFor="ai-result-duration">
-            Duración estimada
+            {isEnglish ? "Estimated duration" : "Duración estimada"}
           </label>
 
           <div className="input-with-suffix">
@@ -229,7 +234,7 @@ function AiResultPreview({
               onChange={handleChange}
             />
 
-            <span>segundos</span>
+            <span>{isEnglish ? "seconds" : "segundos"}</span>
           </div>
         </div>
       </div>
@@ -241,7 +246,7 @@ function AiResultPreview({
           disabled={saving}
           onClick={onClear}
         >
-          Descartar resultado
+          {isEnglish ? "Discard result" : "Descartar resultado"}
         </button>
 
         <button
@@ -251,8 +256,8 @@ function AiResultPreview({
           onClick={onSave}
         >
           {saving
-            ? "Guardando noticia..."
-            : "Guardar como noticia"}
+            ? isEnglish ? "Saving news item..." : "Guardando noticia..."
+            : isEnglish ? "Save as news item" : "Guardar como noticia"}
         </button>
       </div>
     </section>

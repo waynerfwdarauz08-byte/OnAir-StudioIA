@@ -15,6 +15,7 @@ import CategoryForm from "../components/categories/CategoryForm.jsx";
 
 import { categoryService } from "../services/categoryService.js";
 import { newsService } from "../services/newsService.js";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 function createCategoryId() {
   if (
@@ -32,6 +33,8 @@ function normalizeText(value) {
 }
 
 function CategoriesPage() {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const [categories, setCategories] = useState([]);
   const [news, setNews] = useState([]);
 
@@ -292,9 +295,9 @@ function CategoriesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="CONFIGURACIÓN EDITORIAL"
-        title="Categorías de noticias"
-        description="Crea y administra las categorías utilizadas para organizar el contenido informativo."
+        eyebrow={isEnglish ? "EDITORIAL SETTINGS" : "CONFIGURACIÓN EDITORIAL"}
+        title={isEnglish ? "News categories" : "Categorías de noticias"}
+        description={isEnglish ? "Create and manage the categories used to organize news content." : "Crea y administra las categorías utilizadas para organizar el contenido informativo."}
       />
 
       <div className="page-actions">
@@ -302,12 +305,12 @@ function CategoriesPage() {
           className="button button-secondary"
           to="/news"
         >
-          Volver a noticias
+          {isEnglish ? "Back to news" : "Volver a noticias"}
         </Link>
       </div>
 
       {loading && (
-        <LoadingState message="Cargando las categorías..." />
+        <LoadingState message={isEnglish ? "Loading categories..." : "Cargando las categorías..."} />
       )}
 
       {!loading && loadError && (
@@ -341,9 +344,9 @@ function CategoriesPage() {
           >
             <div className="categories-panel-heading">
               <div>
-                <span>CATEGORÍAS REGISTRADAS</span>
+                <span>{isEnglish ? "REGISTERED CATEGORIES" : "CATEGORÍAS REGISTRADAS"}</span>
                 <h2 id="categories-list-title">
-                  Lista de categorías
+                  {isEnglish ? "Category list" : "Lista de categorías"}
                 </h2>
               </div>
 
@@ -370,7 +373,7 @@ function CategoriesPage() {
 
             {orderedCategories.length === 0 ? (
               <p className="categories-empty">
-                Todavía no hay categorías registradas.
+                {isEnglish ? "There are no registered categories yet." : "Todavía no hay categorías registradas."}
               </p>
             ) : (
               <div className="categories-list">
@@ -395,8 +398,8 @@ function CategoriesPage() {
                             <span>
                               {usageCount}{" "}
                               {usageCount === 1
-                                ? "noticia"
-                                : "noticias"}
+                                ? isEnglish ? "news item" : "noticia"
+                                : isEnglish ? "news items" : "noticias"}
                             </span>
                           </div>
 
@@ -418,7 +421,7 @@ function CategoriesPage() {
                               )
                             }
                           >
-                            Editar
+                            {isEnglish ? "Edit" : "Editar"}
                           </button>
 
                           <button
@@ -433,7 +436,7 @@ function CategoriesPage() {
                               )
                             }
                           >
-                            Eliminar
+                            {isEnglish ? "Delete" : "Eliminar"}
                           </button>
                         </div>
                       </article>
@@ -448,13 +451,13 @@ function CategoriesPage() {
 
       <ConfirmDialog
         open={Boolean(categoryToDelete)}
-        title="Eliminar categoría"
+        title={isEnglish ? "Delete category" : "Eliminar categoría"}
         message={
           categoryToDelete
-            ? `¿Deseas eliminar permanentemente la categoría “${categoryToDelete.name}”?`
+            ? isEnglish ? `Do you want to permanently delete the category “${categoryToDelete.name}”?` : `¿Deseas eliminar permanentemente la categoría “${categoryToDelete.name}”?`
             : ""
         }
-        confirmText="Eliminar categoría"
+        confirmText={isEnglish ? "Delete category" : "Eliminar categoría"}
         danger
         loading={deleting}
         onConfirm={confirmDelete}

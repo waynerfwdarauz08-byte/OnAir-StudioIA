@@ -166,6 +166,18 @@ function MessagesPage() {
     };
   }, [loading, error]);
 
+  useEffect(() => {
+    if (loading || error) {
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent("onair:messages-updated", {
+        detail: messages,
+      })
+    );
+  }, [messages, loading, error]);
+
   const availableContacts = useMemo(() => {
     return users
       .filter((registeredUser) => {

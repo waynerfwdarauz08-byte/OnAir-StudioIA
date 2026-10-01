@@ -10,8 +10,8 @@ import {
 } from "react-router-dom";
 
 import BrandLogo from "../components/common/BrandLogo.jsx";
-
 import useAuth from "../hooks/useAuth.js";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 import {
   getDefaultRouteByRole,
@@ -24,38 +24,26 @@ function LoginPage() {
   });
 
   const [error, setError] = useState("");
-  const [submitting, setSubmitting] =
-    useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const {
-    user,
-    authLoading,
-    login,
-  } = useAuth();
+  const { user, authLoading, login } = useAuth();
+  const { language } = useAccessibility();
 
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isEnglish = language === "en";
+
   useEffect(() => {
     if (!authLoading && user) {
-      navigate(
-        getDefaultRouteByRole(user.role),
-        {
-          replace: true,
-        }
-      );
+      navigate(getDefaultRouteByRole(user.role), {
+        replace: true,
+      });
     }
-  }, [
-    user,
-    authLoading,
-    navigate,
-  ]);
+  }, [user, authLoading, navigate]);
 
   function handleChange(event) {
-    const {
-      name,
-      value,
-    } = event.target;
+    const { name, value } = event.target;
 
     setFormData((currentForm) => ({
       ...currentForm,
@@ -68,14 +56,12 @@ function LoginPage() {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (
-      !formData.email.trim() ||
-      !formData.password
-    ) {
+    if (!formData.email.trim() || !formData.password) {
       setError(
-        "Debes ingresar el correo y la contraseña."
+        isEnglish
+          ? "Enter your email and password."
+          : "Debes ingresar el correo y la contraseña."
       );
-
       return;
     }
 
@@ -88,22 +74,23 @@ function LoginPage() {
         formData.password
       );
 
-      const requestedRoute =
-        location.state?.from;
+      const requestedRoute = location.state?.from;
 
       const destination =
-        requestedRoute &&
-        requestedRoute !== "/login"
+        requestedRoute && requestedRoute !== "/login"
           ? requestedRoute
-          : getDefaultRouteByRole(
-              loggedUser.role
-            );
+          : getDefaultRouteByRole(loggedUser.role);
 
       navigate(destination, {
         replace: true,
       });
     } catch (loginError) {
-      setError(loginError.message);
+      setError(
+        loginError.message ||
+          (isEnglish
+            ? "We could not sign you in. Check your details and try again."
+            : "No fue posible iniciar sesión. Revisa tus datos e inténtalo de nuevo.")
+      );
     } finally {
       setSubmitting(false);
     }
@@ -111,16 +98,16 @@ function LoginPage() {
 
   if (authLoading) {
     return (
-      <main
-        className="route-loading"
-        role="status"
-      >
+      <main className="route-loading" role="status">
         <span
           className="loading-indicator"
           aria-hidden="true"
         />
-
-        <p>Comprobando sesión...</p>
+        <p>
+          {isEnglish
+            ? "Checking session..."
+            : "Comprobando sesión..."}
+        </p>
       </main>
     );
   }
@@ -137,37 +124,33 @@ function LoginPage() {
 
         <div className="login-heading">
           <p className="eyebrow">
-            ACCESO AL SISTEMA
+            {isEnglish ? "SYSTEM ACCESS" : "ACCESO AL SISTEMA"}
           </p>
 
           <h1 id="login-title">
-            Bienvenido a la redacción.
+            {isEnglish
+              ? "Welcome to the newsroom."
+              : "Bienvenido a la redacción."}
           </h1>
 
           <p>
-            Inicia sesión para acceder a las
-            herramientas correspondientes a tu
-            función.
+            {isEnglish
+              ? "Sign in to access the tools for your role."
+              : "Inicia sesión para acceder a las herramientas correspondientes a tu función."}
           </p>
         </div>
 
         {error && (
-          <div
-            className="login-error"
-            role="alert"
-          >
+          <div className="login-error" role="alert">
             <span aria-hidden="true">!</span>
             <p>{error}</p>
           </div>
         )}
 
-        <form
-          className="login-form"
-          onSubmit={handleSubmit}
-        >
+        <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-field">
             <label htmlFor="email">
-              Correo electrónico
+              {isEnglish ? "Email address" : "Correo electrónico"}
             </label>
 
             <input
@@ -184,7 +167,7 @@ function LoginPage() {
 
           <div className="form-field">
             <label htmlFor="password">
-              Contraseña
+              {isEnglish ? "Password" : "Contraseña"}
             </label>
 
             <input
@@ -192,7 +175,9 @@ function LoginPage() {
               name="password"
               type="password"
               value={formData.password}
-              placeholder="Ingresa tu contraseña"
+              placeholder={
+                isEnglish ? "Enter your password" : "Ingresa tu contraseña"
+              }
               autoComplete="current-password"
               disabled={submitting}
               onChange={handleChange}
@@ -205,48 +190,54 @@ function LoginPage() {
             disabled={submitting}
           >
             {submitting
-              ? "Verificando..."
-              : "Iniciar sesión"}
+              ? isEnglish
+                ? "Signing in..."
+                : "Verificando..."
+              : isEnglish
+                ? "Sign in"
+                : "Iniciar sesión"}
 
             {!submitting && (
-              <span aria-hidden="true">
-                →
-              </span>
+              <span aria-hidden="true">→</span>
             )}
           </button>
         </form>
 
         <div className="demo-credentials">
-          <p>CUENTAS DE DEMOSTRACIÓN</p>
+          <p>
+            {isEnglish
+              ? "DEMO ACCOUNTS"
+              : "CUENTAS DE DEMOSTRACIÓN"}
+          </p>
 
           <dl>
             <div>
-              <dt>Administrador</dt>
+              <dt>{isEnglish ? "Administrator" : "Administrador"}</dt>
               <dd>admin@onair.test</dd>
             </div>
 
             <div>
-              <dt>Moderador</dt>
+              <dt>{isEnglish ? "Moderator" : "Moderador"}</dt>
               <dd>moderador@onair.test</dd>
             </div>
 
             <div>
-              <dt>Presentador</dt>
+              <dt>{isEnglish ? "Presenter" : "Presentador"}</dt>
               <dd>presentador@onair.test</dd>
             </div>
           </dl>
         </div>
 
         <p className="login-security-note">
-          Autenticación simulada con JSON Server
-          para fines académicos.
+          {isEnglish
+            ? "Simulated authentication with JSON Server for academic use."
+            : "Autenticación simulada con JSON Server para fines académicos."}
         </p>
 
-        <Link
-          className="login-help-link"
-          to="/login"
-        >
-          ONAIR STUDIO IA · CONTROL DE ACCESO
+        <Link className="login-help-link" to="/login">
+          {isEnglish
+            ? "ONAIR STUDIO AI · ACCESS CONTROL"
+            : "ONAIR STUDIO IA · CONTROL DE ACCESO"}
         </Link>
       </section>
     </main>

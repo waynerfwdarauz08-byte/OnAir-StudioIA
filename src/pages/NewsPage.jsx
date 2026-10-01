@@ -18,8 +18,12 @@ import NewsFilters from "../components/news/NewsFilters.jsx";
 
 import { newsService } from "../services/newsService.js";
 import { categoryService } from "../services/categoryService.js";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 function NewsPage() {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
+
   const [news, setNews] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -32,8 +36,7 @@ function NewsPage() {
   const [actionError, setActionError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
 
-  const [newsToDelete, setNewsToDelete] =
-    useState(null);
+  const [newsToDelete, setNewsToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
@@ -54,10 +57,7 @@ function NewsPage() {
           return;
         }
 
-        setNews(
-          Array.isArray(newsData) ? newsData : []
-        );
-
+        setNews(Array.isArray(newsData) ? newsData : []);
         setCategories(
           Array.isArray(categoriesData)
             ? categoriesData
@@ -76,15 +76,14 @@ function NewsPage() {
 
     loadNews();
 
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [reloadKey]);
 
   const filteredNews = useMemo(() => {
+    const locale = isEnglish ? "en" : "es";
     const normalizedSearch = search
       .trim()
-      .toLocaleLowerCase("es");
+      .toLocaleLowerCase(locale);
 
     return news
       .filter((newsItem) => {
@@ -96,13 +95,11 @@ function NewsPage() {
         ]
           .filter(Boolean)
           .join(" ")
-          .toLocaleLowerCase("es");
+          .toLocaleLowerCase(locale);
 
         const matchesSearch =
           normalizedSearch === "" ||
-          searchableContent.includes(
-            normalizedSearch
-          );
+          searchableContent.includes(normalizedSearch);
 
         const matchesStatus =
           status === "all" ||
@@ -112,26 +109,24 @@ function NewsPage() {
           category === "all" ||
           newsItem.categoryId === category;
 
-        return (
-          matchesSearch &&
-          matchesStatus &&
-          matchesCategory
-        );
+        return matchesSearch && matchesStatus && matchesCategory;
       })
       .sort(
         (firstNews, secondNews) =>
           new Date(secondNews.updatedAt).getTime() -
           new Date(firstNews.updatedAt).getTime()
       );
-  }, [news, search, status, category]);
+  }, [news, search, status, category, isEnglish]);
 
   function getCategoryName(categoryId) {
     const selectedCategory = categories.find(
-      (categoryItem) =>
-        categoryItem.id === categoryId
+      (categoryItem) => categoryItem.id === categoryId
     );
 
-    return selectedCategory?.name || "Sin categoría";
+    return (
+      selectedCategory?.name ||
+      (isEnglish ? "Uncategorized" : "Sin categoría")
+    );
   }
 
   function requestDelete(newsItem) {
@@ -158,8 +153,7 @@ function NewsPage() {
 
       setNews((currentNews) =>
         currentNews.filter(
-          (newsItem) =>
-            newsItem.id !== newsToDelete.id
+          (newsItem) => newsItem.id !== newsToDelete.id
         )
       );
 
@@ -167,7 +161,9 @@ function NewsPage() {
     } catch (deleteError) {
       setActionError(
         deleteError.message ||
-          "No fue posible eliminar la noticia."
+          (isEnglish
+            ? "Could not delete the news item."
+            : "No fue posible eliminar la noticia.")
       );
       setNewsToDelete(null);
     } finally {
@@ -175,12 +171,25 @@ function NewsPage() {
     }
   }
 
+  const resultCount = filteredNews.length;
+  const resultLabel = isEnglish
+    ? resultCount === 1
+      ? "news item found"
+      : "news items found"
+    : resultCount === 1
+      ? "noticia encontrada"
+      : "noticias encontradas";
+
   return (
     <>
       <PageHeader
-        eyebrow="MESA EDITORIAL"
-        title="Bandeja de noticias"
-        description="Consulta, crea y administra el contenido registrado en el flujo editorial."
+        eyebrow={isEnglish ? "NEWSROOM" : "MESA EDITORIAL"}
+        title={isEnglish ? "News inbox" : "Bandeja de noticias"}
+        description={
+          isEnglish
+            ? "Browse, create, and manage content in the editorial workflow."
+            : "Consulta, crea y administra el contenido registrado en el flujo editorial."
+        }
       />
 
       <div className="page-actions">
@@ -188,14 +197,14 @@ function NewsPage() {
           className="button button-secondary"
           to="/news/categories"
         >
-          Administrar categorías
+          {isEnglish ? "Manage categories" : "Administrar categorías"}
         </Link>
 
         <Link
           className="button button-primary"
           to="/news/new"
         >
-          Nueva noticia
+          {isEnglish ? "New story" : "Nueva noticia"}
         </Link>
       </div>
 
@@ -216,16 +225,20 @@ function NewsPage() {
       />
 
       {loading && (
-        <LoadingState message="Cargando las noticias registradas..." />
+        <LoadingState
+          message={
+            isEnglish
+              ? "Loading news..."
+              : "Cargando las noticias registradas..."
+          }
+        />
       )}
 
       {!loading && error && (
         <ErrorState
           message={error}
           onRetry={() =>
-            setReloadKey(
-              (currentValue) => currentValue + 1
-            )
+            setReloadKey((currentValue) => currentValue + 1)
           }
         />
       )}
@@ -234,32 +247,30 @@ function NewsPage() {
         <>
           <div className="news-results-header">
             <p role="status">
-              <strong>{filteredNews.length}</strong>{" "}
-              {filteredNews.length === 1
-                ? "noticia encontrada"
-                : "noticias encontradas"}
+              <strong>{resultCount}</strong> {resultLabel}
             </p>
 
             <span>
-              Información almacenada en JSON Server
+              {isEnglish
+                ? "Information stored in JSON Server"
+                : "Información almacenada en JSON Server"}
             </span>
           </div>
 
-          {filteredNews.length > 0 ? (
+          {resultCount > 0 ? (
             <section
               className="news-grid"
-              aria-label="Noticias registradas"
+              aria-label={
+                isEnglish ? "Registered news" : "Noticias registradas"
+              }
             >
               {filteredNews.map((newsItem) => (
                 <NewsCard
                   key={newsItem.id}
                   newsItem={newsItem}
-                  categoryName={getCategoryName(
-                    newsItem.categoryId
-                  )}
+                  categoryName={getCategoryName(newsItem.categoryId)}
                   deleting={
-                    deleting &&
-                    newsToDelete?.id === newsItem.id
+                    deleting && newsToDelete?.id === newsItem.id
                   }
                   onDelete={requestDelete}
                 />
@@ -267,8 +278,16 @@ function NewsPage() {
             </section>
           ) : (
             <EmptyState
-              title="No encontramos coincidencias"
-              description="Prueba con otra búsqueda, cambia los filtros o registra una nueva noticia."
+              title={
+                isEnglish
+                  ? "No matching stories"
+                  : "No encontramos coincidencias"
+              }
+              description={
+                isEnglish
+                  ? "Try another search, change the filters, or create a news item."
+                  : "Prueba con otra búsqueda, cambia los filtros o registra una nueva noticia."
+              }
             />
           )}
         </>
@@ -276,13 +295,16 @@ function NewsPage() {
 
       <ConfirmDialog
         open={Boolean(newsToDelete)}
-        title="Eliminar noticia"
+        title={isEnglish ? "Delete news item" : "Eliminar noticia"}
         message={
           newsToDelete
-            ? `¿Deseas eliminar permanentemente “${newsToDelete.title}”? Esta acción no se puede deshacer.`
+            ? isEnglish
+              ? `Do you want to permanently delete “${newsToDelete.title}”? This action cannot be undone.`
+              : `¿Deseas eliminar permanentemente “${newsToDelete.title}”? Esta acción no se puede deshacer.`
             : ""
         }
-        confirmText="Eliminar noticia"
+        confirmText={isEnglish ? "Delete news item" : "Eliminar noticia"}
+        cancelText={isEnglish ? "Cancel" : "Cancelar"}
         danger
         loading={deleting}
         onConfirm={confirmDelete}

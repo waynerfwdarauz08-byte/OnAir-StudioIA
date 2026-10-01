@@ -2,18 +2,23 @@ import {
   useEffect,
   useRef,
 } from "react";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 function ConfirmDialog({
   open,
   title,
   message,
-  confirmText = "Confirmar",
-  cancelText = "Cancelar",
+  confirmText,
+  cancelText,
   danger = false,
   loading = false,
   onConfirm,
   onCancel,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
+  const displayConfirmText = confirmText || (isEnglish ? "Confirm" : "Confirmar");
+  const displayCancelText = cancelText || (isEnglish ? "Cancel" : "Cancelar");
   const confirmButtonRef = useRef(null);
 
   useEffect(() => {
@@ -66,7 +71,7 @@ function ConfirmDialog({
         aria-describedby="confirm-dialog-message"
       >
         <span className="dialog-label">
-          CONFIRMACIÓN REQUERIDA
+          {isEnglish ? "CONFIRMATION REQUIRED" : "CONFIRMACIÓN REQUERIDA"}
         </span>
 
         <h2 id="confirm-dialog-title">{title}</h2>
@@ -80,7 +85,7 @@ function ConfirmDialog({
             disabled={loading}
             onClick={onCancel}
           >
-            {cancelText}
+            {displayCancelText}
           </button>
 
           <button
@@ -94,7 +99,7 @@ function ConfirmDialog({
             disabled={loading}
             onClick={onConfirm}
           >
-            {loading ? "Procesando..." : confirmText}
+            {loading ? (isEnglish ? "Processing..." : "Procesando...") : displayConfirmText}
           </button>
         </div>
       </section>

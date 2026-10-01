@@ -4,14 +4,29 @@ export const ROLES = {
   PRESENTER: "presenter",
 };
 
-export const ROLE_LABELS = {
-  [ROLES.ADMIN]: "Administrador",
-  [ROLES.MODERATOR]: "Moderador",
-  [ROLES.PRESENTER]: "Presentador",
+const ROLE_LABELS = {
+  es: {
+    [ROLES.ADMIN]: "Administrador",
+    [ROLES.MODERATOR]: "Moderador",
+    [ROLES.PRESENTER]: "Presentador",
+    unknown: "Usuario",
+  },
+  en: {
+    [ROLES.ADMIN]: "Administrator",
+    [ROLES.MODERATOR]: "Moderator",
+    [ROLES.PRESENTER]: "Presenter",
+    unknown: "User",
+  },
 };
 
-export function getRoleLabel(role) {
-  return ROLE_LABELS[role] || "Usuario";
+export function getRoleLabel(role, language = "es") {
+  const selectedLanguage =
+    language === "en" ? "en" : "es";
+
+  return (
+    ROLE_LABELS[selectedLanguage][role] ||
+    ROLE_LABELS[selectedLanguage].unknown
+  );
 }
 
 export function getDefaultRouteByRole(role) {

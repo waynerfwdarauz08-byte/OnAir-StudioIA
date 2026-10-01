@@ -3,12 +3,13 @@ import {
   useRef,
   useState,
 } from "react";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 import {
   getRoleLabel,
 } from "../../utils/roles.js";
 
-function formatMessageTime(dateValue) {
+function formatMessageTime(dateValue, language) {
   if (!dateValue) {
     return "";
   }
@@ -19,7 +20,7 @@ function formatMessageTime(dateValue) {
     return "";
   }
 
-  return new Intl.DateTimeFormat("es-CR", {
+  return new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-CR", {
     day: "2-digit",
     month: "short",
     hour: "2-digit",
@@ -34,6 +35,8 @@ function MessageConversation({
   sending = false,
   onSend,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const [content, setContent] = useState("");
 
   const messageListRef = useRef(null);
@@ -108,11 +111,10 @@ function MessageConversation({
           <span aria-hidden="true">✦</span>
         </div>
 
-        <h2>Selecciona un contacto</h2>
+        <h2>{isEnglish ? "Select a contact" : "Selecciona un contacto"}</h2>
 
         <p>
-          Elige una persona del directorio para
-          comenzar una conversación interna.
+          {isEnglish ? "Choose a person from the directory to start an internal conversation." : "Elige una persona del directorio para comenzar una conversación interna."}
         </p>
       </section>
     );
@@ -121,7 +123,7 @@ function MessageConversation({
   return (
     <section
       className="message-conversation"
-      aria-label={`Conversación con ${selectedContact.name}`}
+      aria-label={`${isEnglish ? "Conversation with" : "Conversación con"} ${selectedContact.name}`}
     >
       <header className="message-conversation-heading">
         <div className="message-conversation-user">
@@ -150,14 +152,14 @@ function MessageConversation({
               </span>
 
               <span className="message-online-text">
-                Disponible
+                {isEnglish ? "Available" : "Disponible"}
               </span>
             </p>
           </div>
         </div>
 
         <span className="message-private-label">
-          CONVERSACIÓN INTERNA
+          {isEnglish ? "INTERNAL CONVERSATION" : "CONVERSACIÓN INTERNA"}
         </span>
       </header>
 
@@ -191,7 +193,8 @@ function MessageConversation({
                       }
                     >
                       {formatMessageTime(
-                        message.createdAt
+                        message.createdAt,
+                        language
                       )}
                     </time>
 
@@ -204,8 +207,8 @@ function MessageConversation({
                         }
                       >
                         {message.read
-                          ? "Leído"
-                          : "Enviado"}
+                          ? isEnglish ? "Read" : "Leído"
+                          : isEnglish ? "Sent" : "Enviado"}
                       </span>
                     )}
                   </footer>
@@ -220,12 +223,11 @@ function MessageConversation({
             </span>
 
             <h3>
-              Inicia la conversación
+              {isEnglish ? "Start the conversation" : "Inicia la conversación"}
             </h3>
 
             <p>
-              Todavía no hay mensajes entre
-              ustedes.
+              {isEnglish ? "There are no messages between you yet." : "Todavía no hay mensajes entre ustedes."}
             </p>
           </div>
         )}
@@ -236,7 +238,7 @@ function MessageConversation({
         onSubmit={handleSubmit}
       >
         <label htmlFor="internal-message">
-          Escribir mensaje
+          {isEnglish ? "Write message" : "Escribir mensaje"}
         </label>
 
         <div className="message-composer-row">
@@ -246,7 +248,7 @@ function MessageConversation({
             value={content}
             rows="2"
             maxLength="1000"
-            placeholder={`Escribe un mensaje para ${selectedContact.name}...`}
+            placeholder={`${isEnglish ? "Write a message for" : "Escribe un mensaje para"} ${selectedContact.name}...`}
             disabled={sending}
             onChange={(event) =>
               setContent(
@@ -265,8 +267,8 @@ function MessageConversation({
             }
           >
             {sending
-              ? "Enviando..."
-              : "Enviar"}
+              ? isEnglish ? "Sending..." : "Enviando..."
+              : isEnglish ? "Send" : "Enviar"}
 
             {!sending && (
               <span aria-hidden="true">
@@ -278,8 +280,7 @@ function MessageConversation({
 
         <div className="message-composer-help">
           <small>
-            Enter para enviar · Shift + Enter
-            para otra línea
+            {isEnglish ? "Enter to send · Shift + Enter for a new line" : "Enter para enviar · Shift + Enter para otra línea"}
           </small>
 
           <small>

@@ -1,6 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import { EDITORIAL_STATUS_LABELS } from "../../utils/news.js";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 const EMPTY_VALUES = {
   sourceText: "",
@@ -16,53 +21,70 @@ const EMPTY_VALUES = {
   estimatedDurationSeconds: 0,
 };
 
-function validateNews(values) {
+const STATUS_LABELS_EN = {
+  draft: "Draft",
+  review: "Under review",
+  correction: "Needs correction",
+  approved: "Approved",
+};
+
+function validateNews(values, isEnglish) {
   const errors = {};
 
   if (values.title.trim().length < 8) {
-    errors.title = "El título debe tener al menos 8 caracteres.";
+    errors.title = isEnglish
+      ? "The title must have at least 8 characters."
+      : "El título debe tener al menos 8 caracteres.";
   }
 
   if (values.sourceName.trim().length < 3) {
-    errors.sourceName =
-      "Indica el nombre de la fuente de información.";
+    errors.sourceName = isEnglish
+      ? "Enter the information source name."
+      : "Indica el nombre de la fuente de información.";
   }
 
   if (values.sourceText.trim().length < 20) {
-    errors.sourceText =
-      "El contenido original debe tener al menos 20 caracteres.";
+    errors.sourceText = isEnglish
+      ? "The original content must have at least 20 characters."
+      : "El contenido original debe tener al menos 20 caracteres.";
   }
 
   if (values.summary.trim().length < 20) {
-    errors.summary =
-      "El resumen debe tener al menos 20 caracteres.";
+    errors.summary = isEnglish
+      ? "The summary must have at least 20 characters."
+      : "El resumen debe tener al menos 20 caracteres.";
   }
 
   if (!values.categoryId) {
-    errors.categoryId = "Selecciona una categoría.";
+    errors.categoryId = isEnglish
+      ? "Select a category."
+      : "Selecciona una categoría.";
   }
 
   if (
     values.sourceUrl.trim() &&
     !/^https?:\/\/.+/i.test(values.sourceUrl.trim())
   ) {
-    errors.sourceUrl =
-      "La dirección debe comenzar con http:// o https://.";
+    errors.sourceUrl = isEnglish
+      ? "The address must start with http:// or https://."
+      : "La dirección debe comenzar con http:// o https://.";
   }
 
   const duration = Number(values.estimatedDurationSeconds);
 
   if (!Number.isFinite(duration) || duration < 0) {
-    errors.estimatedDurationSeconds =
-      "La duración no puede ser negativa.";
+    errors.estimatedDurationSeconds = isEnglish
+      ? "Duration cannot be negative."
+      : "La duración no puede ser negativa.";
   }
 
   if (
     values.editorialStatus === "approved" &&
     values.script.trim().length < 20
   ) {
-    errors.script =
-      "Una noticia aprobada debe tener un guion de al menos 20 caracteres.";
+    errors.script = isEnglish
+      ? "Approved news must have a script of at least 20 characters."
+      : "Una noticia aprobada debe tener un guion de al menos 20 caracteres.";
   }
 
   return errors;
@@ -72,10 +94,13 @@ function NewsForm({
   initialValues = EMPTY_VALUES,
   categories = [],
   onSubmit,
-  submitLabel = "Guardar noticia",
+  submitLabel,
   submitting = false,
   serverError = "",
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
+
   const normalizedInitialValues = useMemo(
     () => ({
       ...EMPTY_VALUES,
@@ -121,7 +146,6 @@ function NewsForm({
 
   function handleLowerThirdChange(event) {
     const text = event.target.value;
-
     setLowerThirdText(text);
 
     const options = text
@@ -161,15 +185,16 @@ function NewsForm({
         Number(values.estimatedDurationSeconds) || 0,
     };
 
-    const validationErrors =
-      validateNews(preparedValues);
+    const validationErrors = validateNews(
+      preparedValues,
+      isEnglish
+    );
 
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      const firstInvalidField = Object.keys(
-        validationErrors
-      )[0];
+      const firstInvalidField =
+        Object.keys(validationErrors)[0];
 
       document
         .querySelector(`[name="${firstInvalidField}"]`)
@@ -180,6 +205,10 @@ function NewsForm({
 
     await onSubmit(preparedValues);
   }
+
+  const resolvedSubmitLabel =
+    submitLabel ||
+    (isEnglish ? "Save news item" : "Guardar noticia");
 
   return (
     <form
@@ -198,10 +227,15 @@ function NewsForm({
           <span>01</span>
 
           <div>
-            <h2>Información principal</h2>
+            <h2>
+              {isEnglish
+                ? "Main information"
+                : "Información principal"}
+            </h2>
             <p>
-              Registra el título, resumen y clasificación
-              editorial.
+              {isEnglish
+                ? "Add the title, summary, and editorial classification."
+                : "Registra el título, resumen y clasificación editorial."}
             </p>
           </div>
         </div>
@@ -209,7 +243,7 @@ function NewsForm({
         <div className="form-grid">
           <div className="form-field form-field-wide">
             <label htmlFor="news-title">
-              Título de la noticia
+              {isEnglish ? "News title" : "Título de la noticia"}
             </label>
 
             <input
@@ -219,16 +253,10 @@ function NewsForm({
               value={values.title}
               onChange={handleChange}
               aria-invalid={Boolean(errors.title)}
-              aria-describedby={
-                errors.title ? "news-title-error" : undefined
-              }
             />
 
             {errors.title && (
-              <small
-                id="news-title-error"
-                className="field-error"
-              >
+              <small className="field-error">
                 {errors.title}
               </small>
             )}
@@ -236,7 +264,7 @@ function NewsForm({
 
           <div className="form-field">
             <label htmlFor="news-category">
-              Categoría
+              {isEnglish ? "Category" : "Categoría"}
             </label>
 
             <select
@@ -246,7 +274,11 @@ function NewsForm({
               onChange={handleChange}
               aria-invalid={Boolean(errors.categoryId)}
             >
-              <option value="">Selecciona una categoría</option>
+              <option value="">
+                {isEnglish
+                  ? "Select a category"
+                  : "Selecciona una categoría"}
+              </option>
 
               {categories.map((categoryItem) => (
                 <option
@@ -267,7 +299,7 @@ function NewsForm({
 
           <div className="form-field">
             <label htmlFor="news-status">
-              Estado editorial
+              {isEnglish ? "Editorial status" : "Estado editorial"}
             </label>
 
             <select
@@ -276,21 +308,22 @@ function NewsForm({
               value={values.editorialStatus}
               onChange={handleChange}
             >
-              {Object.entries(
-                EDITORIAL_STATUS_LABELS
-              ).map(([statusValue, statusLabel]) => (
-                <option
-                  key={statusValue}
-                  value={statusValue}
-                >
-                  {statusLabel}
-                </option>
-              ))}
+              {Object.entries(EDITORIAL_STATUS_LABELS).map(
+                ([statusValue, statusLabel]) => (
+                  <option key={statusValue} value={statusValue}>
+                    {isEnglish
+                      ? STATUS_LABELS_EN[statusValue] || statusLabel
+                      : statusLabel}
+                  </option>
+                )
+              )}
             </select>
           </div>
 
           <div className="form-field form-field-wide">
-            <label htmlFor="news-summary">Resumen</label>
+            <label htmlFor="news-summary">
+              {isEnglish ? "Summary" : "Resumen"}
+            </label>
 
             <textarea
               id="news-summary"
@@ -315,10 +348,13 @@ function NewsForm({
           <span>02</span>
 
           <div>
-            <h2>Fuente original</h2>
+            <h2>
+              {isEnglish ? "Original source" : "Fuente original"}
+            </h2>
             <p>
-              Conserva la procedencia y el contenido utilizado
-              para elaborar la noticia.
+              {isEnglish
+                ? "Keep the source and content used to prepare the news item."
+                : "Conserva la procedencia y el contenido utilizado para elaborar la noticia."}
             </p>
           </div>
         </div>
@@ -326,7 +362,7 @@ function NewsForm({
         <div className="form-grid">
           <div className="form-field">
             <label htmlFor="news-source-name">
-              Nombre de la fuente
+              {isEnglish ? "Source name" : "Nombre de la fuente"}
             </label>
 
             <input
@@ -347,7 +383,7 @@ function NewsForm({
 
           <div className="form-field">
             <label htmlFor="news-source-url">
-              Enlace de la fuente
+              {isEnglish ? "Source link" : "Enlace de la fuente"}
             </label>
 
             <input
@@ -369,7 +405,7 @@ function NewsForm({
 
           <div className="form-field form-field-wide">
             <label htmlFor="news-source-text">
-              Contenido original
+              {isEnglish ? "Original content" : "Contenido original"}
             </label>
 
             <textarea
@@ -395,9 +431,15 @@ function NewsForm({
           <span>03</span>
 
           <div>
-            <h2>Producción para transmisión</h2>
+            <h2>
+              {isEnglish
+                ? "Broadcast production"
+                : "Producción para transmisión"}
+            </h2>
             <p>
-              Prepara el guion, cintillo y duración estimada.
+              {isEnglish
+                ? "Prepare the script, lower third, and estimated duration."
+                : "Prepara el guion, cintillo y duración estimada."}
             </p>
           </div>
         </div>
@@ -405,7 +447,7 @@ function NewsForm({
         <div className="form-grid">
           <div className="form-field form-field-wide">
             <label htmlFor="news-script">
-              Guion de presentación
+              {isEnglish ? "Presentation script" : "Guion de presentación"}
             </label>
 
             <textarea
@@ -426,7 +468,7 @@ function NewsForm({
 
           <div className="form-field form-field-wide">
             <label htmlFor="news-lower-thirds">
-              Opciones de cintillo
+              {isEnglish ? "Lower-third options" : "Opciones de cintillo"}
             </label>
 
             <textarea
@@ -435,19 +477,25 @@ function NewsForm({
               rows="4"
               value={lowerThirdText}
               placeholder={
-                "Escribe una opción por línea\nSegunda opción"
+                isEnglish
+                  ? "Write one option per line\nSecond option"
+                  : "Escribe una opción por línea\nSegunda opción"
               }
               onChange={handleLowerThirdChange}
             />
 
             <small className="field-help">
-              Escribe una opción por cada línea.
+              {isEnglish
+                ? "Write one option on each line."
+                : "Escribe una opción por cada línea."}
             </small>
           </div>
 
           <div className="form-field">
             <label htmlFor="news-selected-lower-third">
-              Cintillo seleccionado
+              {isEnglish
+                ? "Selected lower third"
+                : "Cintillo seleccionado"}
             </label>
 
             <select
@@ -455,11 +503,11 @@ function NewsForm({
               name="selectedLowerThird"
               value={values.selectedLowerThird}
               onChange={handleChange}
-              disabled={
-                values.lowerThirdOptions.length === 0
-              }
+              disabled={values.lowerThirdOptions.length === 0}
             >
-              <option value="">Sin cintillo</option>
+              <option value="">
+                {isEnglish ? "No lower third" : "Sin cintillo"}
+              </option>
 
               {values.lowerThirdOptions.map((option) => (
                 <option key={option} value={option}>
@@ -471,7 +519,9 @@ function NewsForm({
 
           <div className="form-field">
             <label htmlFor="news-duration">
-              Duración estimada en segundos
+              {isEnglish
+                ? "Estimated duration in seconds"
+                : "Duración estimada en segundos"}
             </label>
 
             <input
@@ -502,7 +552,11 @@ function NewsForm({
           type="submit"
           disabled={submitting}
         >
-          {submitting ? "Guardando..." : submitLabel}
+          {submitting
+            ? isEnglish
+              ? "Saving..."
+              : "Guardando..."
+            : resolvedSubmitLabel}
         </button>
       </div>
     </form>

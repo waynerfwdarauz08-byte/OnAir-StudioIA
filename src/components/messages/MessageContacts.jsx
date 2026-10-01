@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 import {
   getRoleLabel,
@@ -10,6 +11,8 @@ function MessageContacts({
   unreadCounts = {},
   onSelect,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const [search, setSearch] = useState("");
 
   const filteredContacts = useMemo(() => {
@@ -49,12 +52,12 @@ function MessageContacts({
   return (
     <aside
       className="message-contacts"
-      aria-label="Contactos disponibles"
+      aria-label={isEnglish ? "Available contacts" : "Contactos disponibles"}
     >
       <header className="message-contacts-heading">
         <div>
-          <span>DIRECTORIO INTERNO</span>
-          <h2>Contactos</h2>
+          <span>{isEnglish ? "INTERNAL DIRECTORY" : "DIRECTORIO INTERNO"}</span>
+          <h2>{isEnglish ? "Contacts" : "Contactos"}</h2>
         </div>
 
         <strong>{contacts.length}</strong>
@@ -62,14 +65,14 @@ function MessageContacts({
 
       <div className="message-contact-search">
         <label htmlFor="message-contact-search">
-          Buscar contacto
+          {isEnglish ? "Search contact" : "Buscar contacto"}
         </label>
 
         <input
           id="message-contact-search"
           type="search"
           value={search}
-          placeholder="Nombre, correo o función..."
+          placeholder={isEnglish ? "Name, email, or role..." : "Nombre, correo o función..."}
           onChange={(event) =>
             setSearch(event.target.value)
           }
@@ -114,7 +117,7 @@ function MessageContacts({
                   {unreadCount > 0 && (
                     <span
                       className="message-unread-count"
-                      aria-label={`${unreadCount} mensajes sin leer`}
+                      aria-label={`${unreadCount} ${isEnglish ? "unread messages" : "mensajes sin leer"}`}
                     >
                       {unreadCount > 99
                         ? "99+"
@@ -124,8 +127,8 @@ function MessageContacts({
 
                   <span
                     className="message-active-indicator"
-                    title="Usuario activo"
-                    aria-label="Usuario activo"
+                    title={isEnglish ? "Active user" : "Usuario activo"}
+                    aria-label={isEnglish ? "Active user" : "Usuario activo"}
                   />
                 </span>
               </button>
@@ -134,12 +137,11 @@ function MessageContacts({
         ) : (
           <div className="message-contact-empty">
             <strong>
-              No encontramos contactos
+              {isEnglish ? "No contacts found" : "No encontramos contactos"}
             </strong>
 
             <p>
-              Prueba escribiendo otro nombre o
-              correo.
+              {isEnglish ? "Try another name or email." : "Prueba escribiendo otro nombre o correo."}
             </p>
           </div>
         )}

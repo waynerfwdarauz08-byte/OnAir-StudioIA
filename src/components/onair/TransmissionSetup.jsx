@@ -3,6 +3,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 function formatDuration(totalSeconds) {
   const safeSeconds = Number(totalSeconds) || 0;
@@ -15,12 +16,12 @@ function formatDuration(totalSeconds) {
   )}:${String(seconds).padStart(2, "0")}`;
 }
 
-function formatBroadcastDate(dateValue) {
+function formatBroadcastDate(dateValue, language) {
   if (!dateValue) {
-    return "Fecha no definida";
+    return language === "en" ? "Date not set" : "Fecha no definida";
   }
 
-  return new Intl.DateTimeFormat("es-CR", {
+  return new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-CR", {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -36,6 +37,8 @@ function TransmissionSetup({
   error = "",
   onStart,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const [selectedRundownId, setSelectedRundownId] =
     useState("");
 
@@ -107,15 +110,14 @@ function TransmissionSetup({
       aria-labelledby="transmission-setup-title"
     >
       <header className="transmission-setup-heading">
-        <span>CONTROL EN ESPERA</span>
+        <span>{isEnglish ? "STANDBY CONTROL" : "CONTROL EN ESPERA"}</span>
 
         <h2 id="transmission-setup-title">
-          Preparar transmisión
+          {isEnglish ? "Prepare transmission" : "Preparar transmisión"}
         </h2>
 
         <p>
-          Selecciona una escaleta para cargar sus noticias
-          en la consola de transmisión.
+          {isEnglish ? "Select a rundown to load its news items into the transmission console." : "Selecciona una escaleta para cargar sus noticias en la consola de transmisión."}
         </p>
       </header>
 
@@ -162,14 +164,14 @@ function TransmissionSetup({
 
                   <span className="transmission-option-content">
                     <span className="transmission-option-label">
-                      ESCALETA DISPONIBLE
+                      {isEnglish ? "AVAILABLE RUNDOWN" : "ESCALETA DISPONIBLE"}
                     </span>
 
                     <strong>{rundown.name}</strong>
 
                     <small>
                       {formatBroadcastDate(
-                        rundown.broadcastDate
+                        rundown.broadcastDate, language
                       )}
                     </small>
                   </span>
@@ -179,7 +181,7 @@ function TransmissionSetup({
                       <strong>
                         {rundownNews.length}
                       </strong>
-                      noticias
+                      {isEnglish ? "news items" : "noticias"}
                     </span>
 
                     <span>
@@ -188,7 +190,7 @@ function TransmissionSetup({
                           totalDuration
                         )}
                       </strong>
-                      duración
+                      {isEnglish ? "duration" : "duración"}
                     </span>
                   </span>
                 </label>
@@ -198,8 +200,8 @@ function TransmissionSetup({
 
           <div className="transmission-setup-actions">
             <div>
-              <span>SEÑAL</span>
-              <strong>LISTA PARA INICIAR</strong>
+              <span>{isEnglish ? "SIGNAL" : "SEÑAL"}</span>
+              <strong>{isEnglish ? "READY TO START" : "LISTA PARA INICIAR"}</strong>
             </div>
 
             <button
@@ -210,8 +212,8 @@ function TransmissionSetup({
               }
             >
               {starting
-                ? "Iniciando transmisión..."
-                : "Iniciar transmisión"}
+                ? isEnglish ? "Starting transmission..." : "Iniciando transmisión..."
+                : isEnglish ? "Start transmission" : "Iniciar transmisión"}
             </button>
           </div>
         </form>
@@ -219,11 +221,10 @@ function TransmissionSetup({
         <div className="transmission-setup-empty">
           <span>OFF AIR</span>
 
-          <h3>No hay escaletas disponibles</h3>
+          <h3>{isEnglish ? "No rundowns available" : "No hay escaletas disponibles"}</h3>
 
           <p>
-            Crea una escaleta y agrega al menos una noticia
-            aprobada antes de iniciar la transmisión.
+            {isEnglish ? "Create a rundown and add at least one approved news item before starting the transmission." : "Crea una escaleta y agrega al menos una noticia aprobada antes de iniciar la transmisión."}
           </p>
         </div>
       )}

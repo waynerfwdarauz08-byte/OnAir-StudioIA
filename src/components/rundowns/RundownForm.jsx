@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 function getTodayValue() {
   const currentDate = new Date();
@@ -24,6 +25,8 @@ function RundownForm({
   error = "",
   onSubmit,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const [values, setValues] = useState(INITIAL_VALUES);
   const [errors, setErrors] = useState({});
 
@@ -53,12 +56,12 @@ function RundownForm({
 
     if (preparedValues.name.length < 3) {
       validationErrors.name =
-        "El nombre debe tener al menos 3 caracteres.";
+        isEnglish ? "The name must have at least 3 characters." : "El nombre debe tener al menos 3 caracteres.";
     }
 
     if (!preparedValues.broadcastDate) {
       validationErrors.broadcastDate =
-        "Selecciona la fecha de transmisión.";
+        isEnglish ? "Select the transmission date." : "Selecciona la fecha de transmisión.";
     }
 
     setErrors(validationErrors);
@@ -95,13 +98,12 @@ function RundownForm({
       noValidate
     >
       <header className="rundown-form-heading">
-        <span>NUEVA EDICIÓN</span>
+        <span>{isEnglish ? "NEW EDITION" : "NUEVA EDICIÓN"}</span>
 
-        <h2>Crear escaleta</h2>
+        <h2>{isEnglish ? "Create rundown" : "Crear escaleta"}</h2>
 
         <p>
-          Registra una edición informativa y posteriormente
-          agrega las noticias que serán presentadas.
+          {isEnglish ? "Register a news edition and then add the news items to be presented." : "Registra una edición informativa y posteriormente agrega las noticias que serán presentadas."}
         </p>
       </header>
 
@@ -114,7 +116,7 @@ function RundownForm({
       <div className="rundown-form-grid">
         <div className="form-field">
           <label htmlFor="rundown-name">
-            Nombre de la edición
+            {isEnglish ? "Edition name" : "Nombre de la edición"}
           </label>
 
           <input
@@ -122,7 +124,7 @@ function RundownForm({
             name="name"
             type="text"
             value={values.name}
-            placeholder="Ejemplo: Edición informativa de la noche"
+            placeholder={isEnglish ? "Example: Evening news edition" : "Ejemplo: Edición informativa de la noche"}
             disabled={saving}
             aria-invalid={Boolean(errors.name)}
             onChange={handleChange}
@@ -137,7 +139,7 @@ function RundownForm({
 
         <div className="form-field">
           <label htmlFor="rundown-date">
-            Fecha de transmisión
+            {isEnglish ? "Transmission date" : "Fecha de transmisión"}
           </label>
 
           <input
@@ -167,8 +169,8 @@ function RundownForm({
           disabled={saving}
         >
           {saving
-            ? "Creando escaleta..."
-            : "Crear escaleta"}
+            ? isEnglish ? "Creating rundown..." : "Creando escaleta..."
+            : isEnglish ? "Create rundown" : "Crear escaleta"}
         </button>
       </div>
     </form>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useAccessibility from "../../hooks/useAccessibility.js";
 
 const INITIAL_VALUES = {
   sourceName: "",
@@ -8,17 +9,17 @@ const INITIAL_VALUES = {
   targetDurationSeconds: 30,
 };
 
-function validateValues(values) {
+function validateValues(values, isEnglish) {
   const errors = {};
 
   if (values.sourceName.trim().length < 3) {
     errors.sourceName =
-      "Indica el nombre de la fuente.";
+      isEnglish ? "Enter the source name." : "Indica el nombre de la fuente.";
   }
 
   if (values.sourceText.trim().length < 50) {
     errors.sourceText =
-      "El contenido original debe tener al menos 50 caracteres.";
+      isEnglish ? "The original content must have at least 50 characters." : "El contenido original debe tener al menos 50 caracteres.";
   }
 
   if (
@@ -26,7 +27,7 @@ function validateValues(values) {
     !/^https?:\/\/.+/i.test(values.sourceUrl.trim())
   ) {
     errors.sourceUrl =
-      "El enlace debe comenzar con http:// o https://.";
+      isEnglish ? "The URL must begin with http:// or https://." : "El enlace debe comenzar con http:// o https://.";
   }
 
   const duration = Number(
@@ -39,7 +40,7 @@ function validateValues(values) {
     duration > 300
   ) {
     errors.targetDurationSeconds =
-      "La duración debe estar entre 10 y 300 segundos.";
+      isEnglish ? "The duration must be between 10 and 300 seconds." : "La duración debe estar entre 10 y 300 segundos.";
   }
 
   return errors;
@@ -50,6 +51,8 @@ function AiEditorForm({
   error = "",
   onGenerate,
 }) {
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const [values, setValues] =
     useState(INITIAL_VALUES);
   const [errors, setErrors] = useState({});
@@ -81,7 +84,7 @@ function AiEditorForm({
     };
 
     const validationErrors =
-      validateValues(preparedValues);
+      validateValues(preparedValues, isEnglish);
 
     setErrors(validationErrors);
 
@@ -108,13 +111,12 @@ function AiEditorForm({
       noValidate
     >
       <header className="ai-editor-form-heading">
-        <span>ENTRADA DE INFORMACIÓN</span>
+        <span>{isEnglish ? "INFORMATION INPUT" : "ENTRADA DE INFORMACIÓN"}</span>
 
-        <h2>Contenido original</h2>
+        <h2>{isEnglish ? "Original content" : "Contenido original"}</h2>
 
         <p>
-          La IA utilizará esta información para preparar una
-          propuesta editorial para televisión.
+          {isEnglish ? "AI will use this information to prepare a television editorial proposal." : "La IA utilizará esta información para preparar una propuesta editorial para televisión."}
         </p>
       </header>
 
@@ -127,7 +129,7 @@ function AiEditorForm({
       <div className="form-grid">
         <div className="form-field">
           <label htmlFor="ai-source-name">
-            Nombre de la fuente
+            {isEnglish ? "Source name" : "Nombre de la fuente"}
           </label>
 
           <input
@@ -135,7 +137,7 @@ function AiEditorForm({
             name="sourceName"
             type="text"
             value={values.sourceName}
-            placeholder="Ejemplo: Comunicado institucional"
+            placeholder={isEnglish ? "Example: Institutional statement" : "Ejemplo: Comunicado institucional"}
             disabled={generating}
             aria-invalid={Boolean(errors.sourceName)}
             onChange={handleChange}
@@ -150,7 +152,7 @@ function AiEditorForm({
 
         <div className="form-field">
           <label htmlFor="ai-source-url">
-            Enlace de la fuente
+            {isEnglish ? "Source URL" : "Enlace de la fuente"}
           </label>
 
           <input
@@ -173,7 +175,7 @@ function AiEditorForm({
 
         <div className="form-field">
           <label htmlFor="ai-tone">
-            Tono editorial
+            {isEnglish ? "Editorial tone" : "Tono editorial"}
           </label>
 
           <select
@@ -184,24 +186,24 @@ function AiEditorForm({
             onChange={handleChange}
           >
             <option value="informative">
-              Informativo
+              {isEnglish ? "Informative" : "Informativo"}
             </option>
 
             <option value="formal">Formal</option>
 
             <option value="direct">
-              Directo y conciso
+              {isEnglish ? "Direct and concise" : "Directo y conciso"}
             </option>
 
             <option value="human">
-              Cercano y humano
+              {isEnglish ? "Warm and human" : "Cercano y humano"}
             </option>
           </select>
         </div>
 
         <div className="form-field">
           <label htmlFor="ai-duration">
-            Duración aproximada
+            {isEnglish ? "Approximate duration" : "Duración aproximada"}
           </label>
 
           <div className="input-with-suffix">
@@ -220,7 +222,7 @@ function AiEditorForm({
               onChange={handleChange}
             />
 
-            <span>segundos</span>
+            <span>{isEnglish ? "seconds" : "segundos"}</span>
           </div>
 
           {errors.targetDurationSeconds && (
@@ -232,7 +234,7 @@ function AiEditorForm({
 
         <div className="form-field form-field-wide">
           <label htmlFor="ai-source-text">
-            Información original
+            {isEnglish ? "Original information" : "Información original"}
           </label>
 
           <textarea
@@ -240,7 +242,7 @@ function AiEditorForm({
             name="sourceText"
             rows="13"
             value={values.sourceText}
-            placeholder="Pega aquí el comunicado, información, apuntes o texto original..."
+            placeholder={isEnglish ? "Paste the statement, information, notes, or original text here..." : "Pega aquí el comunicado, información, apuntes o texto original..."}
             disabled={generating}
             aria-invalid={Boolean(errors.sourceText)}
             onChange={handleChange}
@@ -248,11 +250,11 @@ function AiEditorForm({
 
           <div className="field-counter">
             <small>
-              Mínimo recomendado: 50 caracteres
+              {isEnglish ? "Recommended minimum: 50 characters" : "Mínimo recomendado: 50 caracteres"}
             </small>
 
             <small>
-              {values.sourceText.length} caracteres
+              {values.sourceText.length} {isEnglish ? "characters" : "caracteres"}
             </small>
           </div>
 
@@ -271,8 +273,8 @@ function AiEditorForm({
           disabled={generating}
         >
           {generating
-            ? "Generando propuesta..."
-            : "Generar con inteligencia artificial"}
+            ? isEnglish ? "Generating proposal..." : "Generando propuesta..."
+            : isEnglish ? "Generate with artificial intelligence" : "Generar con inteligencia artificial"}
         </button>
       </div>
     </form>

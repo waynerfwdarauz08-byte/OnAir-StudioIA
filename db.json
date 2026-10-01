@@ -39,6 +39,16 @@
       "createdAt": "2026-09-29T20:54:17.004Z",
       "updatedAt": "2026-09-29T20:54:17.004Z",
       "id": "lxbPRO13z-I"
+    },
+    {
+      "name": "Hanxell Badilla",
+      "email": "hanxel@onair.test",
+      "password": "Hanxell123*",
+      "role": "presenter",
+      "active": true,
+      "createdAt": "2026-10-01T19:56:41.768Z",
+      "updatedAt": "2026-10-01T19:56:41.768Z",
+      "id": "BGBDrMcaENY"
     }
   ],
   "categories": [
@@ -322,7 +332,7 @@
       "rundownId": "iOyW1dXqbRk",
       "onAir": true,
       "startedAt": "2026-09-29T21:05:56.176Z",
-      "updatedAt": "2026-09-29T21:10:44.952Z",
+      "updatedAt": "2026-10-01T19:57:49.291Z",
       "updatedBy": "user-admin-001",
       "eventId": "event-e542209a-ddb9-48e3-87ea-b0831dcb4154"
     }
@@ -332,7 +342,7 @@
       "id": "global",
       "channelName": "OnAir Studio AI",
       "wordsPerMinute": 150,
-      "updatedAt": "2026-09-29T21:11:11.840Z",
+      "updatedAt": "2026-10-01T21:04:11.810Z",
       "theme": "dark"
     }
   ],
@@ -462,6 +472,42 @@
       "module": "settings",
       "createdAt": "2026-09-29T21:11:11.856Z",
       "id": "wqxDhuAMIEQ"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-10-01T19:52:10.223Z",
+      "id": "QdGry2ErebU"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-10-01T20:03:56.745Z",
+      "id": "Djnlri9IpNo"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-10-01T21:04:09.860Z",
+      "id": "35wQU-gOZFI"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-10-01T21:04:11.825Z",
+      "id": "Ac_fiW_9hOo"
     }
   ],
   "messages": [
@@ -517,6 +563,24 @@
       "content": "Ok!",
       "read": false,
       "createdAt": "2026-09-29T21:11:01.619Z",
+      "readAt": null
+    },
+    {
+      "id": "gX5vdqLqKHw",
+      "senderId": "user-admin-001",
+      "receiverId": "lxbPRO13z-I",
+      "content": "Hola",
+      "read": false,
+      "createdAt": "2026-10-01T17:22:53.678Z",
+      "readAt": null
+    },
+    {
+      "id": "90lUyQN4kR8",
+      "senderId": "user-admin-001",
+      "receiverId": "lxbPRO13z-I",
+      "content": "Soy Wayner presentando desde FWD",
+      "read": false,
+      "createdAt": "2026-10-01T17:23:28.630Z",
       "readAt": null
     }
   ],
