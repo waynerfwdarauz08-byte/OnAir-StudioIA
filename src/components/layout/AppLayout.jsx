@@ -129,7 +129,7 @@ const MENU_LABELS = {
     users: "Usuarios",
     activity: "Historial",
     projections: "Proyecciones IA",
-    presenterLocations: "UbicaciÃ³n de presentadores",
+    presenterLocations: "Mapa operativo",
     settings: "Configuración",
   },
   en: {
@@ -144,7 +144,7 @@ const MENU_LABELS = {
     users: "Users",
     activity: "Activity history",
     projections: "AI projections",
-    presenterLocations: "Presenter locations",
+    presenterLocations: "Operations map",
     settings: "Settings",
   },
 };

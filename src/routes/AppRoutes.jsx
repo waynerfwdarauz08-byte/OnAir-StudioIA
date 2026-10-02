@@ -27,7 +27,7 @@ import RegisterPage from "../pages/RegisterPage.jsx";
 import UserEditPage from "../pages/UserEditPage.jsx";
 import ActivityLogsPage from "../pages/ActivityLogsPage.jsx";
 import ProjectionsPage from "../pages/ProjectionsPage.jsx";
-import PresenterLocationsPage from "../pages/PresenterLocationsPage.jsx";
+import PresenterLocationsPage from "../pages/OperationalMapPage.jsx";
 import SettingsPage from "../pages/SettingsPage.jsx";
 
 import ForbiddenPage from "../pages/ForbiddenPage.jsx";

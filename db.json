@@ -584,5 +584,41 @@
       "readAt": null
     }
   ],
+  "operationalMapSettings": [
+    {
+      "id": "onair-studios-demo",
+      "name": "OnAir Studios",
+      "latitude": 9.9281,
+      "longitude": -84.0907,
+      "isSimulated": true,
+      "averageSpeedKmh": 50
+    }
+  ],
+  "reportingIncidents": [
+    {
+      "id": "demo-cultural-coverage",
+      "title": "Cobertura cultural de demostración",
+      "titleEn": "Demonstration cultural coverage",
+      "description": "Escenario académico simulado; no corresponde a un suceso real.",
+      "descriptionEn": "Simulated academic scenario; this is not a real event.",
+      "siteId": "theatre",
+      "latitude": 9.9335,
+      "longitude": -84.0767,
+      "status": "pending",
+      "presenterId": null,
+      "isSimulated": true
+    },
+    {
+      "title": "Prueba",
+      "description": "Nada que decir",
+      "siteId": "custom",
+      "latitude": 9.98131,
+      "longitude": -84.75707,
+      "status": "assigned",
+      "presenterId": "BGBDrMcaENY",
+      "isSimulated": true,
+      "id": "-kJlw6JudiM"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }
