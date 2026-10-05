@@ -1,43 +1,44 @@
-# Segundo workflow: registrar inicios de sesión
+# Registro y reporte de sesiones con n8n
 
-Solo tiene dos nodos: **Webhook → HTTP Request**. Cada inicio de sesión correcto envía el nombre, identificador y descripción de la actividad a n8n. El workflow agrega la fecha y guarda el registro en la colección `activityLogs` de JSON Server. No usa IA, claves adicionales ni un backend nuevo.
+Este workflow registra inicios y cierres de sesión en la colección `activityLogs` de JSON Server y envía por Gmail un reporte con los datos del evento. No crea ni sustituye el backend simulado del proyecto.
 
-## Instalación
+El flujo tiene cuatro nodos: **Webhook → Validar y preparar datos → Guardar evento en JSON Server → Enviar resumen por Gmail**. El frontend envía un evento al iniciar o cerrar sesión. El reporte incluye nombre, correo, rol, ID de usuario, ID de sesión, fecha de inicio y cierre, duración cuando se cierra, navegador/dispositivo, idioma, zona horaria y fecha del registro. Nunca envía la contraseña.
 
-1. Abre n8n en `http://localhost:5678`.
-2. Crea un workflow nuevo y, desde el menú de tres puntos, selecciona **Import from File**.
-3. Importa `docs/activity-n8n.workflow.json`.
-4. Abre **Guardar en JSON Server**. La URL viene configurada como `http://localhost:3001/activityLogs` para n8n ejecutado localmente con `n8n start`.
-5. Publica o activa el workflow, según la versión de n8n. La aplicación usa la URL de producción `/webhook/onair-activity-log`; ejecutar una prueba manual del workflow no activa esa URL.
+## Importar y configurar
 
-Mantén ejecutados estos tres procesos, cada uno en su terminal:
+1. Inicia JSON Server, Vite y n8n en sus terminales:
 
-```bash
-npm run server
-npm run dev
-n8n start
-```
+   ```bash
+   npm run server
+   npm run dev
+   n8n start
+   ```
 
-La variable de la aplicación es:
+2. Abre n8n en `http://localhost:5678` y crea un workflow importando `docs/activity-n8n.workflow.json`.
+3. Abre **Guardar evento en JSON Server** y conserva `http://localhost:3001/activityLogs` para n8n instalado localmente en la misma computadora.
+4. Abre **Enviar resumen por Gmail**. Crea o selecciona una credencial de Gmail y reemplaza `DESTINATARIO@EJEMPLO.COM` por el correo que recibirá los reportes. La credencial de Gmail se configura dentro de n8n; no pongas contraseñas ni tokens en el código del proyecto.
+5. Guarda y activa el workflow. El endpoint de producción que utiliza la aplicación es `/webhook/onair-activity-log`; la URL de prueba de n8n solo funciona mientras se ejecuta una prueba manual.
+
+La documentación de n8n describe el envío de mensajes desde Gmail y los campos de destinatario, asunto, tipo y cuerpo del mensaje: [Gmail Message Operations](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.gmail/message-operations/).
+
+La aplicación conserva su configuración actual:
 
 ```env
 VITE_N8N_ACTIVITY_WEBHOOK_URL=/n8n/webhook/onair-activity-log
 ```
 
-El prefijo `/n8n` lo resuelve el proxy de Vite. Si cambias una variable de entorno, reinicia Vite. No modifiques `VITE_N8N_AI_WEBHOOK_URL`: pertenece al workflow de Redacción con IA.
+Vite resuelve el prefijo `/n8n` mediante el proxy local. No cambies `VITE_N8N_AI_WEBHOOK_URL`, que pertenece a Redacción con IA.
 
-## Comprobación
+## Comprobar el flujo
 
-1. Cierra sesión e inicia sesión en OnAir Studio.
-2. Revisa **Executions** en el nuevo workflow: ambos nodos deben terminar correctamente.
-3. Como administrador, abre **Historial de actividad** (`/admin/activity`). Verás un nuevo registro de inicio de sesión con nombre y fecha. Si ya tenías esa página abierta en otra ventana, recárgala.
+1. Inicia sesión en OnAir Studio y confirma en **Executions** que corrieron Webhook, validación, guardado y Gmail.
+2. Confirma que se agregó `login_success` en Historial de actividad y que llegó el correo de inicio.
+3. Cierra sesión. Debe registrarse `logout`, con la duración calculada, y llegar el correo de cierre con el resumen de la sesión.
 
-Si n8n está detenido, el usuario puede iniciar sesión igualmente; ese intento no se registra ni se reenvía automáticamente.
+Si n8n o Gmail falla, la autenticación simulada no bloquea el acceso ni el cierre de sesión; revisa **Executions** para diagnosticar el evento. El registro en JSON Server se realiza antes del envío del correo.
 
-## Si n8n se ejecuta en Docker o en la nube
+## n8n en Docker
 
-En Docker para Windows, cambia la URL del nodo HTTP Request a `http://host.docker.internal:3001/activityLogs`. JSON Server debe aceptar conexiones desde el contenedor; si hace falta, inicia `npm run server -- --host 0.0.0.0`. La aplicación sigue apuntando a n8n local en el puerto 5678.
+Si n8n corre en Docker en Windows, cambia la URL del nodo de guardado a `http://host.docker.internal:3001/activityLogs`. JSON Server debe aceptar conexiones desde el contenedor; puede iniciarse con `npm run server -- --host 0.0.0.0`.
 
-Este archivo está preparado para un entorno local. En n8n Cloud, `localhost:3001` no corresponde a tu computadora y no funcionará con JSON Server local.
-
-Referencias: [importar workflows](https://docs.n8n.io/workflows/export-import/), [Webhook](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/) y [HTTP Request](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/).
+El workflow está preparado para ejecución local. n8n Cloud no puede acceder a `localhost:3001` de tu computadora.

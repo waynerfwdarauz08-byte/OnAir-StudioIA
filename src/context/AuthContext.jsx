@@ -18,6 +18,42 @@ function normalizeEmail(email) {
   return email.trim().toLowerCase();
 }
 
+function createSessionId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+
+  return `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function getSessionDetails() {
+  try {
+    const savedSession = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
+    const startedAt = savedSession.sessionStartedAt || new Date().toISOString();
+
+    return {
+      sessionId: savedSession.sessionId || createSessionId(),
+      sessionStartedAt: startedAt,
+      sessionEndedAt: new Date().toISOString(),
+      durationSeconds: Math.max(0, Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000)),
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    };
+  } catch {
+    const now = new Date().toISOString();
+    return {
+      sessionId: createSessionId(),
+      sessionStartedAt: now,
+      sessionEndedAt: now,
+      durationSeconds: 0,
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    };
+  }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -26,7 +62,10 @@ export function AuthProvider({ children }) {
     setAuthLoading(true);
 
     try {
-      const savedSession = localStorage.getItem(SESSION_KEY);
+      // Elimina sesiones persistentes anteriores para volver a pedir acceso
+      // al abrir una nueva sesión del navegador.
+      localStorage.removeItem(SESSION_KEY);
+      const savedSession = sessionStorage.getItem(SESSION_KEY);
 
       if (!savedSession) {
         setUser(null);
@@ -36,9 +75,18 @@ export function AuthProvider({ children }) {
       const parsedSession = JSON.parse(savedSession);
 
       if (!parsedSession.userId) {
-        localStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem(SESSION_KEY);
         setUser(null);
         return;
+      }
+
+      if (!parsedSession.sessionId || !parsedSession.sessionStartedAt) {
+        const updatedSession = {
+          ...parsedSession,
+          sessionId: parsedSession.sessionId || createSessionId(),
+          sessionStartedAt: parsedSession.sessionStartedAt || new Date().toISOString(),
+        };
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(updatedSession));
       }
 
       const storedUser = await userService.getById(
@@ -46,7 +94,7 @@ export function AuthProvider({ children }) {
       );
 
       if (!storedUser.active) {
-        localStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem(SESSION_KEY);
         setUser(null);
         return;
       }
@@ -58,7 +106,7 @@ export function AuthProvider({ children }) {
 
       setUser(safeUser);
     } catch {
-      localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
       setUser(null);
     } finally {
       setAuthLoading(false);
@@ -101,12 +149,12 @@ export function AuthProvider({ children }) {
       );
     }
 
-    localStorage.setItem(
-      SESSION_KEY,
-      JSON.stringify({
-        userId: selectedUser.id,
-      })
-    );
+    const session = {
+      userId: selectedUser.id,
+      sessionId: createSessionId(),
+      sessionStartedAt: new Date().toISOString(),
+    };
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
 
     const {
       password: ignoredPassword,
@@ -116,13 +164,25 @@ export function AuthProvider({ children }) {
     setUser(safeUser);
 
     // El registro es independiente: un fallo de n8n no bloquea el acceso.
-    void activityService.registerLogin(safeUser, getRoleLabel(safeUser.role));
+    void activityService.registerLogin(
+      safeUser,
+      getRoleLabel(safeUser.role),
+      {
+        ...getSessionDetails(),
+        sessionEndedAt: null,
+        durationSeconds: null,
+      }
+    );
 
     return safeUser;
   }
 
   function logout() {
-    localStorage.removeItem(SESSION_KEY);
+    if (user) {
+      void activityService.registerLogout(user, getSessionDetails());
+    }
+
+    sessionStorage.removeItem(SESSION_KEY);
     setUser(null);
   }
 

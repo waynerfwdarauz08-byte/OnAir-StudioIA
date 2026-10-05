@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "test": "node scripts/test-project-regressions.mjs && node scripts/test-projections-service.mjs && node scripts/test-projections-data.mjs && node scripts/test-projections-api.mjs && node scripts/test-presenter-locations.mjs",
+    "test": "npm run test:unit && node scripts/test-project-regressions.mjs && node scripts/test-projections-service.mjs && node scripts/test-projections-data.mjs && node scripts/test-projections-api.mjs && node scripts/test-presenter-locations.mjs",
+    "test:unit": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "preview": "vite preview",
     "server": "json-server db.json --port 3001"
   },
@@ -28,6 +29,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
+    "jest": "^30.5.2",
     "vite": "^8.3.0"
   }
 }

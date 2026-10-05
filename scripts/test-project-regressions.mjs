@@ -32,6 +32,7 @@ try {
   const source = await readFile(new URL("../src/services/activityService.js", import.meta.url), "utf8");
   const testSource = source
     .replace('import { request } from "./httpClient.js";', 'const request = () => {};')
+    .replace('import { getRoleLabel } from "../utils/roles.js";', 'const getRoleLabel = (role) => role;')
     .replace("import.meta.env.VITE_N8N_ACTIVITY_WEBHOOK_URL", '"https://example.test/custom-activity"');
   const { activityService } = await import(`data:text/javascript,${encodeURIComponent(testSource)}`);
   globalThis.window = { setTimeout, clearTimeout };
@@ -54,23 +55,64 @@ try {
   assert.equal(loginPayload.action, "login_success");
   assert.equal(loginPayload.module, "authentication");
   assert.equal(loginPayload.userId, "test-user");
+  assert.equal(loginPayload.userEmail, "");
+  assert.equal(loginPayload.role, "admin");
+  assert.ok(loginPayload.eventId.startsWith("activity-"));
+  assert.equal(loginPayload.durationSeconds, null);
   assert.equal(Object.hasOwn(loginPayload, "password"), false);
 
+  let logoutPayload;
+  globalThis.fetch = async (url, options) => {
+    logoutPayload = JSON.parse(options.body);
+    return new Response('{"ok":true}');
+  };
+  await activityService.registerLogout(
+    { id: "test-user", name: "Usuario de prueba", role: "admin" },
+    { sessionId: "session-test", sessionStartedAt: "2026-10-05T11:00:00.000Z", sessionEndedAt: "2026-10-05T11:00:32.000Z", durationSeconds: 32 },
+  );
+  assert.equal(logoutPayload.action, "logout");
+  assert.equal(logoutPayload.sessionId, "session-test");
+  assert.equal(logoutPayload.durationSeconds, 32);
+
   const workflow = JSON.parse(await readFile(new URL("../docs/activity-n8n.workflow.json", import.meta.url), "utf8"));
-  assert.equal(workflow.nodes.length, 2);
+  assert.equal(workflow.nodes.length, 4);
   const webhook = workflow.nodes.find((node) => node.type === "n8n-nodes-base.webhook");
+  const normalize = workflow.nodes.find((node) => node.type === "n8n-nodes-base.code");
   const save = workflow.nodes.find((node) => node.type === "n8n-nodes-base.httpRequest");
+  const gmail = workflow.nodes.find((node) => node.type === "n8n-nodes-base.gmail");
   assert.equal(webhook.parameters.path, "onair-activity-log");
   assert.equal(webhook.parameters.responseMode, "lastNode");
+  assert.match(normalize.parameters.jsCode, /login_success.*logout/s);
   assert.equal(save.parameters.method, "POST");
   assert.equal(save.parameters.url, "http://localhost:3001/activityLogs");
+  const normalizedPayload = new Function("$input", normalize.parameters.jsCode)({
+    first: () => ({ json: { body: loginPayload } }),
+  })[0].json;
   const expression = save.parameters.jsonBody.slice(3, -2).trim();
-  const savedPayload = new Function("$json", "$now", `return (${expression});`)(
-    { body: { ...loginPayload, password: "never-send" } },
-    { toISO: () => "2026-10-05T12:00:00.000Z" },
+  const savedPayload = new Function("$json", `return (${expression});`)(normalizedPayload);
+  assert.deepEqual(savedPayload, normalizedPayload);
+  assert.equal(normalizedPayload.userId, "test-user");
+  assert.equal(normalizedPayload.action, "login_success");
+  assert.equal(Object.hasOwn(normalizedPayload, "password"), false);
+  assert.equal(gmail.parameters.sendTo, "DESTINATARIO@EJEMPLO.COM");
+  assert.equal(gmail.parameters.emailType, "text");
+  const emailExpression = gmail.parameters.message.slice(3, -2).trim();
+  const emailBody = new Function("$", `return (${emailExpression});`)(
+    () => ({ item: { json: normalizedPayload } }),
   );
-  assert.deepEqual(savedPayload, { ...loginPayload, createdAt: "2026-10-05T12:00:00.000Z" });
-  assert.equal(workflow.connections[webhook.name].main[0][0].node, save.name);
+  for (const fieldValue of [
+    normalizedPayload.userName,
+    normalizedPayload.userId,
+    normalizedPayload.sessionId,
+    normalizedPayload.sessionStartedAt,
+    normalizedPayload.roleLabel,
+    normalizedPayload.eventId,
+  ].filter(Boolean)) {
+    assert.ok(emailBody.includes(fieldValue), `Gmail message should include ${fieldValue}`);
+  }
+  assert.equal(workflow.connections[webhook.name].main[0][0].node, normalize.name);
+  assert.equal(workflow.connections[normalize.name].main[0][0].node, save.name);
+  assert.equal(workflow.connections[save.name].main[0][0].node, gmail.name);
 
   const originalWarn = console.warn;
   try {
@@ -86,4 +128,4 @@ try {
   else globalThis.window = originalWindow;
 }
 
-console.log("PASS: map validation, weather, activity webhook, two-node workflow payload and non-blocking login logging.");
+console.log("PASS: map, weather, login/logout session events, JSON Server workflow payload, Gmail summary and non-blocking logging.");

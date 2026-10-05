@@ -86,4 +86,6 @@ npm run server   # Inicia JSON Server con db.json en el puerto 3001
 npm run build    # Genera la compilación de producción
 npm run preview  # Previsualiza la compilación de producción
 npm run lint     # Ejecuta ESLint
+npm test         # Ejecuta las pruebas unitarias de Jest y las pruebas existentes
+npm run test:unit # Ejecuta solo las pruebas unitarias de Jest
 ```

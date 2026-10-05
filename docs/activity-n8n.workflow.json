@@ -1,16 +1,15 @@
 {
-  "name": "OnAir Studio - Registro de inicios de sesión",
+  "name": "OnAir Studio - Registro y correo de sesiones",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "onair-activity-log",
         "responseMode": "lastNode",
-        "responseData": "firstEntryJson",
         "options": {}
       },
       "id": "13ff693c-bf09-47c3-b1fb-d52d6afc9ea7",
-      "name": "Recibir inicio de sesión",
+      "name": "Recibir evento de sesi\u00f3n",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [0, 0],
@@ -18,25 +17,56 @@
     },
     {
       "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const input = $input.first().json;\nconst body = input.body && typeof input.body === 'object' ? input.body : input;\nconst allowedActions = ['login_success', 'logout'];\nif (!allowedActions.includes(body.action)) throw new Error('Tipo de evento de sesi\u00f3n no permitido.');\nif (!String(body.userId || '').trim()) throw new Error('El evento debe incluir userId.');\nconst now = new Date().toISOString();\nconst duration = body.durationSeconds === null || body.durationSeconds === undefined || body.durationSeconds === '' ? null : Number(body.durationSeconds);\nreturn [{ json: {\n  eventId: String(body.eventId || `activity-${Date.now()}`),\n  action: body.action,\n  description: String(body.description || ''),\n  userId: String(body.userId),\n  userName: String(body.userName || ''),\n  userEmail: String(body.userEmail || ''),\n  role: String(body.role || ''),\n  roleLabel: String(body.roleLabel || ''),\n  module: String(body.module || 'authentication'),\n  sessionId: String(body.sessionId || ''),\n  sessionStartedAt: body.sessionStartedAt || null,\n  sessionEndedAt: body.sessionEndedAt || null,\n  durationSeconds: Number.isFinite(duration) ? duration : null,\n  userAgent: String(body.userAgent || ''),\n  language: String(body.language || ''),\n  timeZone: String(body.timeZone || ''),\n  occurredAt: body.occurredAt || now,\n  createdAt: now\n} }];"
+      },
+      "id": "4b5ac79a-1bce-4bf1-9fe6-1c925af449dd",
+      "name": "Validar y preparar datos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 0]
+    },
+    {
+      "parameters": {
         "method": "POST",
         "url": "http://localhost:3001/activityLogs",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { action: $json.body.action, description: $json.body.description, userId: $json.body.userId, userName: $json.body.userName, module: $json.body.module, createdAt: $now.toISO() } }}",
+        "jsonBody": "={{ $json }}",
         "options": {
-          "timeout": 3000
+          "timeout": 5000
         }
       },
       "id": "3a762cc3-b6ef-4769-873a-12bf4e67b6d8",
-      "name": "Guardar en JSON Server",
+      "name": "Guardar evento en JSON Server",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [280, 0]
+      "position": [540, 0]
+    },
+    {
+      "parameters": {
+        "sendTo": "DESTINATARIO@EJEMPLO.COM",
+        "subject": "={{ 'OnAir Studio | ' + ($('Validar y preparar datos').item.json.action === 'login_success' ? 'Inicio' : 'Cierre') + ' de sesi\u00f3n | ' + $('Validar y preparar datos').item.json.userName }}",
+        "emailType": "text",
+        "message": "={{ 'REPORTE DE SESI\u00d3N - ONAIR STUDIO\\n\\nEvento: ' + ($('Validar y preparar datos').item.json.action === 'login_success' ? 'Inicio de sesi\u00f3n' : 'Cierre de sesi\u00f3n') + '\\nDescripci\u00f3n: ' + $('Validar y preparar datos').item.json.description + '\\n\\nUSUARIO\\nNombre: ' + $('Validar y preparar datos').item.json.userName + '\\nCorreo: ' + $('Validar y preparar datos').item.json.userEmail + '\\nRol: ' + $('Validar y preparar datos').item.json.roleLabel + ' (' + $('Validar y preparar datos').item.json.role + ')' + '\\nID: ' + $('Validar y preparar datos').item.json.userId + '\\n\\nSESI\u00d3N\\nID: ' + $('Validar y preparar datos').item.json.sessionId + '\\nInicio: ' + ($('Validar y preparar datos').item.json.sessionStartedAt || 'No disponible') + '\\nFin: ' + ($('Validar y preparar datos').item.json.sessionEndedAt || 'Sesi\u00f3n activa') + '\\nDuraci\u00f3n (segundos): ' + ($('Validar y preparar datos').item.json.durationSeconds ?? 'En curso') + '\\n\\nDISPOSITIVO Y CONFIGURACI\u00d3N\\nNavegador / dispositivo: ' + $('Validar y preparar datos').item.json.userAgent + '\\nIdioma: ' + $('Validar y preparar datos').item.json.language + '\\nZona horaria: ' + $('Validar y preparar datos').item.json.timeZone + '\\n\\nRegistro: ' + $('Validar y preparar datos').item.json.createdAt + '\\nID del evento: ' + $('Validar y preparar datos').item.json.eventId }}"
+      },
+      "id": "e7c0c283-0248-45ce-9e4d-cbc2b840153f",
+      "name": "Enviar resumen por Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [840, 0],
+      "notes": "Selecciona la credencial de Gmail y reemplaza DESTINATARIO@EJEMPLO.COM antes de activar el workflow."
     }
   ],
   "connections": {
-    "Recibir inicio de sesión": {
-      "main": [[{ "node": "Guardar en JSON Server", "type": "main", "index": 0 }]]
+    "Recibir evento de sesi\u00f3n": {
+      "main": [[{ "node": "Validar y preparar datos", "type": "main", "index": 0 }]]
+    },
+    "Validar y preparar datos": {
+      "main": [[{ "node": "Guardar evento en JSON Server", "type": "main", "index": 0 }]]
+    },
+    "Guardar evento en JSON Server": {
+      "main": [[{ "node": "Enviar resumen por Gmail", "type": "main", "index": 0 }]]
     }
   },
   "settings": { "executionOrder": "v1" },
