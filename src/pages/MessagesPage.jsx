@@ -441,6 +441,7 @@ function MessagesPage() {
             />
 
             <MessageConversation
+              key={selectedContact?.id || "no-contact"}
               currentUser={user}
               selectedContact={
                 selectedContact

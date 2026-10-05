@@ -10,7 +10,14 @@ export const PUBLIC_REPORTING_SITES = [
 ];
 
 export function validCoordinates(location) {
-  return location?.latitude !== "" && location?.longitude !== "" && location?.latitude != null && location?.longitude != null && Number.isFinite(Number(location.latitude)) && Number.isFinite(Number(location.longitude)) && Math.abs(Number(location.latitude)) <= 90 && Math.abs(Number(location.longitude)) <= 180;
+  const isCoordinate = (value, limit) =>
+    (typeof value === "number" || typeof value === "string") &&
+    String(value).trim() !== "" &&
+    Number.isFinite(Number(value)) &&
+    Math.abs(Number(value)) <= limit;
+
+  return isCoordinate(location?.latitude, 90) &&
+    isCoordinate(location?.longitude, 180);
 }
 
 export function estimateTrip(origin, destination, speedKmh = 50) {
@@ -18,7 +25,7 @@ export function estimateTrip(origin, destination, speedKmh = 50) {
   const rad = (value) => Number(value) * Math.PI / 180;
   const dLat = rad(Number(destination.latitude) - Number(origin.latitude));
   const dLng = rad(Number(destination.longitude) - Number(origin.longitude));
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(rad(origin.latitude)) * Math.cos(rad(destination.latitude)) * Math.sin(dLng / 2) ** 2;
+  const a = Math.min(1, Math.max(0, Math.sin(dLat / 2) ** 2 + Math.cos(rad(origin.latitude)) * Math.cos(rad(destination.latitude)) * Math.sin(dLng / 2) ** 2));
   const straightKm = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const roadKm = straightKm * 1.3;
   return { straightKm: Math.round(straightKm), roadKm: Math.round(roadKm), minutes: Math.max(5, Math.ceil((roadKm / Number(speedKmh) * 60) / 5) * 5) };

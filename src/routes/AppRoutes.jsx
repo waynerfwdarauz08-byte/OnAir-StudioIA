@@ -1,3 +1,5 @@
+import { lazy, Suspense } from "react";
+import { LoadingState } from "../components/common/FeedbackStates.jsx";
 import {
   BrowserRouter,
   Route,
@@ -6,32 +8,32 @@ import {
 
 import AppLayout from "../components/layout/AppLayout.jsx";
 
-import LoginPage from "../pages/LoginPage.jsx";
-import DashboardPage from "../pages/DashboardPage.jsx";
+const LoginPage = lazy(() => import("../pages/LoginPage.jsx"));
+const DashboardPage = lazy(() => import("../pages/DashboardPage.jsx"));
 
-import NewsPage from "../pages/NewsPage.jsx";
-import NewsCreatePage from "../pages/NewsCreatePage.jsx";
-import NewsDetailPage from "../pages/NewsDetailPage.jsx";
-import NewsEditPage from "../pages/NewsEditPage.jsx";
-import CategoriesPage from "../pages/CategoriesPage.jsx";
+const NewsPage = lazy(() => import("../pages/NewsPage.jsx"));
+const NewsCreatePage = lazy(() => import("../pages/NewsCreatePage.jsx"));
+const NewsDetailPage = lazy(() => import("../pages/NewsDetailPage.jsx"));
+const NewsEditPage = lazy(() => import("../pages/NewsEditPage.jsx"));
+const CategoriesPage = lazy(() => import("../pages/CategoriesPage.jsx"));
 
-import AiEditorPage from "../pages/AiEditorPage.jsx";
-import RundownsPage from "../pages/RundownsPage.jsx";
-import OnAirPage from "../pages/OnAirPage.jsx";
-import BroadcastStudioPage from "../pages/BroadcastStudioPage.jsx";
-import TeleprompterPage from "../pages/TeleprompterPage.jsx";
-import MessagesPage from "../pages/MessagesPage.jsx";
+const AiEditorPage = lazy(() => import("../pages/AiEditorPage.jsx"));
+const RundownsPage = lazy(() => import("../pages/RundownsPage.jsx"));
+const OnAirPage = lazy(() => import("../pages/OnAirPage.jsx"));
+const BroadcastStudioPage = lazy(() => import("../pages/BroadcastStudioPage.jsx"));
+const TeleprompterPage = lazy(() => import("../pages/TeleprompterPage.jsx"));
+const MessagesPage = lazy(() => import("../pages/MessagesPage.jsx"));
 
-import UsersPage from "../pages/UsersPage.jsx";
-import RegisterPage from "../pages/RegisterPage.jsx";
-import UserEditPage from "../pages/UserEditPage.jsx";
-import ActivityLogsPage from "../pages/ActivityLogsPage.jsx";
-import ProjectionsPage from "../pages/ProjectionsPage.jsx";
-import PresenterLocationsPage from "../pages/OperationalMapPage.jsx";
-import SettingsPage from "../pages/SettingsPage.jsx";
+const UsersPage = lazy(() => import("../pages/UsersPage.jsx"));
+const RegisterPage = lazy(() => import("../pages/RegisterPage.jsx"));
+const UserEditPage = lazy(() => import("../pages/UserEditPage.jsx"));
+const ActivityLogsPage = lazy(() => import("../pages/ActivityLogsPage.jsx"));
+const ProjectionsPage = lazy(() => import("../pages/ProjectionsPage.jsx"));
+const PresenterLocationsPage = lazy(() => import("../pages/OperationalMapPage.jsx"));
+const SettingsPage = lazy(() => import("../pages/SettingsPage.jsx"));
 
-import ForbiddenPage from "../pages/ForbiddenPage.jsx";
-import NotFoundPage from "../pages/NotFoundPage.jsx";
+const ForbiddenPage = lazy(() => import("../pages/ForbiddenPage.jsx"));
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage.jsx"));
 
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import RoleRoute from "./RoleRoute.jsx";
@@ -69,6 +71,7 @@ function AppRoutes() {
 
   return (
     <BrowserRouter>
+      <Suspense fallback={<LoadingState message="Cargando módulo..." />}>
       <Routes>
         <Route
           path="/login"
@@ -269,6 +272,7 @@ function AppRoutes() {
           element={<NotFoundPage />}
         />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

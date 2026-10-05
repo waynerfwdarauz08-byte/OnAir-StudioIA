@@ -24,7 +24,7 @@ function UserEditPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { user: authenticatedUser } = useAuth();
+  const { user: authenticatedUser, restoreSession } = useAuth();
 
   const [selectedUser, setSelectedUser] =
     useState(null);
@@ -146,6 +146,10 @@ function UserEditPage() {
         updatedUser
       );
 
+      if (selectedUser.id === authenticatedUser.id) {
+        await restoreSession();
+      }
+
       navigate("/admin/users", {
         replace: true,
         state: {
@@ -190,12 +194,7 @@ function UserEditPage() {
       {!loading && !loadError && selectedUser && (
         <UserForm
           mode="edit"
-          initialValues={{
-            name: selectedUser.name,
-            email: selectedUser.email,
-            role: selectedUser.role,
-            active: selectedUser.active,
-          }}
+          initialValues={selectedUser}
           submitting={submitting}
           serverError={serverError}
           lockRole={isEditingCurrentUser}

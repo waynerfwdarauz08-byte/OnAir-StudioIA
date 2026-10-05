@@ -301,13 +301,15 @@ function OnAirPage() {
       setSuccessMessage(
         "La transmisión fue finalizada correctamente."
       );
+
+      return true;
     } catch (error) {
       setActionError(
         error.message ||
           "No fue posible finalizar la transmisión."
       );
 
-      throw error;
+      return false;
     } finally {
       setChanging(false);
     }

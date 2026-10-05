@@ -3,6 +3,7 @@ import { request } from "./httpClient.js";
 const RESOURCE = "/activityLogs";
 
 const WORKFLOW_URL =
+  import.meta.env.VITE_N8N_ACTIVITY_WEBHOOK_URL ||
   "/n8n/webhook/onair-activity-log";
 
 export const activityService = {

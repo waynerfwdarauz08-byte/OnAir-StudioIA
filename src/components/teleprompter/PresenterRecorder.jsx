@@ -49,6 +49,9 @@ function PresenterRecorder() {
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
   const recordedUrlRef = useRef("");
+  const mountedRef = useRef(false);
+  const acquiringRef = useRef(false);
+  const [acquiring, setAcquiring] = useState(false);
 
   const [
     cameraActive,
@@ -92,7 +95,13 @@ function PresenterRecorder() {
   }, [recording]);
 
   useEffect(() => {
+    mountedRef.current = true;
     return () => {
+      mountedRef.current = false;
+      if (recorderRef.current) {
+        recorderRef.current.ondataavailable = null;
+        recorderRef.current.onstop = null;
+      }
       if (
         recorderRef.current?.state ===
         "recording"
@@ -115,6 +124,12 @@ function PresenterRecorder() {
   }, []);
 
   async function activateCamera() {
+    if (streamRef.current) {
+      return streamRef.current;
+    }
+    if (acquiringRef.current) {
+      return null;
+    }
     setError("");
 
     if (
@@ -128,6 +143,8 @@ function PresenterRecorder() {
       return null;
     }
 
+    acquiringRef.current = true;
+    setAcquiring(true);
     try {
       const stream =
         await navigator.mediaDevices
@@ -147,6 +164,11 @@ function PresenterRecorder() {
             },
           });
 
+      if (!mountedRef.current) {
+        stream.getTracks().forEach((track) => track.stop());
+        return null;
+      }
+
       streamRef.current = stream;
 
       if (videoRef.current) {
@@ -158,6 +180,9 @@ function PresenterRecorder() {
 
       return stream;
     } catch (cameraError) {
+      if (!mountedRef.current) {
+        return null;
+      }
       if (
         cameraError.name ===
         "NotAllowedError"
@@ -179,6 +204,11 @@ function PresenterRecorder() {
       }
 
       return null;
+    } finally {
+      acquiringRef.current = false;
+      if (mountedRef.current) {
+        setAcquiring(false);
+      }
     }
   }
 
@@ -209,6 +239,9 @@ function PresenterRecorder() {
   }
 
   async function startRecording() {
+    if (recorderRef.current?.state === "recording" || acquiringRef.current) {
+      return;
+    }
     setError("");
 
     let stream =
@@ -267,6 +300,7 @@ function PresenterRecorder() {
       };
 
       recorder.onstop = () => {
+        setRecording(false);
         if (
           chunksRef.current.length ===
           0
@@ -428,6 +462,7 @@ function PresenterRecorder() {
             <button
               type="button"
               className="button button-secondary"
+              disabled={acquiring}
               onClick={activateCamera}
             >
               Activar cámara
@@ -449,6 +484,7 @@ function PresenterRecorder() {
             <button
               type="button"
               className="button button-primary"
+              disabled={acquiring}
               onClick={startRecording}
             >
               Iniciar grabación

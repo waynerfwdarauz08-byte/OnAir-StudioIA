@@ -150,8 +150,10 @@ function OnAirConsole({
   }
 
   async function confirmStop() {
-    await onStop();
-    setStopDialogOpen(false);
+    const stopped = await onStop();
+    if (stopped !== false) {
+      setStopDialogOpen(false);
+    }
   }
 
   return (

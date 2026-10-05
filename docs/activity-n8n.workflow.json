@@ -1,0 +1,46 @@
+{
+  "name": "OnAir Studio - Registro de inicios de sesión",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "onair-activity-log",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson",
+        "options": {}
+      },
+      "id": "13ff693c-bf09-47c3-b1fb-d52d6afc9ea7",
+      "name": "Recibir inicio de sesión",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "ed12a243-1dcb-432c-989f-91f1a4146828"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3001/activityLogs",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { action: $json.body.action, description: $json.body.description, userId: $json.body.userId, userName: $json.body.userName, module: $json.body.module, createdAt: $now.toISO() } }}",
+        "options": {
+          "timeout": 3000
+        }
+      },
+      "id": "3a762cc3-b6ef-4769-873a-12bf4e67b6d8",
+      "name": "Guardar en JSON Server",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [280, 0]
+    }
+  ],
+  "connections": {
+    "Recibir inicio de sesión": {
+      "main": [[{ "node": "Guardar en JSON Server", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

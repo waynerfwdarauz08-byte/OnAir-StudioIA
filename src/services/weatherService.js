@@ -23,6 +23,7 @@ export const weatherService = {
           "apparent_temperature",
           "precipitation",
           "weather_code",
+          "is_day",
           "wind_speed_10m",
         ].join(","),
         timezone:

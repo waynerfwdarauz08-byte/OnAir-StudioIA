@@ -6,6 +6,7 @@ import {
 
 import { EDITORIAL_STATUS_LABELS } from "../../utils/news.js";
 import useAccessibility from "../../hooks/useAccessibility.js";
+import { cloudinaryService } from "../../services/cloudinaryService.js";
 
 const EMPTY_VALUES = {
   sourceText: "",
@@ -19,6 +20,12 @@ const EMPTY_VALUES = {
   categoryId: "",
   editorialStatus: "draft",
   estimatedDurationSeconds: 0,
+  imageUrl: "",
+  imagePublicId: "",
+  imageAlt: "",
+  imageFit: "cover",
+  imagePositionX: 50,
+  imagePositionY: 50,
 };
 
 const STATUS_LABELS_EN = {
@@ -121,6 +128,8 @@ function NewsForm({
     normalizedInitialValues.lowerThirdOptions.join("\n")
   );
   const [errors, setErrors] = useState({});
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageError, setImageError] = useState("");
 
   useEffect(() => {
     setValues(normalizedInitialValues);
@@ -142,6 +151,41 @@ function NewsForm({
       ...currentErrors,
       [name]: "",
     }));
+  }
+
+  async function handleImageSelection(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    setImageError("");
+
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const uploadedImage = await cloudinaryService.uploadNewsImage(file);
+      setValues((currentValues) => ({
+        ...currentValues,
+        ...uploadedImage,
+        imageAlt: currentValues.imageAlt || "",
+      }));
+    } catch (uploadError) {
+      setImageError(uploadError.message || "No fue posible subir la imagen.");
+    } finally {
+      setUploadingImage(false);
+    }
+  }
+
+  function removeImage() {
+    setValues((currentValues) => ({
+      ...currentValues,
+      imageUrl: "",
+      imagePublicId: "",
+      imageAlt: "",
+      imageFit: "cover",
+      imagePositionX: 50,
+      imagePositionY: 50,
+    }));
+    setImageError("");
   }
 
   function handleLowerThirdChange(event) {
@@ -183,6 +227,8 @@ function NewsForm({
         values.selectedLowerThird.trim(),
       estimatedDurationSeconds:
         Number(values.estimatedDurationSeconds) || 0,
+      imagePositionX: Number(values.imagePositionX),
+      imagePositionY: Number(values.imagePositionY),
     };
 
     const validationErrors = validateNews(
@@ -340,6 +386,111 @@ function NewsForm({
               </small>
             )}
           </div>
+        </div>
+
+        <div className="news-image-field">
+          <div className="form-field">
+            <label htmlFor="news-image">
+              {isEnglish ? "News image (Cloudinary)" : "Imagen de la noticia (Cloudinary)"}
+            </label>
+            <input
+              id="news-image"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              disabled={uploadingImage || submitting}
+              onChange={handleImageSelection}
+            />
+            <small className="field-help">
+              {isEnglish ? "JPG, PNG or WebP · up to 5 MB" : "JPG, PNG o WebP · máximo 5 MB"}
+            </small>
+          </div>
+
+          {uploadingImage && (
+            <p className="field-help" role="status">
+              {isEnglish ? "Uploading image to Cloudinary..." : "Subiendo imagen a Cloudinary..."}
+            </p>
+          )}
+          {imageError && <p className="field-error" role="alert">{imageError}</p>}
+
+          {values.imageUrl && (
+            <div className="news-image-preview">
+              <img
+                src={values.imageUrl}
+                alt={values.imageAlt || values.title}
+                style={{
+                  objectFit: values.imageFit || "cover",
+                  objectPosition: `${values.imagePositionX ?? 50}% ${values.imagePositionY ?? 50}%`,
+                }}
+              />
+              <div className="news-image-preview-fields">
+                <label htmlFor="news-image-alt">
+                  {isEnglish ? "Image description" : "Descripción de la imagen"}
+                </label>
+                <input
+                  id="news-image-alt"
+                  name="imageAlt"
+                  type="text"
+                  maxLength="180"
+                  value={values.imageAlt}
+                  onChange={handleChange}
+                  placeholder={isEnglish ? "Briefly describe the image" : "Describe brevemente la imagen"}
+                />
+                <label htmlFor="news-image-fit">
+                  {isEnglish ? "Image display" : "Ajuste de la imagen"}
+                </label>
+                <select
+                  id="news-image-fit"
+                  name="imageFit"
+                  value={values.imageFit || "cover"}
+                  onChange={handleChange}
+                >
+                  <option value="cover">
+                    {isEnglish ? "Fill frame (may crop)" : "Llenar marco (puede recortar)"}
+                  </option>
+                  <option value="contain">
+                    {isEnglish ? "Show complete image" : "Mostrar imagen completa"}
+                  </option>
+                </select>
+                {values.imageFit !== "contain" && (
+                  <>
+                    <label htmlFor="news-image-position-x">
+                      {isEnglish
+                        ? `Horizontal framing (${values.imagePositionX ?? 50}%)`
+                        : `Encuadre horizontal (${values.imagePositionX ?? 50}%)`}
+                    </label>
+                    <input
+                      id="news-image-position-x"
+                      name="imagePositionX"
+                      type="range"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value={values.imagePositionX ?? 50}
+                      onChange={handleChange}
+                    />
+                    <label htmlFor="news-image-position-y">
+                      {isEnglish
+                        ? `Vertical framing (${values.imagePositionY ?? 50}%)`
+                        : `Encuadre vertical (${values.imagePositionY ?? 50}%)`}
+                    </label>
+                    <input
+                      id="news-image-position-y"
+                      name="imagePositionY"
+                      type="range"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value={values.imagePositionY ?? 50}
+                      onChange={handleChange}
+                    />
+                  </>
+                )}
+                <button className="button button-secondary" type="button" onClick={removeImage} disabled={submitting}>
+                  {isEnglish ? "Remove image" : "Quitar imagen"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -550,7 +701,7 @@ function NewsForm({
         <button
           className="button button-primary"
           type="submit"
-          disabled={submitting}
+          disabled={submitting || uploadingImage}
         >
           {submitting
             ? isEnglish

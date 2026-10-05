@@ -17,11 +17,13 @@ const AVAILABLE_THEMES = [
 ];
 
 function getInitialTheme() {
-  const savedTheme =
-    localStorage.getItem(STORAGE_KEY);
-
-  if (AVAILABLE_THEMES.includes(savedTheme)) {
-    return savedTheme;
+  try {
+    const savedTheme = localStorage.getItem(STORAGE_KEY);
+    if (AVAILABLE_THEMES.includes(savedTheme)) {
+      return savedTheme;
+    }
+  } catch {
+    // El tema sigue disponible cuando el navegador bloquea el almacenamiento.
   }
 
   return "dark";
@@ -38,10 +40,11 @@ function ThemeProvider({ children }) {
       theme
     );
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      theme
-    );
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+      // Conserva el tema en memoria si no se puede persistir.
+    }
   }, [theme]);
 
   const setTheme = useCallback((newTheme) => {

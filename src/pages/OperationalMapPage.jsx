@@ -166,7 +166,7 @@ function OperationalMapPage() {
 
   async function saveHeadquarters(event) {
     event.preventDefault();
-    if (!validCoordinates(headquartersForm) || Number(headquartersForm.averageSpeedKmh) < 10 || Number(headquartersForm.averageSpeedKmh) > 130) {
+    if (!validCoordinates(headquartersForm) || !Number.isFinite(Number(headquartersForm.averageSpeedKmh)) || Number(headquartersForm.averageSpeedKmh) < 10 || Number(headquartersForm.averageSpeedKmh) > 130) {
       setError(t("Revisa coordenadas y velocidad (10–130 km/h).", "Check coordinates and speed (10–130 km/h).")); return;
     }
     await perform(async () => {

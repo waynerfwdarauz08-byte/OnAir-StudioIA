@@ -7,6 +7,8 @@ import {
 } from "react";
 
 import { userService } from "../services/userService.js";
+import { activityService } from "../services/activityService.js";
+import { getRoleLabel } from "../utils/roles.js";
 
 const SESSION_KEY = "onair_session";
 
@@ -112,6 +114,9 @@ export function AuthProvider({ children }) {
     } = selectedUser;
 
     setUser(safeUser);
+
+    // El registro es independiente: un fallo de n8n no bloquea el acceso.
+    void activityService.registerLogin(safeUser, getRoleLabel(safeUser.role));
 
     return safeUser;
   }

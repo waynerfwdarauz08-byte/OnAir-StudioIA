@@ -155,6 +155,17 @@ function NewsDetailPage() {
               {newsItem.summary ||
                 "Esta noticia no tiene resumen."}
             </p>
+            {newsItem.imageUrl && (
+              <img
+                className="news-detail-image"
+                src={newsItem.imageUrl}
+                alt={newsItem.imageAlt || newsItem.title}
+                style={{
+                  objectFit: newsItem.imageFit || "cover",
+                  objectPosition: `${newsItem.imagePositionX ?? 50}% ${newsItem.imagePositionY ?? 50}%`,
+                }}
+              />
+            )}
           </header>
 
           <section

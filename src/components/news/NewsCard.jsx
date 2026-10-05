@@ -22,6 +22,19 @@ function NewsCard({
 
   return (
     <article className="news-card">
+      {newsItem.imageUrl && (
+        <img
+          className="news-card-image"
+          src={newsItem.imageUrl}
+          alt={newsItem.imageAlt || newsItem.title}
+          loading="lazy"
+          style={{
+            objectFit: newsItem.imageFit || "cover",
+            objectPosition: `${newsItem.imagePositionX ?? 50}% ${newsItem.imagePositionY ?? 50}%`,
+          }}
+        />
+      )}
+
       <div className="news-card-meta">
         <StatusBadge status={newsItem.editorialStatus} />
         <span>
