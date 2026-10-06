@@ -95,7 +95,9 @@ function RundownCoverageChart({ rundowns = [] }) {
   } = useAccessibility();
   const isEnglish = language === "en";
   const chartColor =
-    colorVision === "colorblind" ? "#e69f00" : "#8b5cf6";
+    colorVision === "colorblind"
+      ? "#e69f00"
+      : "var(--dashboard-secondary, #8b5cf6)";
 
   const chartData = rundowns
     .map((rundown) => {
@@ -240,6 +242,8 @@ function RundownCoverageChart({ rundowns = [] }) {
                 radius={[8, 8, 2, 2]}
                 maxBarSize={70}
                 isAnimationActive={!reduceMotion}
+                animationDuration={1000}
+                animationEasing="ease-out"
               />
             </BarChart>
           </ResponsiveContainer>

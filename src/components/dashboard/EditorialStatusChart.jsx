@@ -51,10 +51,10 @@ const STATUS_LABELS = {
 };
 
 const STANDARD_COLORS = {
-  draft: "#64748b",
-  review: "#f59e0b",
-  correction: "#ef4444",
-  approved: "#22c55e",
+  draft: "var(--dashboard-muted, #64748b)",
+  review: "var(--dashboard-warning, #f59e0b)",
+  correction: "var(--dashboard-danger, #ef4444)",
+  approved: "var(--dashboard-success, #22c55e)",
 };
 
 const COLORBLIND_FRIENDLY_COLORS = {
@@ -111,7 +111,7 @@ function ChartTooltip({
 }
 
 function EditorialStatusChart({ news = [] }) {
-  const { language, colorVision } = useAccessibility();
+  const { language, colorVision, reduceMotion } = useAccessibility();
   const isEnglish = language === "en";
   const labels = STATUS_LABELS[isEnglish ? "en" : "es"];
 
@@ -234,6 +234,10 @@ function EditorialStatusChart({ news = [] }) {
               minPointSize={5}
               radius={[8, 8, 2, 2]}
               maxBarSize={80}
+            isAnimationActive={!reduceMotion}
+            animationDuration={1100}
+            animationEasing="ease-out"
+            activeBar={{ filter: "brightness(1.2)" }}
             >
               {chartData.map((chartItem) => (
                 <Cell

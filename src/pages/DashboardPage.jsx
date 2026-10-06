@@ -190,7 +190,26 @@ function DashboardPage() {
       ];
 
   return (
-    <>
+    <main className="dashboard-page">
+      <div className="dashboard-newsroom-backdrop" aria-hidden="true">
+        <svg className="dashboard-newsroom-icon dashboard-newsroom-mic" viewBox="0 0 96 120" fill="none">
+          <rect x="34" y="10" width="28" height="58" rx="14" />
+          <path d="M23 48v7a25 25 0 0 0 50 0v-7M48 80v20m-17 0h34" />
+          <path d="M40 24h16M40 34h16M40 44h16" />
+        </svg>
+        <svg className="dashboard-newsroom-icon dashboard-newsroom-camera" viewBox="0 0 140 100" fill="none">
+          <path d="M15 28h70a10 10 0 0 1 10 10v44a10 10 0 0 1-10 10H15A10 10 0 0 1 5 82V38a10 10 0 0 1 10-10Z" />
+          <path d="m95 47 38-20v66L95 72zM26 28l10-16h28l10 16" />
+          <circle cx="53" cy="60" r="17" />
+        </svg>
+        <svg className="dashboard-newsroom-icon dashboard-newsroom-mic-alt" viewBox="0 0 96 120" fill="none">
+          <rect x="34" y="10" width="28" height="58" rx="14" />
+          <path d="M23 48v7a25 25 0 0 0 50 0v-7M48 80v20m-17 0h34" />
+          <path d="M40 24h16M40 34h16M40 44h16" />
+        </svg>
+        <span className="dashboard-newsroom-orbit dashboard-newsroom-orbit-one" />
+        <span className="dashboard-newsroom-orbit dashboard-newsroom-orbit-two" />
+      </div>
       <PageHeader
         eyebrow={isEnglish ? "OVERVIEW" : "VISTA GENERAL"}
         title={
@@ -392,7 +411,7 @@ function DashboardPage() {
           </section>
         </>
       )}
-    </>
+    </main>
   );
 }
 

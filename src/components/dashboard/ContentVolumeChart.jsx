@@ -99,7 +99,9 @@ function ContentVolumeChart({ news = [] }) {
     : null;
 
   const chartColor =
-    colorVision === "colorblind" ? "#0072b2" : "#00c7f2";
+    colorVision === "colorblind"
+      ? "#0072b2"
+      : "var(--dashboard-accent, #00c7f2)";
 
   const chartData = latestDate
     ? Array.from({ length: 7 }, (ignoredValue, index) => {
@@ -268,6 +270,8 @@ function ContentVolumeChart({ news = [] }) {
                 fill="url(#content-volume-gradient)"
                 activeDot={{ r: 5 }}
                 isAnimationActive={!reduceMotion}
+                animationDuration={1200}
+                animationEasing="ease-in-out"
               />
             </AreaChart>
           </ResponsiveContainer>
