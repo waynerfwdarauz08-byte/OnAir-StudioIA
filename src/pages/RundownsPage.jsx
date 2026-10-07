@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
@@ -54,6 +55,7 @@ function sortRundowns(rundowns) {
 }
 
 function RundownsPage() {
+  const { translate } = useTranslation();
   const { user } = useAuth();
 
   const closeModalButtonRef = useRef(null);
@@ -269,7 +271,7 @@ function RundownsPage() {
       };
 
       const createdRundown =
-        await rundownService.create(newRundown);
+        await rundownService.create(newRundown, user);
 
       setRundowns((currentRundowns) =>
         sortRundowns([
@@ -341,8 +343,7 @@ function RundownsPage() {
       const updatedRundown =
         await rundownService.partialUpdate(
           rundownToEdit.id,
-          changes
-        );
+          changes, user);
 
       setRundowns((currentRundowns) =>
         sortRundowns(
@@ -391,8 +392,7 @@ function RundownsPage() {
       const updatedRundown =
         await rundownService.partialUpdate(
           selectedRundown.id,
-          changes
-        );
+          changes, user);
 
       setRundowns((currentRundowns) =>
         currentRundowns.map((rundown) =>
@@ -436,8 +436,7 @@ function RundownsPage() {
 
     try {
       await rundownService.remove(
-        rundownToDelete.id
-      );
+        rundownToDelete.id, user);
 
       const remainingRundowns =
         rundowns.filter(
@@ -476,13 +475,13 @@ function RundownsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="ORGANIZACIÓN EDITORIAL"
-        title="Escaletas"
-        description="Organiza el orden de las noticias y prepara la programación que será presentada."
+        eyebrow={translate("ORGANIZACIÓN EDITORIAL")}
+        title={translate("Escaletas")}
+        description={translate("Organiza el orden de las noticias y prepara la programación que será presentada.")}
       />
 
       {loading && (
-        <LoadingState message="Cargando las escaletas y noticias disponibles..." />
+        <LoadingState message={translate("Cargando las escaletas y noticias disponibles...")} />
       )}
 
       {!loading && loadError && (
@@ -503,7 +502,7 @@ function RundownsPage() {
               className="success-alert"
               role="status"
             >
-              {successMessage}
+              {translate(successMessage)}
             </div>
           )}
 
@@ -512,7 +511,7 @@ function RundownsPage() {
               className="form-alert"
               role="alert"
             >
-              {workspaceError}
+              {translate(workspaceError)}
             </div>
           )}
 
@@ -529,11 +528,9 @@ function RundownsPage() {
             >
               <header className="rundowns-list-heading">
                 <div>
-                  <span>EDICIONES REGISTRADAS</span>
+                  <span>{translate("EDICIONES REGISTRADAS")}</span>
 
-                  <h2 id="rundowns-list-title">
-                    Escaletas disponibles
-                  </h2>
+                  <h2 id="rundowns-list-title">{translate("Escaletas disponibles")}</h2>
                 </div>
 
                 <strong>{rundowns.length}</strong>
@@ -567,8 +564,8 @@ function RundownsPage() {
                 </div>
               ) : (
                 <EmptyState
-                  title="No hay escaletas registradas"
-                  description="Crea la primera edición informativa utilizando el formulario."
+                  title={translate("No hay escaletas registradas")}
+                  description={translate("Crea la primera edición informativa utilizando el formulario.")}
                 />
               )}
             </section>
@@ -596,11 +593,9 @@ function RundownsPage() {
           >
             <header className="rundown-modal-header">
               <div>
-                <span>CONSOLA EDITORIAL</span>
+                <span>{translate("CONSOLA EDITORIAL")}</span>
 
-                <h2 id="rundown-modal-title">
-                  Edición de escaleta
-                </h2>
+                <h2 id="rundown-modal-title">{translate("Edición de escaleta")}</h2>
               </div>
 
               <button
@@ -608,8 +603,8 @@ function RundownsPage() {
                 className="rundown-modal-close"
                 type="button"
                 disabled={updating}
-                aria-label="Cerrar edición"
-                title="Cerrar edición"
+                aria-label={translate("Cerrar edición")}
+                title={translate("Cerrar edición")}
                 onClick={handleCloseConsole}
               >
                 ×
@@ -622,7 +617,7 @@ function RundownsPage() {
                   className="form-alert"
                   role="alert"
                 >
-                  {workspaceError}
+                  {translate(workspaceError)}
                 </div>
               )}
 
@@ -656,13 +651,13 @@ function RundownsPage() {
 
       <ConfirmDialog
         open={Boolean(rundownToDelete)}
-        title="Eliminar escaleta"
+        title={translate("Eliminar escaleta")}
         message={
           rundownToDelete
-            ? `¿Deseas eliminar “${rundownToDelete.name}”? Esta acción no eliminará las noticias asociadas.`
+            ? translate("¿Deseas enviar “{0}” a la papelera? Podrás restaurarla después. Las noticias asociadas se conservarán.", {0: rundownToDelete.name})
             : ""
         }
-        confirmText="Eliminar escaleta"
+        confirmText={translate("Eliminar escaleta")}
         danger
         loading={Boolean(deletingId)}
         onConfirm={confirmDeleteRundown}

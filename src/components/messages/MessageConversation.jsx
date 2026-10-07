@@ -144,7 +144,7 @@ function MessageConversation({
 
             <p>
               {getRoleLabel(
-                selectedContact.role
+                selectedContact.role, language
               )}
 
               <span aria-hidden="true">

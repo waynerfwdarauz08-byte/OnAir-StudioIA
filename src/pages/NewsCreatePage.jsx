@@ -87,7 +87,7 @@ function NewsCreatePage() {
         isDemo: false,
       };
 
-      await newsService.create(newNews);
+      await newsService.create(newNews, user);
       navigate("/news", { replace: true });
     } catch (createError) {
       setError(createError.message);

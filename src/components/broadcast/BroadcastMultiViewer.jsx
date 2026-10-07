@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import BroadcastMonitor from "./BroadcastMonitor.jsx";
 
 function BroadcastMultiViewer({
@@ -9,6 +10,7 @@ function BroadcastMultiViewer({
   onPreview,
   onTake,
 }) {
+  const { translate } = useTranslation();
   return (
     <section
       className="broadcast-multiviewer"
@@ -18,15 +20,10 @@ function BroadcastMultiViewer({
         <div>
           <span>MULTIVIEWER</span>
 
-          <h2 id="multiviewer-title">
-            Matriz de señales
-          </h2>
+          <h2 id="multiviewer-title">{translate("Matriz de señales")}</h2>
         </div>
 
-        <p>
-          Un clic prepara la señal en Preview. Doble clic la
-          envía directamente al aire.
-        </p>
+        <p>{translate("Un clic prepara la señal en Preview. Doble clic la envía directamente al aire.")}</p>
 
         <div className="broadcast-status-legend">
           <span className="program-legend">

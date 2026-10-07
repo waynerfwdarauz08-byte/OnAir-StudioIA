@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useState,
@@ -16,8 +17,11 @@ import { activityService } from "../services/activityService.js";
 import useAuth from "../hooks/useAuth.js";
 import useTheme from "../hooks/useTheme.js";
 import useAccessibility from "../hooks/useAccessibility.js";
+import useSystemSettings from "../hooks/useSystemSettings.js";
 
 function SettingsPage() {
+  const { translate } = useTranslation();
+  const { applySettings } = useSystemSettings();
   const { user } = useAuth();
   const { theme, setTheme } = useTheme();
 
@@ -66,6 +70,7 @@ function SettingsPage() {
           wordsPerMinute:
             Number(data.wordsPerMinute) || 150,
         });
+        applySettings(data);
 
         if (
           ["dark", "light", "contrast"].includes(data.theme)
@@ -91,7 +96,7 @@ function SettingsPage() {
     loadSettings();
 
     return () => controller.abort();
-  }, [reloadKey, setTheme, isEnglish]);
+  }, [reloadKey, setTheme, applySettings]);
 
   function validateSettings() {
     if (settings.channelName.trim().length < 3) {
@@ -139,6 +144,7 @@ function SettingsPage() {
         channelName: savedSettings.channelName,
         wordsPerMinute: Number(savedSettings.wordsPerMinute),
       });
+      applySettings(savedSettings);
 
       setSuccessMessage(
         isEnglish
@@ -228,7 +234,7 @@ function SettingsPage() {
               role="status"
             >
               <span aria-hidden="true">✓</span>
-              <p>{successMessage}</p>
+              <p>{translate(successMessage)}</p>
             </div>
           )}
 
@@ -238,7 +244,7 @@ function SettingsPage() {
               role="alert"
             >
               <span aria-hidden="true">!</span>
-              <p>{error}</p>
+              <p>{translate(error)}</p>
             </div>
           )}
 

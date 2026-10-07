@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useState,
@@ -78,6 +79,7 @@ function UserForm({
   onSubmit,
   onCancel,
 }) {
+  const { translate, language } = useTranslation();
   const [formData, setFormData] = useState(emptyForm);
   const [errors, setErrors] = useState({});
 
@@ -139,8 +141,8 @@ function UserForm({
     >
       {serverError && (
         <div className="form-error-summary" role="alert">
-          <strong>No se pudo guardar el usuario</strong>
-          <p>{serverError}</p>
+          <strong>{translate("No se pudo guardar el usuario")}</strong>
+          <p>{translate(serverError)}</p>
         </div>
       )}
 
@@ -149,26 +151,21 @@ function UserForm({
           <span>01</span>
 
           <div>
-            <h2>Información personal</h2>
-            <p>
-              Datos que permitirán identificar al usuario
-              dentro de la plataforma.
-            </p>
+            <h2>{translate("Información personal")}</h2>
+            <p>{translate("Datos que permitirán identificar al usuario dentro de la plataforma.")}</p>
           </div>
         </div>
 
         <div className="form-grid">
           <div className="form-field form-field-full">
-            <label htmlFor="user-name">
-              Nombre completo
-            </label>
+            <label htmlFor="user-name">{translate("Nombre completo")}</label>
 
             <input
               id="user-name"
               name="name"
               type="text"
               value={formData.name}
-              placeholder="Nombre y apellidos"
+              placeholder={translate("Nombre y apellidos")}
               autoComplete="name"
               disabled={submitting}
               aria-invalid={Boolean(errors.name)}
@@ -185,15 +182,13 @@ function UserForm({
                 id="user-name-error"
                 className="field-error"
               >
-                {errors.name}
+                {translate(errors.name)}
               </span>
             )}
           </div>
 
           <div className="form-field form-field-full">
-            <label htmlFor="user-email">
-              Correo electrónico
-            </label>
+            <label htmlFor="user-email">{translate("Correo electrónico")}</label>
 
             <input
               id="user-email"
@@ -217,7 +212,7 @@ function UserForm({
                 id="user-email-error"
                 className="field-error"
               >
-                {errors.email}
+                {translate(errors.email)}
               </span>
             )}
           </div>
@@ -229,11 +224,11 @@ function UserForm({
           <span>02</span>
 
           <div>
-            <h2>Acceso y seguridad</h2>
+            <h2>{translate("Acceso y seguridad")}</h2>
             <p>
               {mode === "create"
-                ? "Define la contraseña inicial de demostración."
-                : "Deja estos campos vacíos para conservar la contraseña actual."}
+                ? translate("Define la contraseña inicial de demostración.")
+                : translate("Deja estos campos vacíos para conservar la contraseña actual.")}
             </p>
           </div>
         </div>
@@ -242,8 +237,8 @@ function UserForm({
           <div className="form-field">
             <label htmlFor="user-password">
               {mode === "create"
-                ? "Contraseña"
-                : "Nueva contraseña"}
+                ? translate("Contraseña")
+                : translate("Nueva contraseña")}
             </label>
 
             <input
@@ -253,8 +248,8 @@ function UserForm({
               value={formData.password}
               placeholder={
                 mode === "create"
-                  ? "Contraseña inicial"
-                  : "Opcional"
+                  ? translate("Contraseña inicial")
+                  : translate("Opcional")
               }
               autoComplete="new-password"
               disabled={submitting}
@@ -272,22 +267,20 @@ function UserForm({
                 id="user-password-error"
                 className="field-error"
               >
-                {errors.password}
+                {translate(errors.password)}
               </span>
             )}
           </div>
 
           <div className="form-field">
-            <label htmlFor="confirm-password">
-              Confirmar contraseña
-            </label>
+            <label htmlFor="confirm-password">{translate("Confirmar contraseña")}</label>
 
             <input
               id="confirm-password"
               name="confirmPassword"
               type="password"
               value={formData.confirmPassword}
-              placeholder="Repite la contraseña"
+              placeholder={translate("Repite la contraseña")}
               autoComplete="new-password"
               disabled={submitting}
               aria-invalid={Boolean(
@@ -306,7 +299,7 @@ function UserForm({
                 id="confirm-password-error"
                 className="field-error"
               >
-                {errors.confirmPassword}
+                {translate(errors.confirmPassword)}
               </span>
             )}
           </div>
@@ -318,17 +311,14 @@ function UserForm({
           <span>03</span>
 
           <div>
-            <h2>Permisos y estado</h2>
-            <p>
-              Determina los módulos disponibles para esta
-              cuenta.
-            </p>
+            <h2>{translate("Permisos y estado")}</h2>
+            <p>{translate("Determina los módulos disponibles para esta cuenta.")}</p>
           </div>
         </div>
 
         <div className="form-grid">
           <div className="form-field">
-            <label htmlFor="user-role">Rol</label>
+            <label htmlFor="user-role">{translate("Rol")}</label>
 
             <select
               id="user-role"
@@ -340,29 +330,24 @@ function UserForm({
             >
               {Object.values(ROLES).map((role) => (
                 <option key={role} value={role}>
-                  {getRoleLabel(role)}
+                  {getRoleLabel(role, language)}
                 </option>
               ))}
             </select>
 
             {lockRole && (
-              <span className="field-help">
-                No puedes cambiar el rol de tu propia
-                sesión.
-              </span>
+              <span className="field-help">{translate("No puedes cambiar el rol de tu propia sesión.")}</span>
             )}
 
             {errors.role && (
               <span className="field-error">
-                {errors.role}
+                {translate(errors.role)}
               </span>
             )}
           </div>
 
           <div className="form-field">
-            <span className="field-label">
-              Estado de la cuenta
-            </span>
+            <span className="field-label">{translate("Estado de la cuenta")}</span>
 
             <label className="checkbox-control">
               <input
@@ -374,17 +359,13 @@ function UserForm({
               />
 
               <span>
-                <strong>Usuario activo</strong>
-                <small>
-                  Puede iniciar sesión en la plataforma.
-                </small>
+                <strong>{translate("Usuario activo")}</strong>
+                <small>{translate("Puede iniciar sesión en la plataforma.")}</small>
               </span>
             </label>
 
             {lockActive && (
-              <span className="field-help">
-                No puedes desactivar tu propia sesión.
-              </span>
+              <span className="field-help">{translate("No puedes desactivar tu propia sesión.")}</span>
             )}
           </div>
         </div>
@@ -396,9 +377,7 @@ function UserForm({
           className="button button-secondary"
           disabled={submitting}
           onClick={onCancel}
-        >
-          Cancelar
-        </button>
+        >{translate("Cancelar")}</button>
 
         <button
           type="submit"
@@ -406,10 +385,10 @@ function UserForm({
           disabled={submitting}
         >
           {submitting
-            ? "Guardando..."
+            ? translate("Guardando...")
             : mode === "create"
-              ? "Registrar usuario"
-              : "Guardar cambios"}
+              ? translate("Registrar usuario")
+              : translate("Guardar cambios")}
         </button>
       </div>
     </form>

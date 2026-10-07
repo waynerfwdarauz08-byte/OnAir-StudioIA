@@ -505,6 +505,36 @@
       "imageUrl": "https://res.cloudinary.com/vdbav3js/image/upload/v1791221120/wpiiinknjgbvtydqfdeh.png",
       "imagePublicId": "wpiiinknjgbvtydqfdeh",
       "imageAlt": ""
+    },
+    {
+      "id": "z3wqk8W7xdg",
+      "sourceText": "Smirnoff se declara en bancarrota debido a que inversionistas dejaron de invertir. También, en la sede principal,. asaltaron y llevaron mas de 5mil productos de la marca.",
+      "sourceName": "SMIRNOFF EN BANCARROTA",
+      "sourceUrl": "",
+      "title": "Smirnoff se declara en bancarrota y reporta asalto en su sede principal",
+      "summary": "La marca Smirnoff se ha declarado en bancarrota tras perder el respaldo de sus inversionistas. A esta crisis financiera se suma un reciente asalto registrado en su sede principal, donde se sustrajeron más de cinco mil productos.",
+      "script": "Buenas noches. Les presentamos una noticia de última hora en el ámbito empresarial e internacional.\n\nLa reconocida marca de bebidas Smirnoff se ha declarado formalmente en bancarrota. De acuerdo con los primeros reportes disponibles, esta difícil determinación financiera se produce luego de que los inversionistas decidieran cesar sus aportes de capital a la compañía.\n\nLa pérdida de este respaldo económico clave ha dejado a la empresa en una posición insostenible, desencadenando el inicio de este proceso de quiebra.\n\nPero este no es el único revés que enfrenta la firma. En medio de este adverso escenario económico, se ha informado también sobre un grave incidente de seguridad ocurrido en su sede principal.\n\nSujetos asaltaron las instalaciones centrales de la compañía y lograron sustraer más de cinco mil productos de la marca. \n\nHasta el momento, estos son los hechos confirmados en torno a la compleja situación que atraviesa la empresa. Estaremos ampliando esta información a medida que se conozcan nuevos detalles oficiales. Continúen con más información en OnAir Studio AI.",
+      "lowerThirdOptions": [
+        "Smirnoff se declara en bancarrota tras retiro de inversionistas",
+        "Crisis en Smirnoff: reportan quiebra y asalto en su sede principal",
+        "Roban más de 5 mil productos en la sede principal de Smirnoff"
+      ],
+      "selectedLowerThird": "Roban más de 5 mil productos en la sede principal de Smirnoff",
+      "categoryId": "category-international",
+      "editorialStatus": "approved",
+      "estimatedDurationSeconds": 170,
+      "createdBy": "user-admin-001",
+      "updatedBy": "user-admin-001",
+      "createdAt": "2026-10-07T20:19:36.089Z",
+      "updatedAt": "2026-10-07T20:22:03.691Z",
+      "aiAssisted": true,
+      "isDemo": false,
+      "imageUrl": "https://res.cloudinary.com/vdbav3js/image/upload/v1791404415/fhgn4og1umcxmloc8pmx.png",
+      "imagePublicId": "fhgn4og1umcxmloc8pmx",
+      "imageAlt": "",
+      "imageFit": "cover",
+      "imagePositionX": 100,
+      "imagePositionY": 2
     }
   ],
   "rundowns": [
@@ -531,18 +561,31 @@
       "createdBy": "user-admin-001",
       "createdAt": "2026-09-28T16:29:58.806Z",
       "updatedAt": "2026-09-28T16:30:07.973Z"
+    },
+    {
+      "id": "aefcRcXbNdU",
+      "name": "Edición Informativa de Tarde-Noche",
+      "broadcastDate": "2026-10-07",
+      "newsIds": [
+        "z3wqk8W7xdg",
+        "Gm9jIfP6onQ",
+        "Ne9QBeaeAsY"
+      ],
+      "createdBy": "user-admin-001",
+      "createdAt": "2026-10-07T20:21:15.401Z",
+      "updatedAt": "2026-10-07T20:22:32.882Z"
     }
   ],
   "transmissions": [
     {
       "id": "current",
-      "newsId": "Ne9QBeaeAsY",
-      "rundownId": "iOyW1dXqbRk",
-      "onAir": true,
-      "startedAt": "2026-09-29T21:05:56.176Z",
-      "updatedAt": "2026-10-05T17:01:25.934Z",
+      "newsId": null,
+      "rundownId": null,
+      "onAir": false,
+      "startedAt": null,
+      "updatedAt": "2026-10-07T21:41:17.858Z",
       "updatedBy": "user-admin-001",
-      "eventId": "event-e542209a-ddb9-48e3-87ea-b0831dcb4154"
+      "eventId": null
     }
   ],
   "settings": [
@@ -550,7 +593,7 @@
       "id": "global",
       "channelName": "OnAir Studio AI",
       "wordsPerMinute": 150,
-      "updatedAt": "2026-10-01T21:04:11.810Z",
+      "updatedAt": "2026-10-07T21:40:24.324Z",
       "theme": "dark"
     }
   ],
@@ -1262,6 +1305,63 @@
       "occurredAt": "2026-10-06T17:03:39.048Z",
       "createdAt": "2026-10-06T17:03:39.400Z",
       "id": "s_LSbE8XgZA"
+    },
+    {
+      "eventId": "activity-08e4db85-8f34-4c9f-b9e1-15595735dd7c",
+      "action": "login_success",
+      "description": "Wayner Arauz inició sesión como Administrador.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userEmail": "waynervillalobos594@gmail.com",
+      "role": "admin",
+      "roleLabel": "Administrador",
+      "module": "authentication",
+      "sessionId": "0fbe077e-5237-4dfb-8e64-78b33e4946dd",
+      "sessionStartedAt": "2026-10-07T19:52:32.542Z",
+      "sessionEndedAt": null,
+      "durationSeconds": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0",
+      "language": "es-419",
+      "timeZone": "America/Costa_Rica",
+      "occurredAt": "2026-10-07T19:52:32.559Z",
+      "createdAt": "2026-10-07T19:52:35.220Z",
+      "id": "iDyy735hVE4"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-10-07T21:35:12.044Z",
+      "id": "ntvslHDItwk"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-10-07T21:35:19.525Z",
+      "id": "kZkfE4c5ixQ"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz updated the general system settings.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-10-07T21:36:43.589Z",
+      "id": "fsx0PI3Z_GY"
+    },
+    {
+      "action": "update",
+      "description": "Wayner Arauz actualizó la configuración general del sistema.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "module": "settings",
+      "createdAt": "2026-10-07T21:40:24.376Z",
+      "id": "hVe7CorBPGI"
     }
   ],
   "messages": [
@@ -1342,9 +1442,9 @@
       "senderId": "user-presenter-001",
       "receiverId": "user-admin-001",
       "content": "Hola!",
-      "read": false,
+      "read": true,
       "createdAt": "2026-10-06T15:13:58.087Z",
-      "readAt": null
+      "readAt": "2026-10-06T21:20:48.127Z"
     }
   ],
   "operationalMapSettings": [
@@ -1383,5 +1483,18 @@
       "id": "-kJlw6JudiM"
     }
   ],
+  "recordings": [
+    {
+      "id": "EAApAR9NbcA",
+      "userId": "user-admin-001",
+      "title": "Presentación",
+      "createdAt": "2026-10-07T20:46:09.704Z",
+      "durationSeconds": 6,
+      "size": 1894057,
+      "videoUrl": "https://res.cloudinary.com/vdbav3js/video/upload/v1791406005/lfsrozmdx9p4f3a7sjp2.webm",
+      "publicId": "lfsrozmdx9p4f3a7sjp2"
+    }
+  ],
+  "projectionHistory": [],
   "$schema": "./node_modules/json-server/schema.json"
 }

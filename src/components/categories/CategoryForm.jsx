@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import { useEffect, useState } from "react";
 import useAccessibility from "../../hooks/useAccessibility.js";
 
@@ -30,6 +31,7 @@ function CategoryForm({
   onSubmit,
   onCancel,
 }) {
+  const { translate } = useTranslation();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const [values, setValues] = useState({
@@ -117,7 +119,7 @@ function CategoryForm({
 
       {serverError && (
         <div className="form-alert" role="alert">
-          {serverError}
+          {translate(serverError)}
         </div>
       )}
 
@@ -147,7 +149,7 @@ function CategoryForm({
             id="category-name-error"
             className="field-error"
           >
-            {errors.name}
+            {translate(errors.name)}
           </small>
         )}
       </div>
@@ -178,7 +180,7 @@ function CategoryForm({
             id="category-description-error"
             className="field-error"
           >
-            {errors.description}
+            {translate(errors.description)}
           </small>
         )}
       </div>

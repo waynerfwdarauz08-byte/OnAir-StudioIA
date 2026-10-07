@@ -1,4 +1,5 @@
 import { request } from "./httpClient.js";
+import { validateTransmission } from "./editorialGuards.js";
 
 const RESOURCE = "/transmissions";
 const CURRENT_TRANSMISSION_ID = "current";
@@ -13,7 +14,8 @@ export const transmissionService = {
     );
   },
 
-  updateCurrent(transmission) {
+  async updateCurrent(transmission) {
+    await validateTransmission(transmission);
     return request(
       `${RESOURCE}/${CURRENT_TRANSMISSION_ID}`,
       {
@@ -26,7 +28,8 @@ export const transmissionService = {
     );
   },
 
-  partialUpdateCurrent(changes) {
+  async partialUpdateCurrent(changes) {
+    await validateTransmission(changes);
     return request(
       `${RESOURCE}/${CURRENT_TRANSMISSION_ID}`,
       {

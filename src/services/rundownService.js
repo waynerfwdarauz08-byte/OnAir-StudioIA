@@ -1,56 +1,50 @@
+import { mutateWithActivity } from "./editorialMutationService.js";
 import { request } from "./httpClient.js";
+import { getActiveRecords, getActiveRecord, trashService } from "./trashService.js";
 
 const RESOURCE = "/rundowns";
 
 export const rundownService = {
   getAll(signal) {
-    return request(RESOURCE, {
-      signal,
-    });
+    return getActiveRecords("rundowns", signal);
   },
 
   getById(id, signal) {
-    return request(
-      `${RESOURCE}/${encodeURIComponent(id)}`,
-      {
-        signal,
-      }
-    );
+    return getActiveRecord("rundowns", id, signal);
   },
 
-  create(rundown) {
-    return request(RESOURCE, {
+  create(rundown, actor) {
+    return mutateWithActivity(RESOURCE, {
       method: "POST",
       body: rundown,
-    });
+    }, actor, "rundowns", "create");
   },
 
-  update(id, rundown) {
-    return request(
+  update(id, rundown, actor) {
+    return mutateWithActivity(
       `${RESOURCE}/${encodeURIComponent(id)}`,
       {
         method: "PUT",
         body: rundown,
       }
-    );
+    , actor, "rundowns", "update");
   },
 
-  partialUpdate(id, changes) {
-    return request(
+  partialUpdate(id, changes, actor) {
+    return mutateWithActivity(
       `${RESOURCE}/${encodeURIComponent(id)}`,
       {
         method: "PATCH",
         body: changes,
       }
-    );
+    , actor, "rundowns", "update");
   },
 
-  remove(id) {
-    return request(
-      `${RESOURCE}/${encodeURIComponent(id)}`,
-      {
-        method: "DELETE",
-      }
-    );
+  async remove(id, actor) {
+    const transmission = await request("/transmissions/current");
+    if (String(transmission.rundownId) === String(id)) {
+      throw new Error("Esta escaleta está seleccionada en Control al aire. Retírala de la transmisión primero.");
+    }
+    return trashService.move("rundowns", id, actor);
   },
 };

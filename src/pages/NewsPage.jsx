@@ -1,3 +1,5 @@
+import useTranslation from "../hooks/useTranslation.js";
+import useAuth from "../hooks/useAuth.js";
 import {
   useEffect,
   useMemo,
@@ -21,6 +23,8 @@ import { categoryService } from "../services/categoryService.js";
 import useAccessibility from "../hooks/useAccessibility.js";
 
 function NewsPage() {
+  const { translate } = useTranslation();
+  const { user } = useAuth();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
 
@@ -149,7 +153,7 @@ function NewsPage() {
     setActionError("");
 
     try {
-      await newsService.remove(newsToDelete.id);
+      await newsService.remove(newsToDelete.id, user);
 
       setNews((currentNews) =>
         currentNews.filter(
@@ -160,7 +164,9 @@ function NewsPage() {
       setNewsToDelete(null);
     } catch (deleteError) {
       setActionError(
-        deleteError.message ||
+        (isEnglish && deleteError.code === "news-in-rundown"
+          ? "This news item is in a rundown. Remove it from the rundown first."
+          : deleteError.message) ||
           (isEnglish
             ? "Could not delete the news item."
             : "No fue posible eliminar la noticia.")
@@ -210,7 +216,7 @@ function NewsPage() {
 
       {actionError && (
         <div className="form-alert" role="alert">
-          {actionError}
+          {translate(actionError)}
         </div>
       )}
 
@@ -299,8 +305,8 @@ function NewsPage() {
         message={
           newsToDelete
             ? isEnglish
-              ? `Do you want to permanently delete “${newsToDelete.title}”? This action cannot be undone.`
-              : `¿Deseas eliminar permanentemente “${newsToDelete.title}”? Esta acción no se puede deshacer.`
+              ? `Move “${newsToDelete.title}” to the recycle bin? You can restore it later.`
+              : `¿Deseas enviar “${newsToDelete.title}” a la papelera? Podrás restaurarla después.`
             : ""
         }
         confirmText={isEnglish ? "Delete news item" : "Eliminar noticia"}

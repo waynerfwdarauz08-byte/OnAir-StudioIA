@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useState,
 } from "react";
@@ -11,6 +12,7 @@ import UserForm from "../components/users/UserForm.jsx";
 import { userService } from "../services/userService.js";
 
 function RegisterPage() {
+  const { translate } = useTranslation();
   const navigate = useNavigate();
 
   const [submitting, setSubmitting] =
@@ -67,9 +69,9 @@ function RegisterPage() {
   return (
     <>
       <PageHeader
-        eyebrow="ADMINISTRACIÓN / USUARIOS"
-        title="Registrar usuario"
-        description="Crea una cuenta interna y asigna las funciones que podrá utilizar."
+        eyebrow={translate("ADMINISTRACIÓN / USUARIOS")}
+        title={translate("Registrar usuario")}
+        description={translate("Crea una cuenta interna y asigna las funciones que podrá utilizar.")}
       />
 
       <UserForm

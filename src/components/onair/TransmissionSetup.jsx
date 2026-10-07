@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
@@ -37,6 +38,7 @@ function TransmissionSetup({
   error = "",
   onStart,
 }) {
+  const { translate } = useTranslation();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const [selectedRundownId, setSelectedRundownId] =
@@ -123,7 +125,7 @@ function TransmissionSetup({
 
       {error && (
         <div className="form-alert" role="alert">
-          {error}
+          {translate(error)}
         </div>
       )}
 

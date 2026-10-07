@@ -1,4 +1,5 @@
 import { request } from "./httpClient.js";
+import { validatePresenterRemoval } from "./editorialGuards.js";
 
 const RESOURCE = "/users";
 
@@ -29,21 +30,24 @@ export const userService = {
     });
   },
 
-  update(id, user) {
+  async update(id, user) {
+    if (!user.active || user.role !== "presenter") await validatePresenterRemoval(id);
     return request(`${RESOURCE}/${encodeURIComponent(id)}`, {
       method: "PUT",
       body: user,
     });
   },
 
-  partialUpdate(id, changes) {
+  async partialUpdate(id, changes) {
+    if (changes.active === false || (changes.role && changes.role !== "presenter")) await validatePresenterRemoval(id);
     return request(`${RESOURCE}/${encodeURIComponent(id)}`, {
       method: "PATCH",
       body: changes,
     });
   },
 
-  remove(id) {
+  async remove(id) {
+    await validatePresenterRemoval(id);
     return request(`${RESOURCE}/${encodeURIComponent(id)}`, {
       method: "DELETE",
     });

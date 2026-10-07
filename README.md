@@ -78,6 +78,10 @@ La ruta envía a Gemini solo el contexto editorial de noticias seleccionado para
 
 Después de compilar, `npm run preview` también permite comprobar `/api/projections` localmente. Un despliegue estático no puede ejecutar esta API local: la generación de Proyecciones no estará disponible allí sin un entorno de servidor que implemente la misma ruta. Consulta la [guía de la API local de Proyecciones](docs/projections-ai.md). La documentación y el workflow anteriores de n8n se conservan solo como [referencia legado archivada](docs/projections-n8n.md).
 
+## Historial de proyecciones
+
+Las proyecciones generadas se guardan en `projectionHistory` y se pueden consultar desde **Historial de proyecciones**. Si JSON Server falla, una copia de recuperación queda en el navegador y permite reintentar el guardado. El resultado histórico refleja los datos disponibles cuando se generó. Reinicia JSON Server si no reconoce las nuevas colecciones.
+
 ## Comandos disponibles
 
 ```bash

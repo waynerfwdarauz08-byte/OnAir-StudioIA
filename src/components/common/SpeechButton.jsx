@@ -1,13 +1,10 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import { useState } from "react";
 
 function SpeechButton({ text }) {
+  const { translate, language } = useTranslation();
     const [speaking, setSpeaking] = useState(false);
     const [error, setError] = useState("");
-
-    const language =
-        document.documentElement.lang?.startsWith("en")
-            ? "en"
-            : "es";
 
     const labels =
         language === "en"
@@ -92,7 +89,7 @@ function SpeechButton({ text }) {
 
             {error && (
                 <span className="speech-error" role="status">
-                    {error}
+                    {translate(error)}
                 </span>
             )}
         </span>

@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import PageHeader from "./PageHeader.jsx";
 
 function ModulePlaceholder({
@@ -6,6 +7,7 @@ function ModulePlaceholder({
   description,
   status = "MÓDULO PREPARADO",
 }) {
+  const { translate } = useTranslation();
   return (
     <>
       <PageHeader
@@ -20,12 +22,9 @@ function ModulePlaceholder({
         </div>
 
         <div>
-          <span className="placeholder-status">{status}</span>
-          <h2>La estructura de esta sección está lista</h2>
-          <p>
-            Las funciones de este módulo se incorporarán en las siguientes
-            etapas del proyecto.
-          </p>
+          <span className="placeholder-status">{translate(status)}</span>
+          <h2>{translate("La estructura de esta sección está lista")}</h2>
+          <p>{translate("Las funciones de este módulo se incorporarán en las siguientes etapas del proyecto.")}</p>
         </div>
       </section>
     </>

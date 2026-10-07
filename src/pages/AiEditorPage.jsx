@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useRef,
@@ -16,6 +17,8 @@ import AiResultPreview from "../components/ai/AiResultPreview.jsx";
 import { aiService } from "../services/aiService.js";
 import { categoryService } from "../services/categoryService.js";
 import { newsService } from "../services/newsService.js";
+import useSystemSettings from "../hooks/useSystemSettings.js";
+import { estimateScriptDuration } from "../utils/news.js";
 
 import useAuth from "../hooks/useAuth.js";
 import useAccessibility from "../hooks/useAccessibility.js";
@@ -38,6 +41,8 @@ function normalizeText(value) {
 }
 
 function AiEditorPage() {
+  const { translate } = useTranslation();
+  const { wordsPerMinute } = useSystemSettings();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { language } = useAccessibility();
@@ -140,6 +145,7 @@ function AiEditorPage() {
         await aiService.generateEditorialContent(
           {
             ...values,
+            wordsPerMinute,
             categories: categories.map(
               (categoryItem) => ({
                 id: categoryItem.id,
@@ -176,11 +182,7 @@ function AiEditorPage() {
         categoryId:
           findSuggestedCategory(aiResult),
         editorialStatus: "draft",
-        estimatedDurationSeconds:
-          Number(
-            aiResult.estimatedDurationSeconds
-          ) ||
-          values.targetDurationSeconds,
+        estimatedDurationSeconds: estimateScriptDuration(aiResult.script, wordsPerMinute),
       });
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -258,7 +260,7 @@ function AiEditorPage() {
       };
 
       const savedNews =
-        await newsService.create(newsItem);
+        await newsService.create(newsItem, user);
 
       navigate(`/news/${savedNews.id}`, {
         replace: true,
@@ -266,7 +268,7 @@ function AiEditorPage() {
     } catch (error) {
       setSaveError(
         error.message ||
-          isEnglish ? "Unable to save the news item." : "No fue posible guardar la noticia."
+          (isEnglish ? "Unable to save the news item." : "No fue posible guardar la noticia.")
       );
     } finally {
       setSaving(false);
@@ -345,7 +347,7 @@ function AiEditorPage() {
 
             {saveError && (
               <div className="form-alert" role="alert">
-                {saveError}
+                {translate(saveError)}
               </div>
             )}
 

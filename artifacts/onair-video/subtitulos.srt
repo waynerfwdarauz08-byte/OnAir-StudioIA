@@ -1,0 +1,67 @@
+1
+00:00:00,250 --> 00:00:03,238
+Antes de presentar una noticia, hay que organizar
+
+2
+00:00:03,238 --> 00:00:06,226
+información, preparar guiones y coordinar a todo un
+
+3
+00:00:06,226 --> 00:00:06,600
+equipo.
+
+4
+00:00:07,250 --> 00:00:09,804
+OnAir Studio AI es una aplicación web académica
+
+5
+00:00:09,804 --> 00:00:12,358
+que reúne estas tareas y permite simular el
+
+6
+00:00:12,358 --> 00:00:14,273
+flujo de trabajo de un noticiero.
+
+7
+00:00:16,250 --> 00:00:19,654
+El equipo gestiona noticias y utiliza inteligencia artificial
+
+8
+00:00:19,654 --> 00:00:23,059
+para preparar títulos, resúmenes, guiones y cintillos, que
+
+9
+00:00:23,059 --> 00:00:26,037
+puede revisar y editar antes de guardarlos.
+
+10
+00:00:27,250 --> 00:00:30,119
+Las escaletas organizan el orden y la duración
+
+11
+00:00:30,119 --> 00:00:32,988
+del programa. El control al aire selecciona la
+
+12
+00:00:32,988 --> 00:00:35,857
+noticia que recibe el presentador en el teleprompter.
+
+13
+00:00:38,250 --> 00:00:41,965
+Administradores, moderadores y presentadores trabajan según su función.
+
+14
+00:00:41,965 --> 00:00:45,681
+La mensajería facilita la coordinación y el teleprompter
+
+15
+00:00:45,681 --> 00:00:48,467
+permite controlar la lectura del guion.
+
+16
+00:00:49,250 --> 00:00:52,400
+OnAir Studio AI: un espacio para aprender, organizar
+
+17
+00:00:52,400 --> 00:00:55,551
+y coordinar el trabajo editorial de un noticiero.

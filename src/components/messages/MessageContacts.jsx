@@ -18,7 +18,7 @@ function MessageContacts({
   const filteredContacts = useMemo(() => {
     const normalizedSearch = search
       .trim()
-      .toLocaleLowerCase("es");
+      .toLocaleLowerCase(language);
 
     if (!normalizedSearch) {
       return contacts;
@@ -28,17 +28,17 @@ function MessageContacts({
       const searchableContent = [
         contact.name,
         contact.email,
-        getRoleLabel(contact.role),
+        getRoleLabel(contact.role, language),
       ]
         .filter(Boolean)
         .join(" ")
-        .toLocaleLowerCase("es");
+        .toLocaleLowerCase(language);
 
       return searchableContent.includes(
         normalizedSearch
       );
     });
-  }, [contacts, search]);
+  }, [contacts, search, language]);
 
   function getInitial(name) {
     return (
@@ -109,7 +109,7 @@ function MessageContacts({
                   <strong>{contact.name}</strong>
 
                   <small>
-                    {getRoleLabel(contact.role)}
+                    {getRoleLabel(contact.role, language)}
                   </small>
                 </span>
 

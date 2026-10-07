@@ -1,10 +1,12 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
   useState,
 } from "react";
 
-import { EDITORIAL_STATUS_LABELS } from "../../utils/news.js";
+import { EDITORIAL_STATUS_LABELS, estimateScriptDuration } from "../../utils/news.js";
+import useSystemSettings from "../../hooks/useSystemSettings.js";
 import useAccessibility from "../../hooks/useAccessibility.js";
 import { cloudinaryService } from "../../services/cloudinaryService.js";
 
@@ -105,6 +107,8 @@ function NewsForm({
   submitting = false,
   serverError = "",
 }) {
+  const { translate } = useTranslation();
+  const { wordsPerMinute } = useSystemSettings();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
 
@@ -130,6 +134,11 @@ function NewsForm({
   const [errors, setErrors] = useState({});
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageError, setImageError] = useState("");
+  const [automaticDuration, setAutomaticDuration] = useState(!Number(initialValues.estimatedDurationSeconds));
+  const calculatedDuration = estimateScriptDuration(values.script, wordsPerMinute);
+  useEffect(() => {
+    if (automaticDuration) setValues((current) => ({ ...current, estimatedDurationSeconds: calculatedDuration }));
+  }, [automaticDuration, calculatedDuration]);
 
   useEffect(() => {
     setValues(normalizedInitialValues);
@@ -137,10 +146,12 @@ function NewsForm({
       normalizedInitialValues.lowerThirdOptions.join("\n")
     );
     setErrors({});
+    setAutomaticDuration(!Number(normalizedInitialValues.estimatedDurationSeconds));
   }, [normalizedInitialValues]);
 
   function handleChange(event) {
     const { name, value } = event.target;
+    if (name === "estimatedDurationSeconds") setAutomaticDuration(false);
 
     setValues((currentValues) => ({
       ...currentValues,
@@ -226,7 +237,7 @@ function NewsForm({
       selectedLowerThird:
         values.selectedLowerThird.trim(),
       estimatedDurationSeconds:
-        Number(values.estimatedDurationSeconds) || 0,
+        automaticDuration ? calculatedDuration : Number(values.estimatedDurationSeconds) || 0,
       imagePositionX: Number(values.imagePositionX),
       imagePositionY: Number(values.imagePositionY),
     };
@@ -264,7 +275,7 @@ function NewsForm({
     >
       {serverError && (
         <div className="form-alert" role="alert">
-          {serverError}
+          {translate(serverError)}
         </div>
       )}
 
@@ -303,7 +314,7 @@ function NewsForm({
 
             {errors.title && (
               <small className="field-error">
-                {errors.title}
+                {translate(errors.title)}
               </small>
             )}
           </div>
@@ -338,7 +349,7 @@ function NewsForm({
 
             {errors.categoryId && (
               <small className="field-error">
-                {errors.categoryId}
+                {translate(errors.categoryId)}
               </small>
             )}
           </div>
@@ -382,7 +393,7 @@ function NewsForm({
 
             {errors.summary && (
               <small className="field-error">
-                {errors.summary}
+                {translate(errors.summary)}
               </small>
             )}
           </div>
@@ -410,7 +421,7 @@ function NewsForm({
               {isEnglish ? "Uploading image to Cloudinary..." : "Subiendo imagen a Cloudinary..."}
             </p>
           )}
-          {imageError && <p className="field-error" role="alert">{imageError}</p>}
+          {imageError && <p className="field-error" role="alert">{translate(imageError)}</p>}
 
           {values.imageUrl && (
             <div className="news-image-preview">
@@ -527,7 +538,7 @@ function NewsForm({
 
             {errors.sourceName && (
               <small className="field-error">
-                {errors.sourceName}
+                {translate(errors.sourceName)}
               </small>
             )}
           </div>
@@ -549,7 +560,7 @@ function NewsForm({
 
             {errors.sourceUrl && (
               <small className="field-error">
-                {errors.sourceUrl}
+                {translate(errors.sourceUrl)}
               </small>
             )}
           </div>
@@ -570,7 +581,7 @@ function NewsForm({
 
             {errors.sourceText && (
               <small className="field-error">
-                {errors.sourceText}
+                {translate(errors.sourceText)}
               </small>
             )}
           </div>
@@ -612,7 +623,7 @@ function NewsForm({
 
             {errors.script && (
               <small className="field-error">
-                {errors.script}
+                {translate(errors.script)}
               </small>
             )}
           </div>
@@ -690,9 +701,14 @@ function NewsForm({
 
             {errors.estimatedDurationSeconds && (
               <small className="field-error">
-                {errors.estimatedDurationSeconds}
+                {translate(errors.estimatedDurationSeconds)}
               </small>
             )}
+            <small className="field-help">{isEnglish ? `Script estimate: ${calculatedDuration} seconds at ${wordsPerMinute} words/minute.` : `Estimación del guion: ${calculatedDuration} segundos a ${wordsPerMinute} palabras/minuto.`}</small>
+            <button type="button" className="button button-secondary" disabled={submitting} onClick={() => setAutomaticDuration(true)}>
+              {isEnglish ? "Use automatic duration" : "Usar duración automática"}
+            </button>
+            <small>{automaticDuration ? (isEnglish ? "Automatic calculation enabled" : "Cálculo automático activo") : (isEnglish ? "Manual duration" : "Duración manual")}</small>
           </div>
         </div>
       </section>

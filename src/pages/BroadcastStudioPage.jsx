@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
@@ -16,6 +17,7 @@ import BroadcastMultiViewer from "../components/broadcast/BroadcastMultiViewer.j
 
 import { transmissionService } from "../services/transmissionService.js";
 import { newsService } from "../services/newsService.js";
+import useSystemSettings from "../hooks/useSystemSettings.js";
 
 import studioImage from "../assets/images/broadcast/studio.jpg";
 import reporterImage from "../assets/images/broadcast/reporter.jpg";
@@ -62,7 +64,10 @@ const BROADCAST_SOURCES = [
 ];
 
 function BroadcastStudioPage() {
+  const { translate } = useTranslation();
+  const { channelName } = useSystemSettings();
   const transitionTimerRef = useRef(null);
+  const [transition, setTransition] = useState(null);
 
   const [programSourceId, setProgramSourceId] =
     useState("cam-1");
@@ -164,14 +169,14 @@ function BroadcastStudioPage() {
   const lowerThird =
     currentNews?.selectedLowerThird ||
     (transmission?.onAir
-      ? "Transmisión informativa en vivo"
-      : "Control de estudio preparado");
+      ? translate("Transmisión informativa en vivo")
+      : translate("Control de estudio preparado"));
 
   const currentTitle =
     currentNews?.title ||
     (transmission?.onAir
-      ? "Contenido editorial al aire"
-      : "OnAir Studio AI");
+      ? translate("Contenido editorial al aire")
+      : channelName);
 
   function handlePreview(sourceId) {
     if (
@@ -220,12 +225,16 @@ function BroadcastStudioPage() {
   }
 
   function handleAutoTransition({
+    type = "mix",
     duration = 1000,
   }) {
-    if (transitioning) {
+    if (transitioning || transitionTimerRef.current !== null) {
       return;
     }
 
+    if (type === "cut") { handleCut(); return; }
+    const safeType = ["mix", "wipe", "dip"].includes(type) ? type : "mix";
+    setTransition({ type: safeType, duration, sourceId: previewSourceId });
     setTransitioning(true);
 
     transitionTimerRef.current =
@@ -242,6 +251,7 @@ function BroadcastStudioPage() {
         );
 
         setTransitioning(false);
+        setTransition(null);
         transitionTimerRef.current = null;
       }, duration);
   }
@@ -249,13 +259,13 @@ function BroadcastStudioPage() {
   return (
     <>
       <PageHeader
-        eyebrow="OPERACIONES DE ESTUDIO"
-        title="Control de estudio"
-        description="Supervisa las señales, prepara cámaras y controla el contenido visual enviado al aire."
+        eyebrow={translate("OPERACIONES DE ESTUDIO")}
+        title={translate("Control de estudio")}
+        description={translate("Supervisa las señales, prepara cámaras y controla el contenido visual enviado al aire.")}
       />
 
       {loading && (
-        <LoadingState message="Inicializando las señales del estudio..." />
+        <LoadingState message={translate("Inicializando las señales del estudio...")} />
       )}
 
       {!loading && error && (
@@ -283,8 +293,8 @@ function BroadcastStudioPage() {
                 <i />
 
                 {transmission?.onAir
-                  ? "TRANSMISIÓN ACTIVA"
-                  : "ESTUDIO EN ESPERA"}
+                  ? translate("TRANSMISIÓN ACTIVA")
+                  : translate("ESTUDIO EN ESPERA")}
               </span>
 
               <div>
@@ -292,8 +302,8 @@ function BroadcastStudioPage() {
 
                 <small>
                   {transmission?.onAir
-                    ? "Sincronizado con Contenido al aire"
-                    : "Inicia una transmisión desde el módulo Contenido al aire"}
+                    ? translate("Sincronizado con Contenido al aire")
+                    : translate("Inicia una transmisión desde el módulo Contenido al aire")}
                 </small>
               </div>
             </div>
@@ -323,6 +333,7 @@ function BroadcastStudioPage() {
             lowerThird={lowerThird}
             title={currentTitle}
             transitioning={transitioning}
+            transition={transition}
             onPreview={handlePreview}
             onTake={handleDirectTake}
             onCut={handleCut}

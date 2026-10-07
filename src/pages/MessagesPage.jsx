@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
@@ -35,7 +36,10 @@ function createMessageId() {
 }
 
 function MessagesPage() {
+  const { translate } = useTranslation();
   const { user } = useAuth();
+  const [syncError, setSyncError] = useState("");
+  const [syncKey, setSyncKey] = useState(0);
 
   const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -122,10 +126,12 @@ function MessagesPage() {
     }
 
     let stopped = false;
+    let refreshing = false;
     let controller;
 
     async function refreshMessages() {
-      controller?.abort();
+      if (stopped || refreshing) return;
+      refreshing = true;
       controller = new AbortController();
 
       try {
@@ -134,7 +140,8 @@ function MessagesPage() {
             controller.signal
           );
 
-        if (!stopped) {
+        if (!stopped && !controller.signal.aborted) {
+          setSyncError("");
           setMessages(
             Array.isArray(messagesData)
               ? messagesData
@@ -144,16 +151,17 @@ function MessagesPage() {
       } catch (refreshError) {
         if (
           !stopped &&
+          !controller.signal.aborted &&
           refreshError.name !== "AbortError"
         ) {
-          console.error(
-            "No fue posible actualizar los mensajes.",
-            refreshError
-          );
+          setSyncError("No se pudieron actualizar los mensajes. La conversación visible puede estar desactualizada. Se reintentará automáticamente.");
         }
+      } finally {
+        refreshing = false;
       }
     }
 
+    if (syncKey > 0) refreshMessages();
     const intervalId = window.setInterval(
       refreshMessages,
       3000
@@ -164,7 +172,7 @@ function MessagesPage() {
       controller?.abort();
       window.clearInterval(intervalId);
     };
-  }, [loading, error]);
+  }, [loading, error, syncKey]);
 
   useEffect(() => {
     if (loading || error) {
@@ -396,13 +404,13 @@ function MessagesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="COMUNICACIÓN INTERNA"
-        title="Mensajería"
-        description="Comunícate con los integrantes del equipo editorial de acuerdo con tu función."
+        eyebrow={translate("COMUNICACIÓN INTERNA")}
+        title={translate("Mensajería")}
+        description={translate("Comunícate con los integrantes del equipo editorial de acuerdo con tu función.")}
       />
 
       {loading && (
-        <LoadingState message="Preparando la mensajería interna..." />
+        <LoadingState message={translate("Preparando la mensajería interna...")} />
       )}
 
       {!loading && error && (
@@ -419,12 +427,13 @@ function MessagesPage() {
 
       {!loading && !error && (
         <>
+          {syncError && <div className="form-alert" role="alert">{translate(syncError)} <button type="button" className="button button-secondary" onClick={() => setSyncKey((value) => value + 1)}>{translate("Reintentar conexión")}</button></div>}
           {sendError && (
             <div
               className="form-alert"
               role="alert"
             >
-              {sendError}
+              {translate(sendError)}
             </div>
           )}
 

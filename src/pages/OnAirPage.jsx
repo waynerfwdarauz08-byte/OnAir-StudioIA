@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
@@ -32,6 +33,7 @@ function createEventId() {
 }
 
 function OnAirPage() {
+  const { translate } = useTranslation();
   const { user } = useAuth();
 
   const [transmission, setTransmission] =
@@ -318,13 +320,13 @@ function OnAirPage() {
   return (
     <>
       <PageHeader
-        eyebrow="CONTROL DE TRANSMISIÓN"
-        title="Contenido al aire"
-        description="Selecciona y controla el contenido que se mostrará en la interfaz del presentador."
+        eyebrow={translate("CONTROL DE TRANSMISIÓN")}
+        title={translate("Contenido al aire")}
+        description={translate("Selecciona y controla el contenido que se mostrará en la interfaz del presentador.")}
       />
 
       {loading && (
-        <LoadingState message="Preparando la consola de transmisión..." />
+        <LoadingState message={translate("Preparando la consola de transmisión...")} />
       )}
 
       {!loading && loadError && (
@@ -345,7 +347,7 @@ function OnAirPage() {
               className="success-alert"
               role="status"
             >
-              {successMessage}
+              {translate(successMessage)}
             </div>
           )}
 

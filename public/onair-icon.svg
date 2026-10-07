@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 0 100 140" fill="none">
+  <title>OnAir Studio</title>
+  <g stroke="#00c7f2" stroke-width="6" stroke-linecap="round">
+    <path d="M55 20c10-7 22-10 35-10s25 3 35 10"/>
+    <path d="M66 34c7-5 15-7 24-7s17 2 24 7"/>
+    <path d="M77 47c4-3 8-4 13-4s9 1 13 4"/>
+    <path d="M51 63a42 42 0 0 0 39 66"/>
+  </g>
+  <path d="M90 129a42 42 0 0 0 39-66" stroke="#1267ff" stroke-width="6" stroke-linecap="round"/>
+  <g stroke="#f4f7fb" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m62 112 28-58 28 58"/>
+    <path d="M77 94h26"/>
+  </g>
+  <circle cx="90" cy="58" r="6.5" fill="#ff4757"/>
+</svg>

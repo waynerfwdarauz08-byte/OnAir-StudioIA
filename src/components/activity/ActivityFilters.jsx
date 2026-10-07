@@ -73,6 +73,7 @@ function ActivityFilters({
             {isEnglish ? "Update" : "Actualización"}
           </option>
 
+          <option value="restore">{isEnglish ? "Restoration" : "Restauración"}</option>
           <option value="delete">
             {isEnglish ? "Deletion" : "Eliminación"}
           </option>

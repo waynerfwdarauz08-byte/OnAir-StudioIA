@@ -12,6 +12,7 @@ const LoginPage = lazy(() => import("../pages/LoginPage.jsx"));
 const DashboardPage = lazy(() => import("../pages/DashboardPage.jsx"));
 
 const NewsPage = lazy(() => import("../pages/NewsPage.jsx"));
+const TrashPage = lazy(() => import("../pages/TrashPage.jsx"));
 const NewsCreatePage = lazy(() => import("../pages/NewsCreatePage.jsx"));
 const NewsDetailPage = lazy(() => import("../pages/NewsDetailPage.jsx"));
 const NewsEditPage = lazy(() => import("../pages/NewsEditPage.jsx"));
@@ -170,6 +171,7 @@ function AppRoutes() {
               </RoleRoute>
             }
           />
+          <Route path="/trash" element={<RoleRoute allowedRoles={editorialRoles}><TrashPage /></RoleRoute>} />
 
           <Route
             path="/news/new"

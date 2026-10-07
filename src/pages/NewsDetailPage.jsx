@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import { useEffect, useState } from "react";
 import {
   Link,
@@ -20,11 +21,12 @@ import {
 } from "../utils/news.js";
 
 function NewsDetailPage() {
+  const { translate, language } = useTranslation();
   const { id } = useParams();
 
   const [newsItem, setNewsItem] = useState(null);
   const [categoryName, setCategoryName] =
-    useState("Sin categoría");
+    useState("");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -66,7 +68,7 @@ function NewsDetailPage() {
 
         setNewsItem(newsData);
         setCategoryName(
-          selectedCategory?.name || "Sin categoría"
+          selectedCategory?.name || ""
         );
       } catch (loadError) {
         if (!controller.signal.aborted) {
@@ -90,33 +92,29 @@ function NewsDetailPage() {
   return (
     <>
       <PageHeader
-        eyebrow="DETALLE EDITORIAL"
+        eyebrow={translate("DETALLE EDITORIAL")}
         title={
-          newsItem?.title || "Detalle de noticia"
+          newsItem?.title || translate("Detalle de noticia")
         }
-        description="Consulta toda la información editorial y de producción registrada."
+        description={translate("Consulta toda la información editorial y de producción registrada.")}
       />
 
       <div className="page-actions">
         <Link
           className="button button-secondary"
           to="/news"
-        >
-          Volver a noticias
-        </Link>
+        >{translate("Volver a noticias")}</Link>
 
         {newsItem && (
           <Link
             className="button button-primary"
             to={`/news/${newsItem.id}/edit`}
-          >
-            Editar noticia
-          </Link>
+          >{translate("Editar noticia")}</Link>
         )}
       </div>
 
       {loading && (
-        <LoadingState message="Cargando el detalle de la noticia..." />
+        <LoadingState message={translate("Cargando el detalle de la noticia...")} />
       )}
 
       {!loading && error && (
@@ -139,13 +137,11 @@ function NewsDetailPage() {
               />
 
               <span className="news-detail-category">
-                {categoryName}
+                {categoryName || translate("Sin categoría")}
               </span>
 
               {newsItem.aiAssisted && (
-                <span className="ai-assisted-badge">
-                  Asistida por IA
-                </span>
+                <span className="ai-assisted-badge">{translate("Asistida por IA")}</span>
               )}
             </div>
 
@@ -153,7 +149,7 @@ function NewsDetailPage() {
 
             <p className="news-detail-summary">
               {newsItem.summary ||
-                "Esta noticia no tiene resumen."}
+                translate("Esta noticia no tiene resumen.")}
             </p>
             {newsItem.imageUrl && (
               <img
@@ -176,49 +172,42 @@ function NewsDetailPage() {
               <span>01</span>
 
               <div>
-                <h3 id="source-title">
-                  Fuente original
-                </h3>
-                <p>
-                  Información utilizada para preparar la
-                  noticia.
-                </p>
+                <h3 id="source-title">{translate("Fuente original")}</h3>
+                <p>{translate("Información utilizada para preparar la noticia.")}</p>
               </div>
             </div>
 
             <dl className="news-detail-data">
               <div>
-                <dt>Nombre de la fuente</dt>
+                <dt>{translate("Nombre de la fuente")}</dt>
                 <dd>
                   {newsItem.sourceName ||
-                    "No especificada"}
+                    translate("No especificada")}
                 </dd>
               </div>
 
               <div>
-                <dt>Enlace</dt>
+                <dt>{translate("Enlace")}</dt>
                 <dd>
                   {newsItem.sourceUrl ? (
                     <a
                       href={newsItem.sourceUrl}
                       target="_blank"
                       rel="noreferrer"
-                    >
-                      Abrir fuente original
-                    </a>
+                    >{translate("Abrir fuente original")}</a>
                   ) : (
-                    "No disponible"
+                    translate("No disponible")
                   )}
                 </dd>
               </div>
             </dl>
 
             <div className="news-detail-text">
-              <h4>Contenido original</h4>
+              <h4>{translate("Contenido original")}</h4>
 
               <p>
                 {newsItem.sourceText ||
-                  "No hay contenido original registrado."}
+                  translate("No hay contenido original registrado.")}
               </p>
             </div>
           </section>
@@ -231,36 +220,32 @@ function NewsDetailPage() {
               <span>02</span>
 
               <div>
-                <h3 id="production-title">
-                  Producción
-                </h3>
-                <p>
-                  Contenido preparado para la presentación.
-                </p>
+                <h3 id="production-title">{translate("Producción")}</h3>
+                <p>{translate("Contenido preparado para la presentación.")}</p>
               </div>
             </div>
 
             <div className="news-detail-text">
-              <h4>Guion</h4>
+              <h4>{translate("Guion")}</h4>
 
               <p>
                 {newsItem.script ||
-                  "Esta noticia todavía no tiene guion."}
+                  translate("Esta noticia todavía no tiene guion.")}
               </p>
             </div>
 
             <div className="news-detail-grid">
               <div className="news-detail-information">
-                <span>CINTILLO SELECCIONADO</span>
+                <span>{translate("CINTILLO SELECCIONADO")}</span>
 
                 <p>
                   {newsItem.selectedLowerThird ||
-                    "Sin cintillo seleccionado"}
+                    translate("Sin cintillo seleccionado")}
                 </p>
               </div>
 
               <div className="news-detail-information">
-                <span>DURACIÓN ESTIMADA</span>
+                <span>{translate("DURACIÓN ESTIMADA")}</span>
 
                 <p>
                   {formatDuration(
@@ -273,7 +258,7 @@ function NewsDetailPage() {
             {newsItem.lowerThirdOptions?.length >
               0 && (
               <div className="news-detail-options">
-                <h4>Opciones de cintillo</h4>
+                <h4>{translate("Opciones de cintillo")}</h4>
 
                 <ul>
                   {newsItem.lowerThirdOptions.map(
@@ -294,43 +279,39 @@ function NewsDetailPage() {
               <span>03</span>
 
               <div>
-                <h3 id="record-title">
-                  Registro del sistema
-                </h3>
-                <p>
-                  Fechas y responsables de la noticia.
-                </p>
+                <h3 id="record-title">{translate("Registro del sistema")}</h3>
+                <p>{translate("Fechas y responsables de la noticia.")}</p>
               </div>
             </div>
 
             <dl className="news-detail-data">
               <div>
-                <dt>Creada</dt>
+                <dt>{translate("Creada")}</dt>
                 <dd>
-                  {formatDate(newsItem.createdAt)}
+                  {formatDate(newsItem.createdAt, language)}
                 </dd>
               </div>
 
               <div>
-                <dt>Última actualización</dt>
+                <dt>{translate("Última actualización")}</dt>
                 <dd>
-                  {formatDate(newsItem.updatedAt)}
+                  {formatDate(newsItem.updatedAt, language)}
                 </dd>
               </div>
 
               <div>
-                <dt>Creada por</dt>
+                <dt>{translate("Creada por")}</dt>
                 <dd>
                   {newsItem.createdBy ||
-                    "No disponible"}
+                    translate("No disponible")}
                 </dd>
               </div>
 
               <div>
-                <dt>Actualizada por</dt>
+                <dt>{translate("Actualizada por")}</dt>
                 <dd>
                   {newsItem.updatedBy ||
-                    "No disponible"}
+                    translate("No disponible")}
                 </dd>
               </div>
             </dl>

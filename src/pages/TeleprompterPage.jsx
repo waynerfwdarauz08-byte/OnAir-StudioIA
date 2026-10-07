@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useRef,
@@ -16,16 +17,23 @@ import PresenterRecorder from "../components/teleprompter/PresenterRecorder.jsx"
 
 import { transmissionService } from "../services/transmissionService.js";
 import { newsService } from "../services/newsService.js";
+import { getReadingContent } from "../utils/teleprompter.js";
+import useAccessibility from "../hooks/useAccessibility.js";
 
 function TeleprompterPage() {
+  const { translate } = useTranslation();
+  const { language } = useAccessibility();
+  const isEnglish = language === "en";
   const teleprompterRef = useRef(null);
   const displaySectionRef = useRef(null);
   const scrollAreaRef = useRef(null);
   const currentNewsIdRef = useRef(null);
+  const readingContentRef = useRef("");
   const startTimerRef = useRef(null);
 
   const [transmission, setTransmission] = useState(null);
   const [newsItem, setNewsItem] = useState(null);
+  const [pendingNews, setPendingNews] = useState(null);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(40);
   const [fontSize, setFontSize] = useState(56);
@@ -62,14 +70,13 @@ function TeleprompterPage() {
         if (!currentNewsId) {
           if (currentNewsIdRef.current !== null) {
             currentNewsIdRef.current = null;
+            readingContentRef.current = "";
+            setPendingNews(null);
+            window.clearTimeout(startTimerRef.current);
             setNewsItem(null);
             setPlaying(false);
           }
 
-          return;
-        }
-
-        if (currentNewsIdRef.current === currentNewsId) {
           return;
         }
 
@@ -82,7 +89,16 @@ function TeleprompterPage() {
           return;
         }
 
+        if (currentNewsIdRef.current === currentNewsId) {
+          setPendingNews(getReadingContent(currentNews) === readingContentRef.current
+            ? null : currentNews);
+          return;
+        }
+
         currentNewsIdRef.current = currentNewsId;
+        readingContentRef.current = getReadingContent(currentNews);
+        setPendingNews(null);
+        window.clearTimeout(startTimerRef.current);
         setNewsItem(currentNews);
         setPlaying(false);
 
@@ -279,6 +295,17 @@ function TeleprompterPage() {
     });
   }
 
+  function handleLoadUpdate() {
+    if (!pendingNews || pendingNews.id !== currentNewsIdRef.current) return;
+    window.clearTimeout(startTimerRef.current);
+    setPlaying(false);
+    readingContentRef.current = getReadingContent(pendingNews);
+    setNewsItem(pendingNews);
+    setPendingNews(null);
+    // Conservar el desplazamiento actual; el presentador decide cuándo continuar.
+    scrollAreaRef.current?.focus({ preventScroll: true });
+  }
+
   async function handleFullscreenToggle() {
     try {
       if (document.fullscreenElement) {
@@ -306,13 +333,13 @@ function TeleprompterPage() {
   return (
     <>
       <PageHeader
-        eyebrow="PRESENTACIÓN"
+        eyebrow={translate("PRESENTACIÓN")}
         title="Teleprompter"
-        description="Visualiza el guion activo, controla su desplazamiento y graba la presentación."
+        description={translate("Visualiza el guion activo, controla su desplazamiento y graba la presentación.")}
       />
 
       {loading && !newsItem && (
-        <LoadingState message="Consultando el contenido de la transmisión..." />
+        <LoadingState message={translate("Consultando el contenido de la transmisión...")} />
       )}
 
       {!loading && error && !newsItem && (
@@ -331,14 +358,12 @@ function TeleprompterPage() {
         >
           <div className="teleprompter-workspace-bar">
             <div>
-              <span className="teleprompter-workspace-label">
-                CABINA DE PRESENTACIÓN
-              </span>
+              <span className="teleprompter-workspace-label">{translate("CABINA DE PRESENTACIÓN")}</span>
 
               <strong>
                 {isOnAir
-                  ? "Transmisión activa"
-                  : "Control en espera"}
+                  ? translate("Transmisión activa")
+                  : translate("Control en espera")}
               </strong>
             </div>
 
@@ -349,13 +374,24 @@ function TeleprompterPage() {
               role="status"
             >
               <span aria-hidden="true" />
-              {isOnAir ? "AL AIRE" : "EN ESPERA"}
+              {isOnAir ? translate("AL AIRE") : translate("EN ESPERA")}
             </div>
           </div>
 
           {error && newsItem && (
             <div className="form-alert" role="alert">
-              {error}
+              {translate(error)}
+            </div>
+          )}
+
+          {pendingNews && (
+            <div className="form-alert" role="status">
+              <p>{isEnglish
+                ? "An updated script is available. Load it when you are ready; reading will pause at your current position."
+                : "Hay una versión nueva del guion. Cárgala cuando estés listo; la lectura quedará en pausa en tu posición actual."}</p>
+              <button type="button" className="button button-secondary" onClick={handleLoadUpdate}>
+                {isEnglish ? "Load updated text" : "Cargar texto actualizado"}
+              </button>
             </div>
           )}
 

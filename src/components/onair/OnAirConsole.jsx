@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
@@ -46,6 +47,7 @@ function OnAirConsole({
   onNext,
   onStop,
 }) {
+  const { translate, language } = useTranslation();
   const [currentTime, setCurrentTime] = useState(
     Date.now()
   );
@@ -118,7 +120,7 @@ function OnAirConsole({
         categoryItem.id === categoryId
     );
 
-    return category?.name || "Sin categoría";
+    return category?.name || translate("Sin categoría");
   }
 
   function getItemStatus(index) {
@@ -164,27 +166,23 @@ function OnAirConsole({
       <header className="onair-console-header">
         <div className="onair-live-identity">
           <span className="onair-live-indicator">
-            <i />
-            AL AIRE
-          </span>
+            <i />{translate("AL AIRE")}</span>
 
           <div>
             <h2 id="onair-console-title">
               {rundown.name}
             </h2>
 
-            <p>
-              Transmisión editorial activa
-            </p>
+            <p>{translate("Transmisión editorial activa")}</p>
           </div>
         </div>
 
         <div className="onair-master-clocks">
           <div>
-            <span>HORA LOCAL</span>
+            <span>{translate("HORA LOCAL")}</span>
 
             <strong>
-              {new Intl.DateTimeFormat("es-CR", {
+              {new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-CR", {
                 hour: "2-digit",
                 minute: "2-digit",
                 second: "2-digit",
@@ -194,7 +192,7 @@ function OnAirConsole({
           </div>
 
           <div>
-            <span>TIEMPO AL AIRE</span>
+            <span>{translate("TIEMPO AL AIRE")}</span>
 
             <strong>
               {formatDuration(elapsedSeconds)}
@@ -208,23 +206,19 @@ function OnAirConsole({
             onClick={() =>
               setStopDialogOpen(true)
             }
-          >
-            Finalizar transmisión
-          </button>
+          >{translate("Finalizar transmisión")}</button>
         </div>
       </header>
 
       {error && (
         <div className="form-alert" role="alert">
-          {error}
+          {translate(error)}
         </div>
       )}
 
       <div className="onair-progress">
         <div>
-          <span>
-            PROGRESO DE ESCALETA
-          </span>
+          <span>{translate("PROGRESO DE ESCALETA")}</span>
 
           <strong>
             {currentNewsIndex + 1} /{" "}
@@ -247,11 +241,10 @@ function OnAirConsole({
       <div className="onair-workspace">
         <aside className="onair-lineup">
           <div className="onair-panel-heading">
-            <strong>ORDEN DE TRANSMISIÓN</strong>
+            <strong>{translate("ORDEN DE TRANSMISIÓN")}</strong>
 
             <span>
-              {rundownNews.length} noticias
-            </span>
+              {rundownNews.length}{" "}{translate("noticias")}</span>
           </div>
 
           <div className="onair-lineup-list">
@@ -303,7 +296,7 @@ function OnAirConsole({
                     <span
                       className={`onair-item-status ${status.className}`}
                     >
-                      {status.label}
+                      {translate(status.label)}
                     </span>
                   </button>
                 );
@@ -314,10 +307,9 @@ function OnAirConsole({
 
         <main className="onair-current-story">
           <div className="onair-panel-heading">
-            <strong>CONTENIDO ACTUAL</strong>
+            <strong>{translate("CONTENIDO ACTUAL")}</strong>
 
-            <span>
-              POSICIÓN{" "}
+            <span>{translate("POSICIÓN")}{" "}
               {String(
                 currentNewsIndex + 1
               ).padStart(2, "0")}
@@ -333,8 +325,7 @@ function OnAirConsole({
                   )}
                 </span>
 
-                <span>
-                  DURACIÓN{" "}
+                <span>{translate("DURACIÓN")}{" "}
                   {formatDuration(
                     currentNews.estimatedDurationSeconds
                   )}
@@ -345,12 +336,12 @@ function OnAirConsole({
 
               <p className="onair-story-summary">
                 {currentNews.summary ||
-                  "Esta noticia no tiene resumen."}
+                  translate("Esta noticia no tiene resumen.")}
               </p>
 
               {currentNews.selectedLowerThird && (
                 <div className="onair-lower-third">
-                  <span>CINTILLO AL AIRE</span>
+                  <span>{translate("CINTILLO AL AIRE")}</span>
 
                   <strong>
                     {
@@ -361,11 +352,11 @@ function OnAirConsole({
               )}
 
               <div className="onair-script">
-                <span>GUION DEL PRESENTADOR</span>
+                <span>{translate("GUION DEL PRESENTADOR")}</span>
 
                 <p>
                   {currentNews.script ||
-                    "Esta noticia no tiene un guion disponible."}
+                    translate("Esta noticia no tiene un guion disponible.")}
                 </p>
               </div>
 
@@ -377,9 +368,7 @@ function OnAirConsole({
                     changing || !previousNews
                   }
                   onClick={onPrevious}
-                >
-                  ← Noticia anterior
-                </button>
+                >{translate("← Noticia anterior")}</button>
 
                 <button
                   className="button button-primary"
@@ -390,29 +379,26 @@ function OnAirConsole({
                   onClick={onNext}
                 >
                   {changing
-                    ? "Actualizando..."
-                    : "Siguiente noticia →"}
+                    ? translate("Actualizando...")
+                    : translate("Siguiente noticia →")}
                 </button>
               </div>
             </div>
           ) : (
-            <div className="onair-story-empty">
-              No hay una noticia seleccionada.
-            </div>
+            <div className="onair-story-empty">{translate("No hay una noticia seleccionada.")}</div>
           )}
         </main>
 
         <aside className="onair-next-story">
           <div className="onair-panel-heading">
-            <strong>SIGUIENTE</strong>
+            <strong>{translate("SIGUIENTE")}</strong>
 
-            <span>PREVISUALIZACIÓN</span>
+            <span>{translate("PREVISUALIZACIÓN")}</span>
           </div>
 
           {nextNews ? (
             <div className="onair-next-content">
-              <span className="onair-next-position">
-                POSICIÓN{" "}
+              <span className="onair-next-position">{translate("POSICIÓN")}{" "}
                 {String(
                   currentNewsIndex + 2
                 ).padStart(2, "0")}
@@ -422,7 +408,7 @@ function OnAirConsole({
 
               <p>
                 {nextNews.summary ||
-                  "Esta noticia no tiene resumen."}
+                  translate("Esta noticia no tiene resumen.")}
               </p>
 
               <div>
@@ -441,11 +427,9 @@ function OnAirConsole({
             </div>
           ) : (
             <div className="onair-next-empty">
-              <span>FIN</span>
+              <span>{translate("FIN")}</span>
 
-              <p>
-                Esta es la última noticia de la escaleta.
-              </p>
+              <p>{translate("Esta es la última noticia de la escaleta.")}</p>
             </div>
           )}
         </aside>
@@ -453,9 +437,9 @@ function OnAirConsole({
 
       <ConfirmDialog
         open={stopDialogOpen}
-        title="Finalizar transmisión"
-        message="¿Deseas finalizar la transmisión actual? El contenido dejará de mostrarse en la interfaz del presentador."
-        confirmText="Finalizar transmisión"
+        title={translate("Finalizar transmisión")}
+        message={translate("¿Deseas finalizar la transmisión actual? El contenido dejará de mostrarse en la interfaz del presentador.")}
+        confirmText={translate("Finalizar transmisión")}
         danger
         loading={changing}
         onConfirm={confirmStop}

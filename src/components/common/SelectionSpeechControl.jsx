@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useState,
@@ -6,6 +7,7 @@ import {
 import useAccessibility from "../../hooks/useAccessibility.js";
 
 function SelectionSpeechControl() {
+  const { translate } = useTranslation();
   const {
     language,
     speechRate,
@@ -96,7 +98,7 @@ function SelectionSpeechControl() {
     >
       {error && (
         <p className="selection-speech-error" role="status">
-          {error}
+          {translate(error)}
         </p>
       )}
 

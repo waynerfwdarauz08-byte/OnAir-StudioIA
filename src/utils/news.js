@@ -5,13 +5,19 @@ export const EDITORIAL_STATUS_LABELS = {
   approved: "Aprobada",
 };
 
+export function estimateScriptDuration(script, wordsPerMinute = 150) {
+  const words = String(script || "").trim().split(/\s+/u).filter(Boolean).length;
+  const rate = Number(wordsPerMinute);
+  return words ? Math.ceil(words * 60 / (Number.isFinite(rate) && rate > 0 ? rate : 150)) : 0;
+}
+
 export function getEditorialStatusLabel(status) {
   return EDITORIAL_STATUS_LABELS[status] || "Sin clasificar";
 }
 
-export function formatDate(dateValue) {
+export function formatDate(dateValue, language = "es") {
   if (!dateValue) {
-    return "Fecha no disponible";
+    return language === "en" ? "Date unavailable" : "Fecha no disponible";
   }
 
   const date = new Date(dateValue);
@@ -20,7 +26,7 @@ export function formatDate(dateValue) {
     return "Fecha no disponible";
   }
 
-  return new Intl.DateTimeFormat("es-CR", {
+  return new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-CR", {
     day: "2-digit",
     month: "short",
     year: "numeric",

@@ -1,0 +1,11 @@
+.broadcast-program-screen { position: relative; overflow: hidden; }
+.broadcast-transition { position: absolute; inset: 0; pointer-events: none; }
+.broadcast-transition > * { height: 100%; }
+.broadcast-transition--mix { animation: studio-mix var(--transition-duration) linear both; }
+.broadcast-transition--wipe { animation: studio-wipe var(--transition-duration) linear both; }
+.broadcast-transition--dip { animation: studio-dip-source var(--transition-duration) steps(1, end) both; }
+.broadcast-transition-dip { position: absolute; inset: 0; background: #000; pointer-events: none; animation: studio-dip-black var(--transition-duration) linear both; }
+@keyframes studio-mix { from { opacity: 0; } to { opacity: 1; } }
+@keyframes studio-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes studio-dip-source { 0% { opacity: 0; } 50%, 100% { opacity: 1; } }
+@keyframes studio-dip-black { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }

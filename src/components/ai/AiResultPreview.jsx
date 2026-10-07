@@ -1,4 +1,5 @@
-import { EDITORIAL_STATUS_LABELS } from "../../utils/news.js";
+import { EDITORIAL_STATUS_LABELS, estimateScriptDuration } from "../../utils/news.js";
+import useSystemSettings from "../../hooks/useSystemSettings.js";
 import useAccessibility from "../../hooks/useAccessibility.js";
 
 function AiResultPreview({
@@ -9,6 +10,7 @@ function AiResultPreview({
   onSave,
   onClear,
 }) {
+  const { wordsPerMinute } = useSystemSettings();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const statusLabels = isEnglish
@@ -23,6 +25,7 @@ function AiResultPreview({
         name === "estimatedDurationSeconds"
           ? Number(value)
           : value,
+      ...(name === "script" ? { estimatedDurationSeconds: estimateScriptDuration(value, wordsPerMinute) } : {}),
     });
   }
 
@@ -218,6 +221,7 @@ function AiResultPreview({
           <label htmlFor="ai-result-duration">
             {isEnglish ? "Estimated duration" : "Duración estimada"}
           </label>
+          <small className="field-help">{isEnglish ? `Calculated at ${wordsPerMinute} words/minute; you can enter a manual duration.` : `Calculada a ${wordsPerMinute} palabras/minuto; puedes indicar una duración manual.`}</small>
 
           <div className="input-with-suffix">
             <input

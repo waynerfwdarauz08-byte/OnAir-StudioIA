@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useRef,
@@ -12,6 +13,7 @@ function RundownEditDialog({
   onSubmit,
   onCancel,
 }) {
+  const { translate } = useTranslation();
   const nameInputRef = useRef(null);
 
   const [values, setValues] = useState({
@@ -141,29 +143,22 @@ function RundownEditDialog({
         noValidate
       >
         <header className="rundown-edit-heading">
-          <span>CONFIGURACIÓN DE EDICIÓN</span>
+          <span>{translate("CONFIGURACIÓN DE EDICIÓN")}</span>
 
-          <h2 id="rundown-edit-title">
-            Editar escaleta
-          </h2>
+          <h2 id="rundown-edit-title">{translate("Editar escaleta")}</h2>
 
-          <p>
-            Modifica el nombre y la fecha programada para
-            esta edición informativa.
-          </p>
+          <p>{translate("Modifica el nombre y la fecha programada para esta edición informativa.")}</p>
         </header>
 
         {error && (
           <div className="form-alert" role="alert">
-            {error}
+            {translate(error)}
           </div>
         )}
 
         <div className="rundown-edit-fields">
           <div className="form-field">
-            <label htmlFor="edit-rundown-name">
-              Nombre de la edición
-            </label>
+            <label htmlFor="edit-rundown-name">{translate("Nombre de la edición")}</label>
 
             <input
               ref={nameInputRef}
@@ -178,15 +173,13 @@ function RundownEditDialog({
 
             {errors.name && (
               <small className="field-error">
-                {errors.name}
+                {translate(errors.name)}
               </small>
             )}
           </div>
 
           <div className="form-field">
-            <label htmlFor="edit-rundown-date">
-              Fecha de transmisión
-            </label>
+            <label htmlFor="edit-rundown-date">{translate("Fecha de transmisión")}</label>
 
             <input
               id="edit-rundown-date"
@@ -202,7 +195,7 @@ function RundownEditDialog({
 
             {errors.broadcastDate && (
               <small className="field-error">
-                {errors.broadcastDate}
+                {translate(errors.broadcastDate)}
               </small>
             )}
           </div>
@@ -214,9 +207,7 @@ function RundownEditDialog({
             type="button"
             disabled={saving}
             onClick={onCancel}
-          >
-            Cancelar
-          </button>
+          >{translate("Cancelar")}</button>
 
           <button
             className="button button-primary"
@@ -224,8 +215,8 @@ function RundownEditDialog({
             disabled={saving}
           >
             {saving
-              ? "Guardando cambios..."
-              : "Guardar cambios"}
+              ? translate("Guardando cambios...")
+              : translate("Guardar cambios")}
           </button>
         </div>
       </form>

@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useRef,
@@ -44,6 +45,7 @@ function getSupportedMimeType() {
 }
 
 function PresenterRecorder() {
+  const { translate } = useTranslation();
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const recorderRef = useRef(null);
@@ -300,7 +302,7 @@ function PresenterRecorder() {
       };
 
       recorder.onstop = () => {
-        setRecording(false);
+        if (mountedRef.current) setRecording(false);
         if (
           chunksRef.current.length ===
           0
@@ -318,6 +320,7 @@ function PresenterRecorder() {
             }
           );
 
+        if (!mountedRef.current) return;
         const recordingUrl =
           URL.createObjectURL(
             recordingBlob
@@ -384,7 +387,7 @@ function PresenterRecorder() {
         >
           <span aria-hidden="true" />
 
-          <strong>GRABANDO</strong>
+          <strong>{translate("GRABANDO")}</strong>
 
           <time>
             {formatRecordingTime(
@@ -400,7 +403,7 @@ function PresenterRecorder() {
           autoPlay
           muted
           playsInline
-          aria-label="Vista previa de la cámara"
+          aria-label={translate("Vista previa de la cámara")}
         />
 
         {!cameraActive && (
@@ -409,9 +412,7 @@ function PresenterRecorder() {
               ●
             </span>
 
-            <p>
-              Cámara desactivada
-            </p>
+            <p>{translate("Cámara desactivada")}</p>
           </div>
         )}
 
@@ -420,9 +421,7 @@ function PresenterRecorder() {
             className="presenter-recording-badge"
             role="status"
           >
-            <span aria-hidden="true" />
-
-            GRABANDO{" "}
+            <span aria-hidden="true" />{translate("GRABANDO")}{" "}
             {formatRecordingTime(
               recordingTime
             )}
@@ -432,20 +431,11 @@ function PresenterRecorder() {
 
       <div className="presenter-recorder-content">
         <div>
-          <span className="presenter-recorder-label">
-            SIMULACIÓN DE PRESENTACIÓN
-          </span>
+          <span className="presenter-recorder-label">{translate("SIMULACIÓN DE PRESENTACIÓN")}</span>
 
-          <h2 id="presenter-recorder-title">
-            Cámara del presentador
-          </h2>
+          <h2 id="presenter-recorder-title">{translate("Cámara del presentador")}</h2>
 
-          <p>
-            Activa la cámara y el
-            micrófono para grabar tu
-            presentación mientras lees
-            el guion.
-          </p>
+          <p>{translate("Activa la cámara y el micrófono para grabar tu presentación mientras lees el guion.")}</p>
         </div>
 
         {error && (
@@ -453,7 +443,7 @@ function PresenterRecorder() {
             className="presenter-recorder-error"
             role="alert"
           >
-            {error}
+            {translate(error)}
           </div>
         )}
 
@@ -464,9 +454,7 @@ function PresenterRecorder() {
               className="button button-secondary"
               disabled={acquiring}
               onClick={activateCamera}
-            >
-              Activar cámara
-            </button>
+            >{translate("Activar cámara")}</button>
           ) : (
             <button
               type="button"
@@ -475,9 +463,7 @@ function PresenterRecorder() {
               onClick={
                 deactivateCamera
               }
-            >
-              Apagar cámara
-            </button>
+            >{translate("Apagar cámara")}</button>
           )}
 
           {!recording ? (
@@ -486,44 +472,32 @@ function PresenterRecorder() {
               className="button button-primary"
               disabled={acquiring}
               onClick={startRecording}
-            >
-              Iniciar grabación
-            </button>
+            >{translate("Iniciar grabación")}</button>
           ) : (
             <button
               type="button"
               className="button button-danger"
               onClick={stopRecording}
-            >
-              Detener grabación
-            </button>
+            >{translate("Detener grabación")}</button>
           )}
         </div>
 
-        <small className="presenter-recorder-privacy">
-          La grabación permanece en este
-          dispositivo y no se envía al
-          servidor.
-        </small>
+        <small className="presenter-recorder-privacy">{translate("Descarga la grabación antes de salir del módulo para conservarla. No se envía al servidor.")}</small>
       </div>
 
       {recordedUrl && (
         <div className="presenter-recording-result">
           <div>
-            <span>
-              GRABACIÓN FINALIZADA
-            </span>
+            <span>{translate("GRABACIÓN FINALIZADA")}</span>
 
-            <strong>
-              Vista previa del resultado
-            </strong>
+            <strong>{translate("Vista previa del resultado")}</strong>
           </div>
 
           <video
             src={recordedUrl}
             controls
             playsInline
-            aria-label="Grabación de la presentación"
+            aria-label={translate("Grabación de la presentación")}
           />
 
           <div className="presenter-recording-actions">
@@ -531,9 +505,7 @@ function PresenterRecorder() {
               className="button button-primary"
               href={recordedUrl}
               download={`presentacion-${Date.now()}.webm`}
-            >
-              Descargar grabación
-            </a>
+            >{translate("Descargar grabación")}</a>
 
             <button
               type="button"
@@ -541,9 +513,7 @@ function PresenterRecorder() {
               onClick={
                 deleteRecording
               }
-            >
-              Eliminar grabación
-            </button>
+            >{translate("Eliminar grabación")}</button>
           </div>
         </div>
       )}

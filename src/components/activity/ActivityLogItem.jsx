@@ -1,6 +1,7 @@
 import useAccessibility from "../../hooks/useAccessibility.js";
 
 const ACTION_INFORMATION = {
+  restore: { label: "Restauración", icon: "↩", color: "success" },
   login_success: {
     label: "Inicio de sesión",
     icon: "↪",
@@ -80,7 +81,7 @@ function ActivityLogItem({ activity }) {
   const actionInformation = isEnglish
     ? {
         ...spanishActionInformation,
-        label: ({ login_success: "Sign-in", logout: "Sign-out", system_check: "Check", create: "Creation", update: "Update", delete: "Deletion" }[activity.action] || "Activity"),
+        label: ({ restore: "Restoration", login_success: "Sign-in", logout: "Sign-out", system_check: "Check", create: "Creation", update: "Update", delete: "Deletion" }[activity.action] || "Activity"),
       }
     : spanishActionInformation;
 

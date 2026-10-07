@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
@@ -19,8 +20,13 @@ import { transmissionService } from "../services/transmissionService.js";
 import { buildMonthlySnapshot, buildProjectionRequest, formatMonthLabel, getMonthKey, PROJECTION_HORIZONS } from "../utils/projections.js";
 
 import useAccessibility from "../hooks/useAccessibility.js";
+import useAuth from "../hooks/useAuth.js";
+import { savedContentService } from "../services/savedContentService.js";
+import "../styles/saved-content.css";
 
 function ProjectionsPage() {
+  const { translate } = useTranslation();
+  const { user } = useAuth();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const asOfMonth = getMonthKey(new Date().toISOString());
@@ -40,6 +46,33 @@ function ProjectionsPage() {
   const [loadError, setLoadError] = useState("");
   const [generationError, setGenerationError] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [selectedHistory, setSelectedHistory] = useState(null);
+  const [historyError, setHistoryError] = useState("");
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [unsaved, setUnsaved] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setHistoryLoading(true);
+    setHistoryError("");
+    savedContentService.projections(controller.signal).then((items) => {
+      if (controller.signal.aborted) return;
+      const sorted = [...items].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+      setHistory(sorted);
+      const pending = sorted.find((item) => item.pending);
+      if (pending) {
+        setUnsaved(pending);
+        setHistoryError("Hay un resultado guardado en este navegador pendiente de registrar en JSON Server. Reintenta el guardado.");
+      }
+      const restored = {};
+      sorted.forEach((item) => { if (!restored[item.analysisKey]) restored[item.analysisKey] = item.result; });
+      setAnalyses((previous) => ({ ...restored, ...previous }));
+    }).catch((error) => {
+      if (!controller.signal.aborted) setHistoryError(error.message);
+    }).finally(() => { if (!controller.signal.aborted) setHistoryLoading(false); });
+    return () => controller.abort();
+  }, [reloadKey]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -64,7 +97,6 @@ function ProjectionsPage() {
           setRundowns(sources[2].status === "fulfilled" && Array.isArray(sources[2].value) ? sources[2].value : []);
           setTransmission(sources[3].status === "fulfilled" ? sources[3].value : null);
           setSourceWarnings(["categories", "rundowns", "transmission"].filter((ignored, index) => sources[index + 1].status === "rejected"));
-          setAnalyses({});
         }
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -93,6 +125,7 @@ function ProjectionsPage() {
 
   const availableMonths = useMemo(() => {
     const monthKeys = new Set([getMonthKey(new Date().toISOString())]);
+    history.forEach((item) => monthKeys.add(item.month));
 
     news.forEach((newsItem) => {
       const monthKey = getMonthKey(
@@ -111,7 +144,7 @@ function ProjectionsPage() {
     return [...monthKeys].sort((first, second) =>
       second.localeCompare(first)
     );
-  }, [news, rundowns]);
+  }, [news, rundowns, history]);
 
   useEffect(() => {
     if (loading) return;
@@ -133,7 +166,7 @@ function ProjectionsPage() {
     request.statistics = { ...request.statistics, totalRundowns: null, scheduledNews: null };
   }
   const analysisKey = `${selectedMonth}:${language}:${forecastHorizon}:${asOfMonth}`;
-  const projection = analyses[analysisKey] || null;
+  const projection = selectedHistory?.result || analyses[analysisKey] || null;
   const otherLanguageAnalysis = analyses[`${selectedMonth}:${isEnglish ? "es" : "en"}:${forecastHorizon}:${asOfMonth}`];
   const statusLabels = isEnglish
     ? { draft: "Draft", review: "Under review", correction: "Needs correction", approved: "Approved", unknown: "Unspecified" }
@@ -158,6 +191,7 @@ function ProjectionsPage() {
 
     setGenerating(true);
     setGenerationError(null);
+    setSelectedHistory(null);
 
     try {
       const result =
@@ -167,9 +201,21 @@ function ProjectionsPage() {
         );
 
       if (!controller.signal.aborted) {
-        setAnalyses((previous) => ({ ...previous, [analysisKey]: {
-          ...result, generatedAt: new Date().toISOString(), coverage: request.coverage,
-        } }));
+        const savedResult = { ...result, generatedAt: new Date().toISOString(), coverage: request.coverage };
+        setAnalyses((previous) => ({ ...previous, [analysisKey]: savedResult }));
+        const entry = { id: crypto.randomUUID(), userId: user.id, analysisKey,
+          month: selectedMonth, language, horizonMonths: forecastHorizon, asOfMonth,
+          createdAt: savedResult.generatedAt, result: savedResult };
+        setUnsaved(entry);
+        try {
+          // El guardado continúa aunque se cierre este módulo una vez obtenido el resultado.
+          await savedContentService.saveProjection(entry);
+          setHistory((items) => [entry, ...items]);
+          setUnsaved(null);
+          setHistoryError("");
+        } catch (error) {
+          setHistoryError(`El resultado se generó, pero no se pudo guardar: ${error.message}`);
+        }
       }
     } catch (error) {
       if (!controller.signal.aborted && error.name !== "AbortError") {
@@ -183,6 +229,7 @@ function ProjectionsPage() {
   }
 
   function handleMonthChange(event) {
+    setSelectedHistory(null);
     setSelectedMonth(event.target.value);
     setGenerationError(null);
   }
@@ -196,27 +243,34 @@ function ProjectionsPage() {
   return (
     <>
       <PageHeader
-        eyebrow={
-          isEnglish
-            ? "ADMINISTRATOR TOOLS"
-            : "HERRAMIENTAS DE ADMINISTRACIÓN"
-        }
-        title={
-          isEnglish
-            ? "Monthly projections"
-            : "Proyecciones mensuales"
-        }
-        description={
-          isEnglish
-            ? "Analyze monthly records and explore possible developments six months ahead and beyond."
-            : "Analiza los registros mensuales y explora posibles desarrollos a partir de seis meses hacia el futuro."
-        }
+        eyebrow={isEnglish ? "ADMINISTRATOR TOOLS" : "HERRAMIENTAS DE ADMINISTRACIÓN"}
+        title={isEnglish ? "Monthly projections" : "Proyecciones mensuales"}
+        description={isEnglish ? "Analyze monthly records and explore possible developments six months ahead and beyond." : "Analiza los registros mensuales y explora posibles desarrollos a partir de seis meses hacia el futuro."}
       >
         <button className="button button-secondary" type="button" disabled={loading || generating} onClick={() => setReloadKey((value) => value + 1)}>
           {isEnglish ? "Refresh data" : "Actualizar datos"}
         </button>
       </PageHeader>
-
+      <section className="saved-content" aria-labelledby="projection-history-title">
+        <div className="saved-content-heading"><div>
+          <h2 id="projection-history-title">{isEnglish ? "Projection history" : "Historial de proyecciones"}</h2>
+          <p>{isEnglish ? "Generated results are saved automatically. Open an earlier result without querying AI again." : "Los resultados se guardan automáticamente. Abre una proyección anterior sin consultar otra vez a la IA."}</p>
+        </div></div>
+        {historyLoading && <p role="status">{isEnglish ? "Loading history..." : "Cargando historial..."}</p>}
+        {historyError && <p className="form-alert" role="alert">{translate(historyError)}</p>}
+        {unsaved && <button className="button button-secondary" disabled={generating} onClick={async () => {
+          try {
+            await savedContentService.saveProjection(unsaved);
+            setHistory((items) => [unsaved, ...items.filter((item) => item.id !== unsaved.id)]);
+            setUnsaved(null); setHistoryError("");
+          } catch (error) { setHistoryError(error.message); }
+        }}>{isEnglish ? "Retry saving result" : "Reintentar guardado del resultado"}</button>}
+        {!historyLoading && !history.length && !historyError && <p>{isEnglish ? "Your generated projections will appear here." : "Tus proyecciones generadas aparecerán aquí."}</p>}
+        <div className="saved-content-history">{history.map((item) => <button key={item.id} className="button button-secondary" disabled={generating} onClick={() => {
+          setSelectedMonth(item.month); setForecastHorizon(item.horizonMonths); setSelectedHistory(item);
+        }}>{formatMonthLabel(item.month, language)} · {item.horizonMonths} {isEnglish ? "months" : "meses"} · {item.language.toUpperCase()} · {new Date(item.createdAt).toLocaleString(isEnglish ? "en-US" : "es-CR")}</button>)}</div>
+        {selectedHistory && <p role="status">{isEnglish ? "Viewing a saved result; it reflects the data available when it was generated." : "Estás viendo un resultado guardado; refleja los datos disponibles cuando se generó."} <button className="button button-secondary" onClick={() => setSelectedHistory(null)}>{isEnglish ? "Return to current analysis" : "Volver al análisis actual"}</button></p>}
+      </section>
       {loading && (
         <LoadingState
           message={
@@ -309,7 +363,7 @@ function ProjectionsPage() {
 
               <div className="form-field">
                 <label htmlFor="projections-horizon">{isEnglish ? "Future horizon" : "Horizonte futuro"}</label>
-                <select id="projections-horizon" value={forecastHorizon} aria-describedby="projections-horizon-help" onChange={(event) => setForecastHorizon(Number(event.target.value))}>
+                <select id="projections-horizon" value={forecastHorizon} aria-describedby="projections-horizon-help" onChange={(event) => { setSelectedHistory(null); setForecastHorizon(Number(event.target.value)); }}>
                   {PROJECTION_HORIZONS.map((months) => <option value={months} key={months}>{isEnglish ? `${months} months ahead` : `${months} meses adelante`}</option>)}
                 </select>
                 <small id="projections-horizon-help">{isEnglish ? "Counted from the current month, independently of the source month." : "Se cuenta desde el mes actual, independientemente del mes de los datos."}</small>

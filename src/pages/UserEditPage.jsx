@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useState,
@@ -21,6 +22,7 @@ import { userService } from "../services/userService.js";
 import { ROLES } from "../utils/roles.js";
 
 function UserEditPage() {
+  const { translate } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -170,13 +172,13 @@ function UserEditPage() {
   return (
     <>
       <PageHeader
-        eyebrow="ADMINISTRACIÓN / USUARIOS"
-        title="Editar usuario"
-        description="Actualiza los datos, permisos y estado de la cuenta seleccionada."
+        eyebrow={translate("ADMINISTRACIÓN / USUARIOS")}
+        title={translate("Editar usuario")}
+        description={translate("Actualiza los datos, permisos y estado de la cuenta seleccionada.")}
       />
 
       {loading && (
-        <LoadingState message="Cargando información del usuario..." />
+        <LoadingState message={translate("Cargando información del usuario...")} />
       )}
 
       {!loading && loadError && (

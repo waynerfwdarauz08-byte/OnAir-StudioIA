@@ -1,6 +1,8 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import useAccessibility from "../../hooks/useAccessibility.js";
 
 export function LoadingState({ message }) {
+  const { translate } = useTranslation();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
 
@@ -11,13 +13,14 @@ export function LoadingState({ message }) {
 
       <div>
         <h2>{isEnglish ? "One moment" : "Un momento"}</h2>
-        <p>{displayMessage}</p>
+        <p>{translate(displayMessage)}</p>
       </div>
     </div>
   );
 }
 
 export function ErrorState({ message, onRetry }) {
+  const { translate } = useTranslation();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const displayMessage = message || (isEnglish ? "Unable to load the information." : "No fue posible cargar la información.");
@@ -26,7 +29,7 @@ export function ErrorState({ message, onRetry }) {
       <div>
         <span className="feedback-code">{isEnglish ? "CONNECTION ERROR" : "ERROR DE CONEXIÓN"}</span>
         <h2>{isEnglish ? "We couldn't complete the request" : "No pudimos completar la solicitud"}</h2>
-        <p>{displayMessage}</p>
+        <p>{translate(displayMessage)}</p>
 
         {onRetry && (
           <button

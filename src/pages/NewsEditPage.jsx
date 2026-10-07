@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import { useEffect, useState } from "react";
 import {
   Link,
@@ -17,6 +18,7 @@ import { newsService } from "../services/newsService.js";
 import useAuth from "../hooks/useAuth.js";
 
 function NewsEditPage() {
+  const { translate } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -87,7 +89,7 @@ function NewsEditPage() {
         isDemo: Boolean(newsItem.isDemo),
       };
 
-      await newsService.update(id, updatedNews);
+      await newsService.update(id, updatedNews, user);
       navigate("/news", { replace: true });
     } catch (updateError) {
       setError(updateError.message);
@@ -99,25 +101,23 @@ function NewsEditPage() {
   return (
     <>
       <PageHeader
-        eyebrow="MESA EDITORIAL"
-        title="Editar noticia"
-        description="Actualiza la información y el estado editorial de la noticia."
+        eyebrow={translate("MESA EDITORIAL")}
+        title={translate("Editar noticia")}
+        description={translate("Actualiza la información y el estado editorial de la noticia.")}
       />
 
       <div className="page-actions">
-        <Link className="button button-secondary" to="/news">
-          Volver a noticias
-        </Link>
+        <Link className="button button-secondary" to="/news">{translate("Volver a noticias")}</Link>
       </div>
 
       {loading && (
-        <LoadingState message="Cargando la noticia..." />
+        <LoadingState message={translate("Cargando la noticia...")} />
       )}
 
       {!loading && !newsItem && (
         <ErrorState
           message={
-            error || "No encontramos la noticia solicitada."
+            error || translate("No encontramos la noticia solicitada.")
           }
           onRetry={() =>
             setReloadKey((currentValue) => currentValue + 1)
@@ -130,7 +130,7 @@ function NewsEditPage() {
           initialValues={newsItem}
           categories={categories}
           onSubmit={handleUpdate}
-          submitLabel="Guardar cambios"
+          submitLabel={translate("Guardar cambios")}
           submitting={submitting}
           serverError={error}
         />

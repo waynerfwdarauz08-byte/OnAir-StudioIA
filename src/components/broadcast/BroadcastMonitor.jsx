@@ -1,3 +1,6 @@
+import useTranslation from "../../hooks/useTranslation.js";
+import useSystemSettings from "../../hooks/useSystemSettings.js";
+
 function BroadcastMonitor({
   source,
   mode = "idle",
@@ -7,14 +10,16 @@ function BroadcastMonitor({
   onClick,
   onDoubleClick,
 }) {
+  const { translate } = useTranslation();
+  const { channelName } = useSystemSettings();
   const isProgram = mode === "program";
   const isPreview = mode === "preview";
 
   const statusLabel = isProgram
-    ? "PGM · AL AIRE"
+    ? translate("PGM · AL AIRE")
     : isPreview
-      ? "PVW · PREPARADA"
-      : "SEÑAL DISPONIBLE";
+      ? translate("PVW · PREPARADA")
+      : translate("SEÑAL DISPONIBLE");
 
   return (
     <article
@@ -48,7 +53,7 @@ function BroadcastMonitor({
             {source.code}
           </span>
 
-          <strong>{source.name}</strong>
+          <strong>{translate(source.name)}</strong>
         </div>
 
         <span className="broadcast-signal-status">
@@ -60,13 +65,11 @@ function BroadcastMonitor({
       <div className="broadcast-monitor-screen">
         <img
           src={source.image}
-          alt={`Señal de ${source.name}`}
+          alt={translate("Señal de {0}", {0: translate(source.name)})}
         />
 
         {isProgram && (
-          <span className="broadcast-live-corner">
-            EN VIVO
-          </span>
+          <span className="broadcast-live-corner">{translate("EN VIVO")}</span>
         )}
 
         {isPreview && (
@@ -77,7 +80,7 @@ function BroadcastMonitor({
 
         {isProgram && lowerThird && (
           <div className="broadcast-lower-third">
-            <span>ONAIR STUDIO</span>
+            <span>{channelName}</span>
 
             <strong>{lowerThird}</strong>
 

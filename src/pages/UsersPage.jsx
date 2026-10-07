@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useCallback,
   useEffect,
@@ -26,18 +27,18 @@ import {
   ROLES,
 } from "../utils/roles.js";
 
-function formatUserDate(dateValue) {
+function formatUserDate(dateValue, language) {
   if (!dateValue) {
-    return "No disponible";
+    return language === "en" ? "Unavailable" : "No disponible";
   }
 
   const date = new Date(dateValue);
 
   if (Number.isNaN(date.getTime())) {
-    return "No disponible";
+    return language === "en" ? "Unavailable" : "No disponible";
   }
 
-  return new Intl.DateTimeFormat("es-CR", {
+  return new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-CR", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -46,6 +47,7 @@ function formatUserDate(dateValue) {
 }
 
 function UsersPage() {
+  const { translate, language } = useTranslation();
   const { user: authenticatedUser } = useAuth();
   const location = useLocation();
 
@@ -147,16 +149,14 @@ function UsersPage() {
   return (
     <>
       <PageHeader
-        eyebrow="ADMINISTRACIÓN"
-        title="Gestión de usuarios"
-        description="Registra usuarios, asigna roles y controla el acceso a la plataforma."
+        eyebrow={translate("ADMINISTRACIÓN")}
+        title={translate("Gestión de usuarios")}
+        description={translate("Registra usuarios, asigna roles y controla el acceso a la plataforma.")}
       >
         <Link
           className="button button-primary"
           to="/admin/users/new"
-        >
-          Registrar usuario
-          <span aria-hidden="true">+</span>
+        >{translate("Registrar usuario")}<span aria-hidden="true">+</span>
         </Link>
       </PageHeader>
 
@@ -167,7 +167,7 @@ function UsersPage() {
 
           <button
             type="button"
-            aria-label="Cerrar mensaje"
+            aria-label={translate("Cerrar mensaje")}
             onClick={() => setMessage("")}
           >
             ×
@@ -177,36 +177,34 @@ function UsersPage() {
 
       {!loading && error && (
         <div className="inline-error" role="alert">
-          <p>{error}</p>
+          <p>{translate(error)}</p>
 
           <button
             type="button"
             onClick={() => setError("")}
-          >
-            Cerrar
-          </button>
+          >{translate("Cerrar")}</button>
         </div>
       )}
 
       <section className="users-summary">
         <article>
-          <span>USUARIOS TOTALES</span>
+          <span>{translate("USUARIOS TOTALES")}</span>
           <strong>{users.length}</strong>
         </article>
 
         <article>
-          <span>USUARIOS ACTIVOS</span>
+          <span>{translate("USUARIOS ACTIVOS")}</span>
           <strong>{activeUsers}</strong>
         </article>
 
         <article>
-          <span>ROLES DISPONIBLES</span>
+          <span>{translate("ROLES DISPONIBLES")}</span>
           <strong>3</strong>
         </article>
       </section>
 
       {loading && (
-        <LoadingState message="Cargando usuarios registrados..." />
+        <LoadingState message={translate("Cargando usuarios registrados...")} />
       )}
 
       {!loading && error && users.length === 0 && (
@@ -218,15 +216,15 @@ function UsersPage() {
 
       {!loading && !error && users.length === 0 && (
         <EmptyState
-          title="No hay usuarios registrados"
-          description="Registra el primer usuario de la plataforma."
+          title={translate("No hay usuarios registrados")}
+          description={translate("Registra el primer usuario de la plataforma.")}
         />
       )}
 
       {!loading && users.length > 0 && (
         <section
           className="users-grid"
-          aria-label="Usuarios registrados"
+          aria-label={translate("Usuarios registrados")}
         >
           {users.map((userItem) => {
             const isCurrentUser =
@@ -253,9 +251,7 @@ function UsersPage() {
                       <h2>{userItem.name}</h2>
 
                       {isCurrentUser && (
-                        <span className="current-user-label">
-                          TÚ
-                        </span>
+                        <span className="current-user-label">{translate("TÚ")}</span>
                       )}
                     </div>
 
@@ -265,14 +261,14 @@ function UsersPage() {
 
                 <dl className="user-information">
                   <div>
-                    <dt>Rol</dt>
+                    <dt>{translate("Rol")}</dt>
                     <dd>
-                      {getRoleLabel(userItem.role)}
+                      {getRoleLabel(userItem.role, language)}
                     </dd>
                   </div>
 
                   <div>
-                    <dt>Estado</dt>
+                    <dt>{translate("Estado")}</dt>
                     <dd>
                       <span
                         className={
@@ -283,17 +279,17 @@ function UsersPage() {
                       >
                         <span aria-hidden="true" />
                         {userItem.active
-                          ? "Activo"
-                          : "Inactivo"}
+                          ? translate("Activo")
+                          : translate("Inactivo")}
                       </span>
                     </dd>
                   </div>
 
                   <div>
-                    <dt>Registro</dt>
+                    <dt>{translate("Registro")}</dt>
                     <dd>
                       {formatUserDate(
-                        userItem.createdAt
+                        userItem.createdAt, language
                       )}
                     </dd>
                   </div>
@@ -303,9 +299,7 @@ function UsersPage() {
                   <Link
                     className="button button-secondary"
                     to={`/admin/users/${userItem.id}/edit`}
-                  >
-                    Editar
-                  </Link>
+                  >{translate("Editar")}</Link>
 
                   <button
                     type="button"
@@ -313,15 +307,13 @@ function UsersPage() {
                     disabled={isCurrentUser}
                     title={
                       isCurrentUser
-                        ? "No puedes eliminar tu propia sesión"
+                        ? translate("No puedes eliminar tu propia sesión")
                         : undefined
                     }
                     onClick={() =>
                       setSelectedUser(userItem)
                     }
-                  >
-                    Eliminar
-                  </button>
+                  >{translate("Eliminar")}</button>
                 </footer>
               </article>
             );
@@ -331,13 +323,13 @@ function UsersPage() {
 
       <ConfirmDialog
         open={Boolean(selectedUser)}
-        title="Eliminar usuario"
+        title={translate("Eliminar usuario")}
         message={
           selectedUser
             ? `¿Deseas eliminar a ${selectedUser.name}? Esta acción no se puede deshacer.`
             : ""
         }
-        confirmText="Eliminar"
+        confirmText={translate("Eliminar")}
         danger
         loading={deleteLoading}
         onCancel={() => setSelectedUser(null)}

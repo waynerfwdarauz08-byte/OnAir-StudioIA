@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import useTranslation from "../hooks/useTranslation.js";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -92,6 +93,7 @@ function OperationalMap({ headquarters, incidents, selectedId, setSelectedId, la
 }
 
 function OperationalMapPage() {
+  const { translate } = useTranslation();
   const { language } = useAccessibility();
   const en = language === "en";
   const t = (es, english) => en ? english : es;
@@ -239,7 +241,7 @@ function OperationalMapPage() {
           </div>
         </>}
       </section>
-      {(notice || error) && <p className={error ? "operational-message is-error" : "operational-message"} role={error ? "alert" : "status"}>{error ? `${t("No se pudo guardar en JSON Server.", "Could not save to JSON Server.")} ${error}` : notice}</p>}
+      {(notice || error) && <p className={error ? "operational-message is-error" : "operational-message"} role={error ? "alert" : "status"}>{error ? `${t("No se pudo guardar en JSON Server.", "Could not save to JSON Server.")} ${translate(error)}` : translate(notice)}</p>}
     </main>}
   </>;
 }

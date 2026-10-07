@@ -1,3 +1,6 @@
+import useTranslation from "../../hooks/useTranslation.js";
+import "../../styles/broadcast-transitions.css";
+import useSystemSettings from "../../hooks/useSystemSettings.js";
 import { useState } from "react";
 
 import BroadcastMonitor from "./BroadcastMonitor.jsx";
@@ -23,11 +26,14 @@ function BroadcastSwitcher({
   lowerThird = "",
   title = "",
   transitioning = false,
+  transition = null,
   onPreview,
   onTake,
   onCut,
   onAuto,
 }) {
+  const { translate } = useTranslation();
+  const { channelName } = useSystemSettings();
   const [transitionType, setTransitionType] =
     useState("mix");
 
@@ -97,11 +103,9 @@ function BroadcastSwitcher({
     >
       <header className="broadcast-section-heading">
         <div>
-          <span>SWITCHER PRINCIPAL</span>
+          <span>{translate("SWITCHER PRINCIPAL")}</span>
 
-          <h2 id="switcher-title">
-            Control de programa y preview
-          </h2>
+          <h2 id="switcher-title">{translate("Control de programa y preview")}</h2>
         </div>
 
         <div className="broadcast-switcher-status">
@@ -124,7 +128,7 @@ function BroadcastSwitcher({
               <span>(PVW)</span>
             </div>
 
-            <small>{previewSource.name}</small>
+            <small>{translate(previewSource.name)}</small>
           </div>
 
           <BroadcastMonitor
@@ -146,7 +150,7 @@ function BroadcastSwitcher({
               <span>(PGM)</span>
             </div>
 
-            <small>{programSource.name}</small>
+            <small>{translate(programSource.name)}</small>
           </div>
 
           <div className="broadcast-program-screen">
@@ -162,6 +166,8 @@ function BroadcastSwitcher({
               title={title}
             />
 
+            {transition && <div className={`broadcast-transition broadcast-transition--${transition.type}`} style={{ "--transition-duration": `${transition.duration}ms` }} aria-hidden="true"><BroadcastMonitor source={sources.find((source) => source.id === transition.sourceId)} mode="program" large lowerThird={keyers.lowerThird ? lowerThird : ""} title={title} /></div>}
+            {transition?.type === "dip" && <div className="broadcast-transition-dip" style={{ "--transition-duration": `${transition.duration}ms` }} aria-hidden="true" />}
             {fadeToBlack && (
               <div className="broadcast-blackout">
                 <span>FADE TO BLACK</span>
@@ -171,25 +177,23 @@ function BroadcastSwitcher({
             {keyers.stationBug &&
               !fadeToBlack && (
                 <span className="broadcast-station-bug">
-                  ONAIR
+                  {channelName}
                 </span>
               )}
 
             {keyers.breaking &&
               !fadeToBlack && (
-                <span className="broadcast-breaking-bug">
-                  ÚLTIMA HORA
-                </span>
+                <span className="broadcast-breaking-bug">{translate("ÚLTIMA HORA")}</span>
               )}
 
             {keyers.ticker &&
               !fadeToBlack && (
                 <div className="broadcast-ticker">
-                  <span>ONAIR STUDIO AI</span>
+                  <span>{channelName}</span>
 
                   <p>
                     {title ||
-                      "Sistema de transmisión preparado"}
+                      translate("Sistema de transmisión preparado")}
                   </p>
                 </div>
               )}
@@ -206,9 +210,7 @@ function BroadcastSwitcher({
               PROGRAM BUS
             </strong>
 
-            <small>
-              CORTE DIRECTO AL AIRE
-            </small>
+            <small>{translate("CORTE DIRECTO AL AIRE")}</small>
           </header>
 
           <div className="broadcast-source-buttons">
@@ -241,9 +243,7 @@ function BroadcastSwitcher({
               PREVIEW BUS
             </strong>
 
-            <small>
-              SEÑAL PREPARADA
-            </small>
+            <small>{translate("SEÑAL PREPARADA")}</small>
           </header>
 
           <div className="broadcast-source-buttons">
@@ -272,9 +272,7 @@ function BroadcastSwitcher({
           <header>
             <strong>KEYERS / DSK</strong>
 
-            <small>
-              ELEMENTOS GRÁFICOS
-            </small>
+            <small>{translate("ELEMENTOS GRÁFICOS")}</small>
           </header>
 
           <div>
@@ -290,7 +288,7 @@ function BroadcastSwitcher({
               }
             >
               DSK 1
-              <small>CINTILLO</small>
+              <small>{translate("CINTILLO")}</small>
             </button>
 
             <button
@@ -305,7 +303,7 @@ function BroadcastSwitcher({
               }
             >
               DSK 2
-              <small>ÚLTIMA HORA</small>
+              <small>{translate("ÚLTIMA HORA")}</small>
             </button>
 
             <button
@@ -359,13 +357,14 @@ function BroadcastSwitcher({
         <section className="broadcast-transition-panel">
           <div className="broadcast-transition-settings">
             <div>
-              <span>TIPO DE TRANSICIÓN</span>
+              <span>{translate("TIPO DE TRANSICIÓN")}</span>
 
               <div className="broadcast-option-buttons">
                 {TRANSITION_TYPES.map(
                   (transition) => (
                     <button
                       key={transition.id}
+                      disabled={transitioning}
                       className={
                         transitionType ===
                         transition.id
@@ -387,12 +386,13 @@ function BroadcastSwitcher({
             </div>
 
             <div>
-              <span>VELOCIDAD</span>
+              <span>{translate("VELOCIDAD")}</span>
 
               <div className="broadcast-option-buttons">
                 {TRANSITION_RATES.map((rate) => (
                   <button
                     key={rate.value}
+                    disabled={transitioning}
                     className={
                       transitionRate ===
                       rate.value
@@ -421,7 +421,7 @@ function BroadcastSwitcher({
               onClick={onCut}
             >
               CUT
-              <small>CORTE DIRECTO</small>
+              <small>{translate("CORTE DIRECTO")}</small>
             </button>
 
             <button

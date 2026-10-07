@@ -1,3 +1,5 @@
+import useTranslation from "../hooks/useTranslation.js";
+import useAuth from "../hooks/useAuth.js";
 import {
   useEffect,
   useMemo,
@@ -33,6 +35,8 @@ function normalizeText(value) {
 }
 
 function CategoriesPage() {
+  const { translate } = useTranslation();
+  const { user } = useAuth();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const [categories, setCategories] = useState([]);
@@ -165,8 +169,7 @@ function CategoriesPage() {
         const savedCategory =
           await categoryService.update(
             editingCategory.id,
-            updatedCategory
-          );
+            updatedCategory, user);
 
         setCategories((currentCategories) =>
           currentCategories.map((categoryItem) =>
@@ -189,7 +192,7 @@ function CategoriesPage() {
         };
 
         const savedCategory =
-          await categoryService.create(newCategory);
+          await categoryService.create(newCategory, user);
 
         setCategories((currentCategories) => [
           ...currentCategories,
@@ -260,8 +263,7 @@ function CategoriesPage() {
 
     try {
       await categoryService.remove(
-        categoryToDelete.id
-      );
+        categoryToDelete.id, user);
 
       setCategories((currentCategories) =>
         currentCategories.filter(
@@ -358,7 +360,7 @@ function CategoriesPage() {
                 className="success-alert"
                 role="status"
               >
-                {successMessage}
+                {translate(successMessage)}
               </div>
             )}
 
@@ -367,7 +369,7 @@ function CategoriesPage() {
                 className="form-alert"
                 role="alert"
               >
-                {actionError}
+                {translate(actionError)}
               </div>
             )}
 
@@ -454,7 +456,7 @@ function CategoriesPage() {
         title={isEnglish ? "Delete category" : "Eliminar categoría"}
         message={
           categoryToDelete
-            ? isEnglish ? `Do you want to permanently delete the category “${categoryToDelete.name}”?` : `¿Deseas eliminar permanentemente la categoría “${categoryToDelete.name}”?`
+            ? isEnglish ? `Move “${categoryToDelete.name}” to the recycle bin? You can restore it later.` : `¿Deseas enviar “${categoryToDelete.name}” a la papelera? Podrás restaurarla después.`
             : ""
         }
         confirmText={isEnglish ? "Delete category" : "Eliminar categoría"}

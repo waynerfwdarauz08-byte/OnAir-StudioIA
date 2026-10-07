@@ -1,0 +1,96 @@
+/* Alias semánticos usados por controles compartidos. */
+:root {
+  --surface-secondary: var(--color-surface-light);
+  --border-color: var(--color-border);
+  --text-secondary: var(--color-text-muted);
+}
+
+html[data-theme="light"] {
+  --color-primary: #08758c;
+  --color-on-air: #b42335;
+  --color-approved: #087f45;
+  --color-standby: #855800;
+  --color-text-muted: #526176;
+}
+html[data-theme="light"][data-color-vision="colorblind"] {
+  --color-primary: #85406c;
+  --color-on-air: #0072b2;
+  --color-approved: #006c50;
+  --color-standby: #855800;
+}
+
+html[data-theme="light"] .button-primary {
+  color: #fff;
+}
+html[data-theme="light"] .button-primary:hover { background: #075e72; }
+html[data-theme="light"] .button-secondary { color: var(--color-text); }
+
+html[data-theme="light"] .form-alert,
+html[data-theme="light"] .inline-error,
+html[data-theme="light"] .form-error-summary,
+html[data-theme="light"] .settings-message-error {
+  color: #9b1c31;
+  background: #fff1f3;
+  border-color: #d68b97;
+}
+html[data-theme="light"] .success-alert,
+html[data-theme="light"] .success-message,
+html[data-theme="light"] .settings-message-success {
+  color: #14643e;
+  background: #edf9f1;
+  border-color: #75b992;
+}
+html[data-theme="light"] :is(.form-alert, .success-alert)::before { color: inherit; }
+html[data-theme="light"] :is(.field-error, .news-form .field-error, .category-form .field-error) { color: #9b1c31; }
+
+html[data-theme="light"] :is(
+  .category-form-heading > span, .categories-panel-heading span,
+  .news-detail-data a, .news-detail-text h4, .news-detail-options h4,
+  .news-detail-information span, .settings-section-heading div > span,
+  .activity-log-icon-system, .activity-action-system, .activity-user-avatar
+) { color: var(--color-primary); }
+html[data-theme="light"] :is(.activity-log-icon-success, .activity-action-success, .message-online-text, .message-read) { color: var(--color-approved); }
+html[data-theme="light"] :is(.activity-log-icon-danger, .activity-action-danger) { color: var(--color-on-air); }
+html[data-theme="light"] .activity-module-badge { color: #6941a5; }
+html[data-theme="light"] .categories-panel-heading > strong { color: var(--color-text); }
+
+html[data-theme="light"] .teleprompter-workspace:not(.high-contrast) {
+  --teleprompter-accent: var(--color-primary);
+  --teleprompter-panel: var(--color-surface);
+  --teleprompter-border: var(--color-border);
+  --teleprompter-text: var(--color-text);
+  --teleprompter-muted: var(--color-text-muted);
+}
+html[data-theme="light"] .teleprompter-workspace:not(.high-contrast) .teleprompter-display {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 8%);
+}
+html[data-theme="light"] .teleprompter-workspace:not(.high-contrast) :is(
+  .teleprompter-script-text, .teleprompter-script-heading h2,
+  .teleprompter-empty-state h2, .teleprompter-lower-third strong
+) { color: var(--color-text); }
+html[data-theme="light"] .teleprompter-workspace.high-contrast :is(
+  .teleprompter-control-group, .teleprompter-display, .teleprompter-display-header,
+  .teleprompter-control-select, .teleprompter-icon-button
+) { color: #fff; background: #000; border-color: #fff; }
+html[data-theme="light"] .teleprompter-workspace.high-contrast .teleprompter-script-text { color: #ffe600; }
+
+html[data-theme="light"] :is(.presenter-recorder-content h2, .presenter-recording-result > div:first-child strong) { color: var(--color-text); }
+html[data-theme="light"] .dashboard-chart-card {
+  --dashboard-accent: var(--color-primary);
+  --dashboard-grid: var(--color-border);
+  --dashboard-axis: var(--color-text-muted);
+  --dashboard-heading: var(--color-text);
+}
+html[data-theme="light"] .dashboard-chart-tooltip { color: var(--color-text); border-color: var(--color-border); }
+html[data-theme="light"] .weather-card { color: var(--color-text); }
+html[data-theme="light"] .weather-symbol { color: var(--color-primary); }
+html[data-theme="light"] .theme-option-selected { border-color: var(--color-primary); }
+html[data-theme="light"] .theme-selection-indicator { background: var(--color-primary); color: #fff; }
+
+/* Las señales de vídeo, el negro de transición y las muestras de temas conservan sus colores propios. */
+html[data-theme="light"] .broadcast-lower-third :is(small, span) { color: #dbeafe; }
+html[data-theme="light"] .broadcast-station-bug { color: #fff; }
+html[data-theme="light"] .broadcast-ticker { color: #fff; }
+html[data-theme="light"] .broadcast-ticker > span { color: #001018; }

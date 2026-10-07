@@ -15,6 +15,7 @@ import SelectionSpeechControl from "../common/SelectionSpeechControl.jsx";
 
 import useAuth from "../../hooks/useAuth.js";
 import useAccessibility from "../../hooks/useAccessibility.js";
+import useSystemSettings from "../../hooks/useSystemSettings.js";
 
 import { messageService } from "../../services/messageService.js";
 
@@ -81,32 +82,38 @@ const menuItems = [
     ],
   },
   {
-    path: "/admin/users",
-    number: "09",
-    key: "users",
-    roles: [ROLES.ADMIN],
-  },
-  {
-    path: "/admin/activity",
-    number: "10",
-    key: "activity",
-    roles: [ROLES.ADMIN],
-  },
-  {
-    path: "/admin/projections",
-    number: "11",
-    key: "projections",
-    roles: [ROLES.ADMIN],
-  },
-  {
     path: "/admin/presenter-locations",
-    number: "12",
+    number: "09",
     key: "presenterLocations",
     roles: [ROLES.ADMIN],
   },
   {
-    path: "/admin/settings",
+    path: "/admin/projections",
+    number: "10",
+    key: "projections",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    path: "/admin/activity",
+    number: "11",
+    key: "activity",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    path: "/admin/users",
+    number: "12",
+    key: "users",
+    roles: [ROLES.ADMIN],
+  },
+  {
+    path: "/trash",
     number: "13",
+    key: "trash",
+    roles: [ROLES.ADMIN, ROLES.MODERATOR],
+  },
+  {
+    path: "/admin/settings",
+    number: "14",
     key: "settings",
     roles: [
       ROLES.ADMIN,
@@ -118,6 +125,7 @@ const menuItems = [
 
 const MENU_LABELS = {
   es: {
+    trash: "Papelera",
     dashboard: "Vista general",
     news: "Noticias",
     aiEditor: "Redacción IA",
@@ -133,6 +141,7 @@ const MENU_LABELS = {
     settings: "Configuración",
   },
   en: {
+    trash: "Recycle bin",
     dashboard: "Overview",
     news: "News",
     aiEditor: "AI writing",
@@ -150,6 +159,13 @@ const MENU_LABELS = {
 };
 
 function AppLayout() {
+  const [auditWarning, setAuditWarning] = useState(false);
+  useEffect(() => {
+    const warn = () => setAuditWarning(true);
+    window.addEventListener("onair:audit-error", warn);
+    return () => window.removeEventListener("onair:audit-error", warn);
+  }, []);
+  const { channelName } = useSystemSettings();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
@@ -442,7 +458,7 @@ function AppLayout() {
               </span>
 
               <span className="topbar-section">
-                ON AIR STUDIO
+                {channelName}
               </span>
             </div>
           </div>
@@ -477,12 +493,13 @@ function AppLayout() {
           className="main-content"
           tabIndex="-1"
         >
+          {auditWarning && <div className="form-alert" role="alert">{isEnglish ? "Your change was saved, but its activity log could not be recorded." : "El cambio se guardó, pero no fue posible registrarlo en Historial."} <button type="button" className="button button-secondary" onClick={() => setAuditWarning(false)}>{isEnglish ? "Dismiss" : "Cerrar aviso"}</button></div>}
           <Outlet />
           <SelectionSpeechControl />
         </main>
 
         <footer className="main-footer">
-          <span>ONAIR STUDIO IA</span>
+          <span>{channelName}</span>
 
           <span>
             {isEnglish

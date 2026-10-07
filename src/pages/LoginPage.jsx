@@ -1,3 +1,4 @@
+import useTranslation from "../hooks/useTranslation.js";
 import {
   useEffect,
   useState,
@@ -18,6 +19,7 @@ import {
 } from "../utils/roles.js";
 
 function LoginPage() {
+  const { translate } = useTranslation();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -143,7 +145,7 @@ function LoginPage() {
         {error && (
           <div className="login-error" role="alert">
             <span aria-hidden="true">!</span>
-            <p>{error}</p>
+            <p>{translate(error)}</p>
           </div>
         )}
 

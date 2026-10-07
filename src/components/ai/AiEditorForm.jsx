@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import { useState } from "react";
 import useAccessibility from "../../hooks/useAccessibility.js";
 
@@ -51,6 +52,7 @@ function AiEditorForm({
   error = "",
   onGenerate,
 }) {
+  const { translate } = useTranslation();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const [values, setValues] =
@@ -122,7 +124,7 @@ function AiEditorForm({
 
       {error && (
         <div className="form-alert" role="alert">
-          {error}
+          {translate(error)}
         </div>
       )}
 
@@ -145,7 +147,7 @@ function AiEditorForm({
 
           {errors.sourceName && (
             <small className="field-error">
-              {errors.sourceName}
+              {translate(errors.sourceName)}
             </small>
           )}
         </div>
@@ -168,7 +170,7 @@ function AiEditorForm({
 
           {errors.sourceUrl && (
             <small className="field-error">
-              {errors.sourceUrl}
+              {translate(errors.sourceUrl)}
             </small>
           )}
         </div>
@@ -227,7 +229,7 @@ function AiEditorForm({
 
           {errors.targetDurationSeconds && (
             <small className="field-error">
-              {errors.targetDurationSeconds}
+              {translate(errors.targetDurationSeconds)}
             </small>
           )}
         </div>
@@ -260,7 +262,7 @@ function AiEditorForm({
 
           {errors.sourceText && (
             <small className="field-error">
-              {errors.sourceText}
+              {translate(errors.sourceText)}
             </small>
           )}
         </div>

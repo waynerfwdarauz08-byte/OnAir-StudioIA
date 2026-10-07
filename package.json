@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "test": "npm run test:unit && node scripts/test-project-regressions.mjs && node scripts/test-projections-service.mjs && node scripts/test-projections-data.mjs && node scripts/test-projections-api.mjs && node scripts/test-presenter-locations.mjs",
+    "test": "npm run test:unit && node scripts/test-project-regressions.mjs && node scripts/test-projections-service.mjs && node scripts/test-projections-data.mjs && node scripts/test-projections-api.mjs && node scripts/test-presenter-locations.mjs && node scripts/test-interface-preferences.mjs",
     "test:unit": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "preview": "vite preview",
     "server": "json-server db.json --port 3001"

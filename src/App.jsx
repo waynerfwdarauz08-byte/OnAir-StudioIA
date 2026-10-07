@@ -1,6 +1,7 @@
 import { AuthProvider } from "./context/AuthContext.jsx";
 import AccessibilityProvider from "./context/AccessibilityContext.jsx";
 import ThemeProvider from "./context/ThemeContext.jsx";
+import SystemSettingsProvider from "./context/SystemSettingsContext.jsx";
 
 import AppRoutes from "./routes/AppRoutes.jsx";
 
@@ -9,7 +10,7 @@ function App() {
     <ThemeProvider>
       <AccessibilityProvider>
         <AuthProvider>
-          <AppRoutes />
+          <SystemSettingsProvider><AppRoutes /></SystemSettingsProvider>
         </AuthProvider>
       </AccessibilityProvider>
     </ThemeProvider>

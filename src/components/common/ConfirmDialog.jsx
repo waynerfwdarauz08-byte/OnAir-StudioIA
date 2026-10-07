@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useRef,
@@ -15,6 +16,7 @@ function ConfirmDialog({
   onConfirm,
   onCancel,
 }) {
+  const { translate } = useTranslation();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const displayConfirmText = confirmText || (isEnglish ? "Confirm" : "Confirmar");
@@ -74,9 +76,9 @@ function ConfirmDialog({
           {isEnglish ? "CONFIRMATION REQUIRED" : "CONFIRMACIÓN REQUERIDA"}
         </span>
 
-        <h2 id="confirm-dialog-title">{title}</h2>
+        <h2 id="confirm-dialog-title">{translate(title)}</h2>
 
-        <p id="confirm-dialog-message">{message}</p>
+        <p id="confirm-dialog-message">{translate(message)}</p>
 
         <div className="dialog-actions">
           <button
@@ -85,7 +87,7 @@ function ConfirmDialog({
             disabled={loading}
             onClick={onCancel}
           >
-            {displayCancelText}
+            {translate(displayCancelText)}
           </button>
 
           <button
@@ -99,7 +101,7 @@ function ConfirmDialog({
             disabled={loading}
             onClick={onConfirm}
           >
-            {loading ? (isEnglish ? "Processing..." : "Procesando...") : displayConfirmText}
+            {loading ? (isEnglish ? "Processing..." : "Procesando...") : translate(displayConfirmText)}
           </button>
         </div>
       </section>

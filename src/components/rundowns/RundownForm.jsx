@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import { useState } from "react";
 import useAccessibility from "../../hooks/useAccessibility.js";
 
@@ -25,6 +26,7 @@ function RundownForm({
   error = "",
   onSubmit,
 }) {
+  const { translate } = useTranslation();
   const { language } = useAccessibility();
   const isEnglish = language === "en";
   const [values, setValues] = useState(INITIAL_VALUES);
@@ -109,7 +111,7 @@ function RundownForm({
 
       {error && (
         <div className="form-alert" role="alert">
-          {error}
+          {translate(error)}
         </div>
       )}
 
@@ -132,7 +134,7 @@ function RundownForm({
 
           {errors.name && (
             <small className="field-error">
-              {errors.name}
+              {translate(errors.name)}
             </small>
           )}
         </div>
@@ -156,7 +158,7 @@ function RundownForm({
 
           {errors.broadcastDate && (
             <small className="field-error">
-              {errors.broadcastDate}
+              {translate(errors.broadcastDate)}
             </small>
           )}
         </div>

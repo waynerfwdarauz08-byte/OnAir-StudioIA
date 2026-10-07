@@ -1,3 +1,4 @@
+import useTranslation from "../../hooks/useTranslation.js";
 import {
   useEffect,
   useMemo,
@@ -16,12 +17,12 @@ function formatDuration(totalSeconds) {
   ).padStart(2, "0")}`;
 }
 
-function formatBroadcastDate(dateValue) {
+function formatBroadcastDate(dateValue, language) {
   if (!dateValue) {
     return "Fecha no definida";
   }
 
-  return new Intl.DateTimeFormat("es-CR", {
+  return new Intl.DateTimeFormat(language === "en" ? "en-US" : "es-CR", {
     weekday: "long",
     day: "2-digit",
     month: "long",
@@ -36,6 +37,7 @@ function RundownConsole({
   updating = false,
   onUpdateNewsIds,
 }) {
+  const { translate, language } = useTranslation();
   const [draftNewsIds, setDraftNewsIds] = useState(
     () =>
       Array.isArray(rundown?.newsIds)
@@ -141,7 +143,7 @@ function RundownConsole({
       (categoryItem) => categoryItem.id === categoryId
     );
 
-    return category?.name || "Sin categoría";
+    return category?.name || translate("Sin categoría");
   }
 
   function handleAddNews() {
@@ -244,32 +246,30 @@ function RundownConsole({
     >
       <header className="rundown-console-header">
         <div>
-          <span className="rundown-console-label">
-            CONTROL DE ESCALETA
-          </span>
+          <span className="rundown-console-label">{translate("CONTROL DE ESCALETA")}</span>
 
           <h2 id="rundown-console-title">
             {rundown.name}
           </h2>
 
           <p>
-            {formatBroadcastDate(rundown.broadcastDate)}
+            {translate(formatBroadcastDate(rundown.broadcastDate, language))}
           </p>
         </div>
 
         <div className="rundown-console-metrics">
           <div>
-            <span>NOTICIAS</span>
+            <span>{translate("NOTICIAS")}</span>
             <strong>{assignedNews.length}</strong>
           </div>
 
           <div>
-            <span>DURACIÓN TOTAL</span>
+            <span>{translate("DURACIÓN TOTAL")}</span>
             <strong>{formatDuration(totalDuration)}</strong>
           </div>
 
           <div>
-            <span>ESTADO</span>
+            <span>{translate("ESTADO")}</span>
             <strong
               className={
                 assignedNews.length > 0
@@ -278,8 +278,8 @@ function RundownConsole({
               }
             >
               {assignedNews.length > 0
-                ? "EN PREPARACIÓN"
-                : "VACÍA"}
+                ? translate("EN PREPARACIÓN")
+                : translate("VACÍA")}
             </strong>
           </div>
         </div>
@@ -287,8 +287,8 @@ function RundownConsole({
 
       <div className="rundown-add-news">
         <div>
-          <span>CONTENIDO DISPONIBLE</span>
-          <h3>Agregar noticia aprobada</h3>
+          <span>{translate("CONTENIDO DISPONIBLE")}</span>
+          <h3>{translate("Agregar noticia aprobada")}</h3>
         </div>
 
         <div className="rundown-add-controls">
@@ -297,15 +297,15 @@ function RundownConsole({
             disabled={
               updating || availableNews.length === 0
             }
-            aria-label="Noticia aprobada para agregar"
+            aria-label={translate("Noticia aprobada para agregar")}
             onChange={(event) =>
               setNewsToAdd(event.target.value)
             }
           >
             <option value="">
               {availableNews.length > 0
-                ? "Selecciona una noticia"
-                : "No hay noticias aprobadas disponibles"}
+                ? translate("Selecciona una noticia")
+                : translate("No hay noticias aprobadas disponibles")}
             </option>
 
             {availableNews.map((newsItem) => (
@@ -323,9 +323,7 @@ function RundownConsole({
             type="button"
             disabled={updating || !newsToAdd}
             onClick={handleAddNews}
-          >
-            Agregar al lineup
-          </button>
+          >{translate("Agregar al lineup")}</button>
         </div>
       </div>
 
@@ -333,7 +331,7 @@ function RundownConsole({
         <div className="rundown-lineup-panel">
           <div className="rundown-panel-heading">
             <strong>LINEUP GRID</strong>
-            <span>Selecciona una fila para revisar el guion</span>
+            <span>{translate("Selecciona una fila para revisar el guion")}</span>
           </div>
 
           {assignedNews.length > 0 ? (
@@ -342,11 +340,11 @@ function RundownConsole({
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>NOTICIA</th>
-                    <th>CATEGORÍA</th>
-                    <th>DURACIÓN</th>
-                    <th>ESTADO</th>
-                    <th>ACCIONES</th>
+                    <th>{translate("NOTICIA")}</th>
+                    <th>{translate("CATEGORÍA")}</th>
+                    <th>{translate("DURACIÓN")}</th>
+                    <th>{translate("ESTADO")}</th>
+                    <th>{translate("ACCIONES")}</th>
                   </tr>
                 </thead>
 
@@ -386,7 +384,7 @@ function RundownConsole({
 
                           <small>
                             {newsItem.sourceName ||
-                              "Fuente no indicada"}
+                              translate("Fuente no indicada")}
                           </small>
                         </td>
 
@@ -407,9 +405,7 @@ function RundownConsole({
                         </td>
 
                         <td>
-                          <span className="rundown-ready-badge">
-                            LISTA
-                          </span>
+                          <span className="rundown-ready-badge">{translate("LISTA")}</span>
                         </td>
 
                         <td>
@@ -424,8 +420,8 @@ function RundownConsole({
                               disabled={
                                 updating || index === 0
                               }
-                              title="Subir noticia"
-                              aria-label={`Subir ${newsItem.title}`}
+                              title={translate("Subir noticia")}
+                              aria-label={translate("Subir {0}", {0: newsItem.title})}
                               onClick={() =>
                                 handleMoveNews(index, -1)
                               }
@@ -439,8 +435,8 @@ function RundownConsole({
                                 updating ||
                                 index === assignedNews.length - 1
                               }
-                              title="Bajar noticia"
-                              aria-label={`Bajar ${newsItem.title}`}
+                              title={translate("Bajar noticia")}
+                              aria-label={translate("Bajar {0}", {0: newsItem.title})}
                               onClick={() =>
                                 handleMoveNews(index, 1)
                               }
@@ -452,8 +448,8 @@ function RundownConsole({
                               className="remove-action"
                               type="button"
                               disabled={updating}
-                              title="Quitar de la escaleta"
-                              aria-label={`Quitar ${newsItem.title}`}
+                              title={translate("Quitar de la escaleta")}
+                              aria-label={translate("Quitar {0}", {0: newsItem.title})}
                               onClick={() =>
                                 requestRemoveNews(newsItem)
                               }
@@ -471,26 +467,22 @@ function RundownConsole({
           ) : (
             <div className="rundown-empty-lineup">
               <span>00</span>
-              <h3>La escaleta todavía está vacía</h3>
-              <p>
-                Selecciona una noticia aprobada para comenzar
-                a organizar la edición.
-              </p>
+              <h3>{translate("La escaleta todavía está vacía")}</h3>
+              <p>{translate("Selecciona una noticia aprobada para comenzar a organizar la edición.")}</p>
             </div>
           )}
         </div>
 
         <aside className="rundown-script-panel">
           <div className="rundown-panel-heading">
-            <strong>VISTA DE GUION</strong>
-            <span>Previsualización editorial</span>
+            <strong>{translate("VISTA DE GUION")}</strong>
+            <span>{translate("Previsualización editorial")}</span>
           </div>
 
           {selectedNews ? (
             <div className="rundown-script-content">
               <div className="rundown-script-meta">
-                <span>
-                  POSICIÓN{" "}
+                <span>{translate("POSICIÓN")}{" "}
                   {String(
                     assignedNews.findIndex(
                       (newsItem) =>
@@ -510,12 +502,12 @@ function RundownConsole({
 
               <p className="rundown-script-summary">
                 {selectedNews.summary ||
-                  "Esta noticia no tiene resumen."}
+                  translate("Esta noticia no tiene resumen.")}
               </p>
 
               {selectedNews.selectedLowerThird && (
                 <div className="rundown-lower-third">
-                  <span>CINTILLO</span>
+                  <span>{translate("CINTILLO")}</span>
                   <strong>
                     {selectedNews.selectedLowerThird}
                   </strong>
@@ -523,19 +515,16 @@ function RundownConsole({
               )}
 
               <div className="rundown-script-reader">
-                <span>GUION DE PRESENTACIÓN</span>
+                <span>{translate("GUION DE PRESENTACIÓN")}</span>
                 <p>
                   {selectedNews.script ||
-                    "Esta noticia todavía no tiene un guion disponible."}
+                    translate("Esta noticia todavía no tiene un guion disponible.")}
                 </p>
               </div>
             </div>
           ) : (
             <div className="rundown-script-empty">
-              <p>
-                Agrega o selecciona una noticia para revisar
-                su guion.
-              </p>
+              <p>{translate("Agrega o selecciona una noticia para revisar su guion.")}</p>
             </div>
           )}
         </aside>
@@ -543,13 +532,9 @@ function RundownConsole({
 
       <div className="rundown-change-actions">
         {hasUnsavedChanges ? (
-          <p role="status">
-            Tienes cambios sin guardar en esta escaleta.
-          </p>
+          <p role="status">{translate("Tienes cambios sin guardar en esta escaleta.")}</p>
         ) : (
-          <p role="status">
-            Todos los cambios están guardados.
-          </p>
+          <p role="status">{translate("Todos los cambios están guardados.")}</p>
         )}
 
         <div>
@@ -558,9 +543,7 @@ function RundownConsole({
             type="button"
             disabled={updating || !hasUnsavedChanges}
             onClick={handleDiscardChanges}
-          >
-            Descartar cambios
-          </button>
+          >{translate("Descartar cambios")}</button>
 
           <button
             className="button button-primary"
@@ -569,21 +552,21 @@ function RundownConsole({
             onClick={handleSaveChanges}
           >
             {updating
-              ? "Guardando cambios..."
-              : "Guardar cambios"}
+              ? translate("Guardando cambios...")
+              : translate("Guardar cambios")}
           </button>
         </div>
       </div>
 
       <ConfirmDialog
         open={Boolean(newsToRemove)}
-        title="Quitar noticia"
+        title={translate("Quitar noticia")}
         message={
           newsToRemove
-            ? `¿Deseas quitar “${newsToRemove.title}” del borrador de esta escaleta? El cambio se aplicará cuando guardes la escaleta.`
+            ? translate("¿Deseas quitar “{0}” del borrador de esta escaleta? El cambio se aplicará cuando guardes la escaleta.", {0: newsToRemove.title})
             : ""
         }
-        confirmText="Quitar del borrador"
+        confirmText={translate("Quitar del borrador")}
         danger
         loading={updating}
         onConfirm={confirmRemoveNews}
