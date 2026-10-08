@@ -389,25 +389,22 @@ function DashboardPage() {
           <section className="information-panel">
             <div>
               <p className="eyebrow">
-                {isEnglish ? "ACTIVE CONNECTIONS" : "CONEXIONES ACTIVAS"}
+                {isEnglish ? "INFORMATION" : "INFORMACIÓN"}
               </p>
 
               <h2>
                 {isEnglish
-                  ? "Local and external services"
-                  : "Servicios locales y externos"}
+                  ? "Newsroom overview"
+                  : "Resumen de la redacción"}
               </h2>
 
               <p>
                 {isEnglish
-                  ? "Metrics are calculated with JSON Server, and weather data comes from a live external endpoint."
-                  : "Las métricas se calculan con JSON Server y el clima se obtiene desde un endpoint externo real."}
+                  ? "Check your team's editorial activity and current weather."
+                  : "Consulta la actividad editorial del equipo y el clima actual."}
               </p>
             </div>
 
-            <span className="information-code">
-              API / ONLINE
-            </span>
           </section>
         </>
       )}

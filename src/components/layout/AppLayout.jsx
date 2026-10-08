@@ -501,11 +501,6 @@ function AppLayout() {
         <footer className="main-footer">
           <span>{channelName}</span>
 
-          <span>
-            {isEnglish
-              ? "Academic project · FWD Academy"
-              : "Proyecto académico · FWD Academy"}
-          </span>
         </footer>
       </div>
     </div>

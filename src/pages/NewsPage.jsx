@@ -256,11 +256,6 @@ function NewsPage() {
               <strong>{resultCount}</strong> {resultLabel}
             </p>
 
-            <span>
-              {isEnglish
-                ? "Information stored in JSON Server"
-                : "Información almacenada en JSON Server"}
-            </span>
           </div>
 
           {resultCount > 0 ? (

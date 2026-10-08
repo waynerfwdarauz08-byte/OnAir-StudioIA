@@ -526,7 +526,7 @@
       "createdBy": "user-admin-001",
       "updatedBy": "user-admin-001",
       "createdAt": "2026-10-07T20:19:36.089Z",
-      "updatedAt": "2026-10-07T20:22:03.691Z",
+      "updatedAt": "2026-10-08T17:35:05.183Z",
       "aiAssisted": true,
       "isDemo": false,
       "imageUrl": "https://res.cloudinary.com/vdbav3js/image/upload/v1791404415/fhgn4og1umcxmloc8pmx.png",
@@ -534,6 +534,36 @@
       "imageAlt": "",
       "imageFit": "cover",
       "imagePositionX": 100,
+      "imagePositionY": 2
+    },
+    {
+      "id": "4vywJQNJxmc",
+      "sourceText": "La gasolina ha aumentado por laas nubes mas el iva ha lofrado aumentar +15% de del precio original. los costarricense se encuentran altamente preocupados por el aumento. desde on air studio le traemos esta y mas noticias",
+      "sourceName": "GASOLINA POR LAS NUBES",
+      "sourceUrl": "",
+      "title": "Aumento en el precio de la gasolina genera preocupación en Costa Rica",
+      "summary": "El precio de la gasolina ha registrado un incremento notable, superando el quince por ciento respecto a su costo original tras sumar el IVA. Esta situación mantiene en alerta y con alta preocupación a la población costarricense. Desde OnAir Studio damos cobertura al impacto de esta alza.",
+      "script": "Buenas tardes. Desde OnAir Studio les presentamos información económica de interés nacional.\n\nEl precio de la gasolina ha experimentado un incremento considerable que impacta de forma directa a los consumidores. Tras sumar el impuesto al valor agregado, el alza supera el quince por ciento con respecto al precio original.\n\nEste encarecimiento mantiene a las familias y conductores costarricenses altamente preocupados por sus repercusiones en la economía diaria.\n\nEn OnAir Studio continuaremos dándole seguimiento a este acontecimiento y a más noticias. Sigan con nosotros.",
+      "lowerThirdOptions": [
+        "Gasolina sube más de un 15% con el IVA",
+        "Preocupación en Costa Rica por alza en combustibles",
+        "Impacto por aumento superior al 15% en la gasolina"
+      ],
+      "selectedLowerThird": "Gasolina sube más de un 15% con el IVA",
+      "categoryId": "category-national",
+      "editorialStatus": "draft",
+      "estimatedDurationSeconds": 34,
+      "createdBy": "user-admin-001",
+      "updatedBy": "user-admin-001",
+      "createdAt": "2026-10-08T16:05:22.655Z",
+      "updatedAt": "2026-10-08T16:05:54.693Z",
+      "aiAssisted": true,
+      "isDemo": false,
+      "imageUrl": "https://res.cloudinary.com/vdbav3js/image/upload/v1791475539/ooa8qpnpcgfdslmorj53.png",
+      "imagePublicId": "ooa8qpnpcgfdslmorj53",
+      "imageAlt": "",
+      "imageFit": "cover",
+      "imagePositionX": 76,
       "imagePositionY": 2
     }
   ],
@@ -543,13 +573,14 @@
       "name": "Noticiero matutino de prueba",
       "broadcastDate": "2026-09-30",
       "newsIds": [
+        "z3wqk8W7xdg",
         "Ne9QBeaeAsY",
         "news-001",
         "Gm9jIfP6onQ"
       ],
       "createdBy": "user-admin-001",
       "createdAt": "2026-09-28T16:24:30.735Z",
-      "updatedAt": "2026-09-29T21:05:40.768Z"
+      "updatedAt": "2026-10-08T17:35:34.124Z"
     },
     {
       "id": "-g3nRqpR6YQ",
@@ -560,7 +591,8 @@
       ],
       "createdBy": "user-admin-001",
       "createdAt": "2026-09-28T16:29:58.806Z",
-      "updatedAt": "2026-09-28T16:30:07.973Z"
+      "updatedAt": "2026-09-28T16:30:07.973Z",
+      "deletedAt": "2026-10-08T16:06:16.630Z"
     },
     {
       "id": "aefcRcXbNdU",
@@ -573,19 +605,20 @@
       ],
       "createdBy": "user-admin-001",
       "createdAt": "2026-10-07T20:21:15.401Z",
-      "updatedAt": "2026-10-07T20:22:32.882Z"
+      "updatedAt": "2026-10-07T20:22:32.882Z",
+      "deletedAt": "2026-10-08T15:47:09.676Z"
     }
   ],
   "transmissions": [
     {
       "id": "current",
-      "newsId": null,
-      "rundownId": null,
-      "onAir": false,
-      "startedAt": null,
-      "updatedAt": "2026-10-07T21:41:17.858Z",
+      "newsId": "z3wqk8W7xdg",
+      "rundownId": "iOyW1dXqbRk",
+      "onAir": true,
+      "startedAt": "2026-10-08T17:35:40.813Z",
+      "updatedAt": "2026-10-08T17:35:40.813Z",
       "updatedBy": "user-admin-001",
-      "eventId": null
+      "eventId": "event-5038f13e-8c99-4632-8dbd-81625fe1804d"
     }
   ],
   "settings": [
@@ -1362,6 +1395,120 @@
       "module": "settings",
       "createdAt": "2026-10-07T21:40:24.376Z",
       "id": "hVe7CorBPGI"
+    },
+    {
+      "eventId": "activity-b14cf962-3780-442f-8b05-2f1ca4257ea0",
+      "action": "login_success",
+      "description": "Wayner Arauz inició sesión como Administrador.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userEmail": "waynervillalobos594@gmail.com",
+      "role": "admin",
+      "roleLabel": "Administrador",
+      "module": "authentication",
+      "sessionId": "e2515e74-0ea9-48fb-8b78-c629e3385243",
+      "sessionStartedAt": "2026-10-08T15:39:31.489Z",
+      "sessionEndedAt": null,
+      "durationSeconds": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0",
+      "language": "es-419",
+      "timeZone": "America/Costa_Rica",
+      "occurredAt": "2026-10-08T15:39:31.503Z",
+      "createdAt": "2026-10-08T15:39:33.240Z",
+      "id": "90oQ7NYmsN8"
+    },
+    {
+      "eventId": "activity-33da1a9f-9c33-4fbd-8800-e3579a9e2bf4",
+      "action": "login_success",
+      "description": "Wayner Arauz inició sesión como Administrador.",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userEmail": "waynervillalobos594@gmail.com",
+      "role": "admin",
+      "roleLabel": "Administrador",
+      "module": "authentication",
+      "sessionId": "801d9d5c-7eea-47a8-b039-996f75ab7282",
+      "sessionStartedAt": "2026-10-08T15:46:44.364Z",
+      "sessionEndedAt": null,
+      "durationSeconds": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0",
+      "language": "es-419",
+      "timeZone": "America/Costa_Rica",
+      "occurredAt": "2026-10-08T15:46:44.385Z",
+      "createdAt": "2026-10-08T15:46:44.685Z",
+      "id": "3N0chzyyj-8"
+    },
+    {
+      "id": "S_JehyvY1Sg",
+      "eventId": "8d0c6876-58cb-4d9b-bad5-34ee525024e0",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userRole": "admin",
+      "action": "delete",
+      "module": "rundowns",
+      "targetId": "aefcRcXbNdU",
+      "description": "Envió a la papelera: Edición Informativa de Tarde-Noche.",
+      "createdAt": "2026-10-08T15:47:09.708Z"
+    },
+    {
+      "id": "0pRVt75xrww",
+      "eventId": "c2aba3c5-64e2-4843-a0c3-3a4997203a60",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userRole": "admin",
+      "action": "create",
+      "module": "news",
+      "targetId": "4vywJQNJxmc",
+      "description": "Creó: Aumento en el precio de la gasolina genera preocupación en Costa Rica.",
+      "createdAt": "2026-10-08T16:05:22.709Z"
+    },
+    {
+      "id": "kTfnEk5li-M",
+      "eventId": "8fde06e3-0ca9-44c3-ad7a-a4b176c38e0c",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userRole": "admin",
+      "action": "update",
+      "module": "news",
+      "targetId": "4vywJQNJxmc",
+      "description": "Actualizó: Aumento en el precio de la gasolina genera preocupación en Costa Rica.",
+      "createdAt": "2026-10-08T16:05:54.757Z"
+    },
+    {
+      "id": "jlf8wvlyw2U",
+      "eventId": "e0e236b8-dc35-44b1-96fd-a858d4dfb443",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userRole": "admin",
+      "action": "delete",
+      "module": "rundowns",
+      "targetId": "-g3nRqpR6YQ",
+      "description": "Envió a la papelera: Edición Informativa de Noche.",
+      "createdAt": "2026-10-08T16:06:16.667Z"
+    },
+    {
+      "id": "170DSq_Crxw",
+      "eventId": "93b45ca6-b761-4cb2-85fa-5175f2bfe45f",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userRole": "admin",
+      "action": "update",
+      "module": "news",
+      "targetId": "z3wqk8W7xdg",
+      "description": "Actualizó: Smirnoff se declara en bancarrota y reporta asalto en su sede principal.",
+      "createdAt": "2026-10-08T17:35:05.275Z"
+    },
+    {
+      "id": "7MdL-4hxeXs",
+      "eventId": "fea79778-6a4d-4f33-8770-30cbb8f2420d",
+      "userId": "user-admin-001",
+      "userName": "Wayner Arauz",
+      "userRole": "admin",
+      "action": "update",
+      "module": "rundowns",
+      "targetId": "iOyW1dXqbRk",
+      "description": "Actualizó: Noticiero matutino de prueba.",
+      "createdAt": "2026-10-08T17:35:34.153Z"
     }
   ],
   "messages": [
@@ -1481,6 +1628,17 @@
       "presenterId": "BGBDrMcaENY",
       "isSimulated": true,
       "id": "-kJlw6JudiM"
+    },
+    {
+      "title": "Prueba",
+      "description": "bbbbb",
+      "siteId": "puntarenas",
+      "latitude": 9.9763,
+      "longitude": -84.8384,
+      "status": "assigned",
+      "presenterId": "user-presenter-001",
+      "isSimulated": true,
+      "id": "3h7dN-4Xm2M"
     }
   ],
   "recordings": [
@@ -1495,6 +1653,143 @@
       "publicId": "lfsrozmdx9p4f3a7sjp2"
     }
   ],
-  "projectionHistory": [],
+  "projectionHistory": [
+    {
+      "id": "l0W2WJKt7dA",
+      "userId": "user-admin-001",
+      "analysisKey": "2026-10:es:6:2026-10",
+      "month": "2026-10",
+      "language": "es",
+      "horizonMonths": 6,
+      "asOfMonth": "2026-10",
+      "createdAt": "2026-10-08T16:08:05.032Z",
+      "result": {
+        "language": "es",
+        "title": "Análisis de Proyección Editorial - Octubre 2026",
+        "summary": "El análisis editorial de octubre de 2026 refleja una producción de 12 registros, superando los 5 registros del periodo anterior. La cobertura se distribuye equitativamente entre temas nacionales, internacionales, culturales, ambientales y deportivos, con una alta tasa de aprobación editorial (11 de 12 registros).",
+        "trends": [
+          {
+            "title": "Enfoque en resiliencia y gestión comunitaria",
+            "evidence": "Se observa una tendencia hacia la implementación de soluciones locales para la gestión de recursos y riesgos, incluyendo reciclaje, aprovechamiento de agua y cooperación ante inundaciones.",
+            "newsIds": [
+              "news-demo-20261005-01",
+              "news-demo-20261005-03",
+              "news-demo-20261005-06"
+            ]
+          },
+          {
+            "title": "Actividad cultural y deportiva inclusiva",
+            "evidence": "Existe una promoción de eventos que fomentan la participación comunitaria, desde la memoria histórica local hasta el deporte escolar adaptado.",
+            "newsIds": [
+              "news-demo-20261005-07",
+              "news-demo-20261005-08",
+              "news-demo-20261005-10"
+            ]
+          },
+          {
+            "title": "Impacto de crisis corporativas y económicas",
+            "evidence": "Se reportan eventos de alto impacto financiero y social, como la bancarrota de una marca internacional y preocupaciones por el costo de vida local.",
+            "newsIds": [
+              "z3wqk8W7xdg",
+              "4vywJQNJxmc"
+            ]
+          }
+        ],
+        "recommendations": [
+          {
+            "title": "Seguimiento a la situación económica nacional",
+            "reason": "El incremento en el precio de la gasolina es un tema de alta preocupación pública que requiere un seguimiento editorial constante para informar sobre su impacto en la población."
+          },
+          {
+            "title": "Profundización en proyectos de sostenibilidad",
+            "reason": "Dado el interés en la gestión de recursos, se recomienda realizar reportajes de seguimiento sobre la efectividad de los proyectos piloto de reciclaje y aprovechamiento de agua."
+          },
+          {
+            "title": "Cobertura de la crisis corporativa",
+            "reason": "La bancarrota y el asalto a la sede de Smirnoff sugieren la necesidad de monitorear posibles repercusiones en el mercado local o en la seguridad de otras empresas."
+          }
+        ],
+        "outlook": [
+          {
+            "scenario": "baseline",
+            "horizonMonths": 6,
+            "assumptions": [
+              "Las iniciativas comunitarias locales continúan su curso sin interrupciones mayores.",
+              "La situación económica nacional mantiene una tendencia de presión inflacionaria."
+            ],
+            "signals": [
+              "Nuevos reportes sobre el costo de vida.",
+              "Informes de avance de los proyectos de reciclaje y agua."
+            ],
+            "newsIds": [
+              "news-demo-20261005-01",
+              "4vywJQNJxmc"
+            ],
+            "title": "Continuidad de la gestión local y presión económica",
+            "rationale": "Se espera que los temas de gestión local sigan siendo el eje de la agenda comunitaria, mientras que la preocupación por el costo de vida se mantenga como un tema recurrente.",
+            "uncertainty": "Alta, debido a la volatilidad de los factores económicos externos."
+          },
+          {
+            "scenario": "opportunity",
+            "horizonMonths": 6,
+            "assumptions": [
+              "Los proyectos de intercambio virtual y cooperación internacional se consolidan.",
+              "La participación ciudadana en actividades culturales aumenta."
+            ],
+            "signals": [
+              "Resultados positivos de los intercambios escolares.",
+              "Alta asistencia a eventos culturales locales."
+            ],
+            "newsIds": [
+              "news-demo-20261005-04",
+              "news-demo-20261005-07"
+            ],
+            "title": "Fortalecimiento de la cohesión social",
+            "rationale": "El éxito de los proyectos de intercambio y cultura podría mejorar la percepción de bienestar comunitario a pesar de las dificultades económicas.",
+            "uncertainty": "Moderada, depende de la capacidad de ejecución de los organizadores."
+          },
+          {
+            "scenario": "risk",
+            "horizonMonths": 6,
+            "assumptions": [
+              "La crisis económica se agrava, afectando la viabilidad de proyectos comunitarios.",
+              "La inestabilidad corporativa genera desempleo o inseguridad."
+            ],
+            "signals": [
+              "Cancelación de proyectos por falta de fondos.",
+              "Reportes de nuevos incidentes de seguridad en el sector privado."
+            ],
+            "newsIds": [
+              "z3wqk8W7xdg",
+              "4vywJQNJxmc"
+            ],
+            "title": "Desestabilización por crisis económica y seguridad",
+            "rationale": "Un deterioro en las condiciones económicas podría limitar la capacidad de las comunidades para sostener sus iniciativas de resiliencia y cultura.",
+            "uncertainty": "Alta, dado que los eventos económicos globales son difíciles de predecir."
+          }
+        ],
+        "forecast": {
+          "horizonMonths": 6,
+          "asOfMonth": "2026-10",
+          "targetMonth": "2027-04"
+        },
+        "limitations": [
+          "Los datos corresponden a un periodo de observación limitado y no representan una serie histórica completa.",
+          "La comparación con el periodo anterior se basa únicamente en el conteo de registros disponibles, no en una duración de tiempo equivalente.",
+          "La incertidumbre aumenta significativamente a medida que se extiende el horizonte de proyección."
+        ],
+        "generatedAt": "2026-10-08T16:08:05.032Z",
+        "coverage": {
+          "totalNews": 12,
+          "includedNews": 12,
+          "omittedNews": 0,
+          "truncatedFields": 0,
+          "limitedEvidence": false,
+          "excludedUndatedNews": 0,
+          "currentTransmissionIsNotHistory": true
+        }
+      }
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

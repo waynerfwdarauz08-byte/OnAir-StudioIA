@@ -52,7 +52,7 @@ export async function request(endpoint, options = {}) {
     }
 
     throw new ApiError(
-      "No fue posible conectar con JSON Server. Comprueba que esté ejecutándose en el puerto 3001."
+      "No fue posible conectar. Inténtalo de nuevo en unos momentos."
     );
   }
 

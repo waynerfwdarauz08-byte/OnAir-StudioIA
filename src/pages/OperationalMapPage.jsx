@@ -129,7 +129,7 @@ function OperationalMapPage() {
       setUsers(userRows);
       setError("");
     }).catch((cause) => {
-      if (!controller.signal.aborted && cause.name !== "AbortError") setError(cause.message || "JSON Server");
+      if (!controller.signal.aborted && cause.name !== "AbortError") setError(cause.message || t("No fue posible cargar la información.", "Unable to load the information."));
     }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [reload]);
@@ -149,7 +149,7 @@ function OperationalMapPage() {
     try {
       await action();
       setNotice(success);
-    } catch (cause) { setError(cause.message || "JSON Server"); }
+    } catch (cause) { setError(cause.message || t("No fue posible guardar los cambios.", "Unable to save changes.")); }
     finally { setBusy(false); }
   }
 
@@ -192,7 +192,7 @@ function OperationalMapPage() {
     <PageHeader eyebrow={t("COORDINACIÓN SIMULADA", "SIMULATED COORDINATION")} title={t("Mapa operativo", "Operations map")}
       description={t("Planifica coberturas académicas desde OnAir Studios. No se contacta ni rastrea a personas reales.", "Plan academic reporting from OnAir Studios. No real people are contacted or tracked.")} />
     {loading && <LoadingState message={t("Cargando mapa y simulaciones...", "Loading map and simulations...")} />}
-    {!loading && error && !settings && <ErrorState message={t("No se pudo conectar con JSON Server.", "Could not connect to JSON Server.")} onRetry={() => { setLoading(true); setReload((value) => value + 1); }} />}
+    {!loading && error && !settings && <ErrorState message={t("No fue posible cargar el mapa. Inténtalo de nuevo.", "Unable to load the map. Please try again.")} onRetry={() => { setLoading(true); setReload((value) => value + 1); }} />}
     {!loading && settings && <main className="operational-workspace">
       <div className="operational-map-panel">
         <div className="operational-map-heading"><div><strong>{t("Costa Rica · mapa de cobertura", "Costa Rica · coverage map")}</strong><span>{t("Marcadores y trayecto esquemático; no es una ruta vial.", "Markers and schematic line; not a road route.")}</span></div><span className="operational-simulation-tag">{t("SIMULACIÓN", "SIMULATION")}</span></div>
@@ -241,7 +241,7 @@ function OperationalMapPage() {
           </div>
         </>}
       </section>
-      {(notice || error) && <p className={error ? "operational-message is-error" : "operational-message"} role={error ? "alert" : "status"}>{error ? `${t("No se pudo guardar en JSON Server.", "Could not save to JSON Server.")} ${translate(error)}` : translate(notice)}</p>}
+      {(notice || error) && <p className={error ? "operational-message is-error" : "operational-message"} role={error ? "alert" : "status"}>{error ? translate(error) : translate(notice)}</p>}
     </main>}
   </>;
 }

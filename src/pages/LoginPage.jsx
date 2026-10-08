@@ -205,37 +205,6 @@ function LoginPage() {
           </button>
         </form>
 
-        <div className="demo-credentials">
-          <p>
-            {isEnglish
-              ? "DEMO ACCOUNTS"
-              : "CUENTAS DE DEMOSTRACIÓN"}
-          </p>
-
-          <dl>
-            <div>
-              <dt>{isEnglish ? "Administrator" : "Administrador"}</dt>
-              <dd>admin@onair.test</dd>
-            </div>
-
-            <div>
-              <dt>{isEnglish ? "Moderator" : "Moderador"}</dt>
-              <dd>moderador@onair.test</dd>
-            </div>
-
-            <div>
-              <dt>{isEnglish ? "Presenter" : "Presentador"}</dt>
-              <dd>presentador@onair.test</dd>
-            </div>
-          </dl>
-        </div>
-
-        <p className="login-security-note">
-          {isEnglish
-            ? "Simulated authentication with JSON Server for academic use."
-            : "Autenticación simulada con JSON Server para fines académicos."}
-        </p>
-
         <Link className="login-help-link" to="/login">
           {isEnglish
             ? "ONAIR STUDIO AI · ACCESS CONTROL"

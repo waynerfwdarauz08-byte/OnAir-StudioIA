@@ -9,7 +9,8 @@ import { translateInterface } from "../src/utils/translations.js";
 
 // Leaflet requiere un DOM; esta prueba verifica las etiquetas, no el mapa interactivo.
 const leafletStub = { name: "interface-map-test", enforce: "pre", resolveId(id) { if (id === "virtual:interface-map-test") return "\0interface-map-test"; }, load(id) { if (id === "\0interface-map-test") return "export default {};"; } };
-const server = await createServer({ configFile: false, resolve: { alias: [{ find: /^leaflet$/, replacement: "virtual:interface-map-test" }] }, plugins: [leafletStub, react()], optimizeDeps: { noDiscovery: true, include: [] }, server: { middlewareMode: true, hmr: false, watch: null }, appType: "custom" });
+// Keep test optimizations separate from the running development server.
+const server = await createServer({ configFile: false, cacheDir: "node_modules/.vite-interface-tests", resolve: { alias: [{ find: /^leaflet$/, replacement: "virtual:interface-map-test" }] }, plugins: [leafletStub, react()], optimizeDeps: { noDiscovery: true, include: [] }, server: { middlewareMode: true, hmr: false, watch: null }, appType: "custom" });
 try {
   const { AccessibilityContext } = await server.ssrLoadModule("/src/context/AccessibilityContext.jsx");
   const { AuthContext } = await server.ssrLoadModule("/src/context/AuthContext.jsx");

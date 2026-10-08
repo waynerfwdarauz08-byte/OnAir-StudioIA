@@ -1,6 +1,6 @@
 // Textos de interfaz; nunca se aplican a guiones, mensajes o títulos editoriales.
 export const interfaceTranslations = {
-  "No fue posible conectar con JSON Server. Comprueba que esté ejecutándose en el puerto 3001.": "Unable to connect to JSON Server. Check that it is running on port 3001.",
+  "No fue posible conectar. Inténtalo de nuevo en unos momentos.": "Unable to connect. Please try again in a moment.",
   "No fue posible completar la solicitud.": "Unable to complete the request.",
   "No encontramos el contenido solicitado.": "The requested content was not found.",
   "La información enviada no es válida.": "The submitted information is invalid.",
@@ -31,7 +31,7 @@ export const interfaceTranslations = {
   "El usuario {0} fue eliminado.": "User {0} was deleted.",
   "No puedes eliminar “{0}” porque está utilizada por {1} noticias. Cambia primero la categoría de esas noticias.": "You cannot delete “{0}” because it is used by {1} news items. Change their category first.",
   "No puedes eliminar “{0}” porque está utilizada por {1} noticia. Cambia primero la categoría de esas noticias.": "You cannot delete “{0}” because it is used by {1} news item. Change its category first.",
-  "Hay un resultado guardado en este navegador pendiente de registrar en JSON Server. Reintenta el guardado.": "A result saved in this browser is waiting to be recorded in JSON Server. Retry saving it.",
+  "Hay un resultado pendiente de guardar. Reintenta el guardado.": "A result is waiting to be saved. Retry saving it.",
   "El resultado se generó, pero no se pudo guardar: {0}": "The result was generated, but could not be saved: {0}",
   "No se puede transmitir: {0} debe estar aprobada y fuera de la papelera.": "Cannot broadcast: {0} must be approved and outside the recycle bin.",
   "Estudio principal": "Main studio",

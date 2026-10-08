@@ -63,7 +63,7 @@ function ProjectionsPage() {
       const pending = sorted.find((item) => item.pending);
       if (pending) {
         setUnsaved(pending);
-        setHistoryError("Hay un resultado guardado en este navegador pendiente de registrar en JSON Server. Reintenta el guardado.");
+        setHistoryError("Hay un resultado pendiente de guardar. Reintenta el guardado.");
       }
       const restored = {};
       sorted.forEach((item) => { if (!restored[item.analysisKey]) restored[item.analysisKey] = item.result; });
@@ -288,10 +288,6 @@ function ProjectionsPage() {
             setReloadKey((currentValue) => currentValue + 1)
           }
         />
-      )}
-
-      {!loading && loadError && (
-        <details className="projections-technical-detail"><summary>{isEnglish ? "Technical details" : "Detalles técnicos"}</summary><p>{loadError}</p></details>
       )}
 
       {!loading && !loadError && (
@@ -544,7 +540,6 @@ function ProjectionsPage() {
             >
               <strong>{isEnglish ? "Analysis could not be completed" : "No se pudo completar el análisis"}</strong>
               <p>{getProjectionsErrorMessage(generationError, language)}</p>
-              {generationError.detail && <details className="projections-technical-detail"><summary>{isEnglish ? "Technical details" : "Detalles técnicos"}</summary><p>{generationError.detail}</p></details>}
               <button type="button" className="button button-secondary" disabled={generating || monthlyNews.length === 0} onClick={handleGenerate}>{isEnglish ? "Try again" : "Intentar nuevamente"}</button>
             </section>
           )}
